@@ -93,11 +93,10 @@
   .skel { background: var(--surface2); border-radius: 2px; animation: shimmer 1.5s ease-in-out infinite; }
   @keyframes shimmer { 0%,100% { opacity: 0.4; } 50% { opacity: 0.8; } }
 
-  /* LOADING OVERLAY */
-  .loading-wrap { position: relative; }
-  .loading-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: rgba(14,14,14,0.72); backdrop-filter: blur(2px); z-index: 10; pointer-events: none; }
+  /* LOADING OVERLAY — fixed to viewport center, works on any screen size */
+  .loading-overlay { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 14px; background: rgba(14,14,14,0.88); backdrop-filter: blur(4px); border: 1px solid var(--border); padding: 28px 40px; z-index: 200; pointer-events: none; border-radius: 4px; }
   .loading-overlay-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); animation: pulse 1s ease-in-out infinite; }
-  .loading-overlay-text { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+  .loading-overlay-text { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
 
   .empty-state { text-align: center; padding: 80px 24px; color: var(--text-muted); }
   .empty-state h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 8px; color: var(--text-dim); }
@@ -213,7 +212,7 @@
       </svg>
       Radio
     </a>
-    <a class="sub-btn sub-btn-iss" href="https://www.heavens-above.com/PassSummary.aspx?satid=25544&lat=30.00&lng=-98.10&loc=Wimberley&alt=300&tz=CST6CDT" target="_blank" title="ISS pass times for Wimberley">
+    <a class="sub-btn sub-btn-iss" href="https://www.heavens-above.com/PassSummary.aspx?satid=25544&lat=30.00&lng=-98.10&loc=Wimberley&alt=300&tz=CST" target="_blank" title="ISS pass times for Wimberley">
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
         <circle cx="7" cy="7" r="2.2" fill="currentColor" opacity="0.85"/>
         <ellipse cx="7" cy="7" rx="6" ry="3.2" stroke="currentColor" stroke-width="1" fill="none" opacity="0.55" transform="rotate(-30 7 7)"/>
@@ -288,23 +287,18 @@
 
 <main>
   <div class="status-bar">
-    <div class="status-left">
-      <div class="dot loading" id="statusDot"></div>
-      <span id="statusText">Loading feeds...</span>
-    </div>
+    <div class="status-left"></div>
     <div class="story-count" id="storyCount"></div>
   </div>
   <div id="newsContainer">
-    <div class="loading-wrap">
-      <div class="loading-overlay"><div class="loading-overlay-dot"></div><div class="loading-overlay-text">Fetching feeds…</div></div>
-      <div class="skeleton-grid">
-        <div class="skeleton-card"><div class="skel" style="height:10px;width:30%"></div><div class="skel" style="height:18px;width:90%"></div><div class="skel" style="height:14px;width:75%"></div><div class="skel" style="height:9px;width:20%"></div></div>
-        <div class="skeleton-card"><div class="skel" style="height:10px;width:40%"></div><div class="skel" style="height:18px;width:85%"></div><div class="skel" style="height:14px;width:65%"></div><div class="skel" style="height:9px;width:20%"></div></div>
-        <div class="skeleton-card"><div class="skel" style="height:10px;width:35%"></div><div class="skel" style="height:18px;width:92%"></div><div class="skel" style="height:14px;width:70%"></div><div class="skel" style="height:9px;width:20%"></div></div>
-        <div class="skeleton-card"><div class="skel" style="height:10px;width:28%"></div><div class="skel" style="height:18px;width:88%"></div><div class="skel" style="height:14px;width:60%"></div><div class="skel" style="height:9px;width:20%"></div></div>
-        <div class="skeleton-card"><div class="skel" style="height:10px;width:45%"></div><div class="skel" style="height:18px;width:80%"></div><div class="skel" style="height:14px;width:72%"></div><div class="skel" style="height:9px;width:20%"></div></div>
-        <div class="skeleton-card"><div class="skel" style="height:10px;width:32%"></div><div class="skel" style="height:18px;width:95%"></div><div class="skel" style="height:14px;width:68%"></div><div class="skel" style="height:9px;width:20%"></div></div>
-      </div>
+    <div id="loadingOverlay" class="loading-overlay"><div class="loading-overlay-dot"></div><div class="loading-overlay-text">Fetching feeds…</div></div>
+    <div class="skeleton-grid">
+      <div class="skeleton-card"><div class="skel" style="height:10px;width:30%"></div><div class="skel" style="height:18px;width:90%"></div><div class="skel" style="height:14px;width:75%"></div><div class="skel" style="height:9px;width:20%"></div></div>
+      <div class="skeleton-card"><div class="skel" style="height:10px;width:40%"></div><div class="skel" style="height:18px;width:85%"></div><div class="skel" style="height:14px;width:65%"></div><div class="skel" style="height:9px;width:20%"></div></div>
+      <div class="skeleton-card"><div class="skel" style="height:10px;width:35%"></div><div class="skel" style="height:18px;width:92%"></div><div class="skel" style="height:14px;width:70%"></div><div class="skel" style="height:9px;width:20%"></div></div>
+      <div class="skeleton-card"><div class="skel" style="height:10px;width:28%"></div><div class="skel" style="height:18px;width:88%"></div><div class="skel" style="height:14px;width:60%"></div><div class="skel" style="height:9px;width:20%"></div></div>
+      <div class="skeleton-card"><div class="skel" style="height:10px;width:45%"></div><div class="skel" style="height:18px;width:80%"></div><div class="skel" style="height:14px;width:72%"></div><div class="skel" style="height:9px;width:20%"></div></div>
+      <div class="skeleton-card"><div class="skel" style="height:10px;width:32%"></div><div class="skel" style="height:18px;width:95%"></div><div class="skel" style="height:14px;width:68%"></div><div class="skel" style="height:9px;width:20%"></div></div>
     </div>
   </div>
   <div class="sources-panel">
@@ -1477,22 +1471,26 @@ function updateTabArrows() {
 async function loadAllFeeds() {
   const btn = document.getElementById('refreshBtn');
   const icon = document.getElementById('refreshIcon');
-  const dot = document.getElementById('statusDot');
-  const statusText = document.getElementById('statusText');
 
   btn.classList.add('loading');
   icon.className = 'spin';
   icon.textContent = '↻';
-  dot.className = 'dot loading';
-  statusText.textContent = 'Fetching feeds…';
   sourceStatus = {};
 
+  // Show loading overlay over skeleton
+  const existingOverlay = document.getElementById('loadingOverlay');
+  if (!existingOverlay) {
+    const ov = document.createElement('div');
+    ov.id = 'loadingOverlay';
+    ov.className = 'loading-overlay';
+    ov.innerHTML = '<div class="loading-overlay-dot"></div><div class="loading-overlay-text">Fetching feeds…</div>';
+    document.body.appendChild(ov);
+  }
+
   document.getElementById('newsContainer').innerHTML =
-    '<div class="loading-wrap">' +
-    '<div class="loading-overlay"><div class="loading-overlay-dot"></div><div class="loading-overlay-text">Fetching feeds…</div></div>' +
     '<div class="skeleton-grid">' +
     Array(6).fill('<div class="skeleton-card"><div class="skel" style="height:10px;width:30%;margin-bottom:4px"></div><div class="skel" style="height:18px;width:88%"></div><div class="skel" style="height:13px;width:70%"></div><div class="skel" style="height:9px;width:20%"></div></div>').join('') +
-    '</div></div>';
+    '</div>';
 
   const results = await Promise.allSettled(FEEDS.map(f => fetchFeed(f)));
   const rawArticles = results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
@@ -1500,11 +1498,10 @@ async function loadAllFeeds() {
   allArticles = deduplicate(sorted);
 
   const okCount = Object.values(sourceStatus).filter(s => s === 'ok').length;
-  const errCount = Object.values(sourceStatus).filter(s => s === 'error').length;
 
-  dot.className = okCount === 0 ? 'dot error' : 'dot';
-  statusText.textContent = okCount + ' source' + (okCount !== 1 ? 's' : '') + ' loaded' +
-    (errCount ? ' · ' + errCount + ' unavailable' : '');
+  // Remove overlay
+  const ov = document.getElementById('loadingOverlay');
+  if (ov) ov.remove();
 
   btn.classList.remove('loading');
   icon.className = '';
