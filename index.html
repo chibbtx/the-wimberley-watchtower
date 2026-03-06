@@ -260,9 +260,9 @@ const FEEDS = [
   { name: 'Wimberley · City Council', lang: 'en', tags: ['wimberley'],
     url: 'https://www.cityofwimberley.com/RSSFeed.aspx?ModID=65&CID=City-Council-8', max: 5 },
   { name: 'Wimberley · Planning & Zoning', lang: 'en', tags: ['wimberley'],
-    url: 'https://www.cityofwimberley.com/RSSFeed.aspx?ModID=65&CID=Planning-Zoning-Commission-6', max: 5 },
+    url: 'https://news.google.com/rss/search?q=%22Wimberley%22+%22planning%22+OR+%22zoning%22+%22Hays+County%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'Wimberley · Blog', lang: 'en', tags: ['wimberley'],
-    url: 'https://www.cityofwimberley.com/RSSFeed.aspx?ModID=51&CID=All-blog.xml', max: 4 },
+    url: 'https://news.google.com/rss/search?q=%22Wimberley%22+%22city%22+announcement+OR+event+OR+update&hl=en-US&gl=US&ceid=US:en', max: 4 },
 
   // ── WIMBERLEY — Woodcreek (adjacent city, CivicEngage) ───────────────────────
   { name: 'Woodcreek · Alerts', lang: 'en', tags: ['wimberley','weather-disasters','breaking'],
@@ -343,8 +343,8 @@ const FEEDS = [
     url: 'https://hillcountryalliance.org/feed/', max: 4 },
 
   // ── HILL COUNTRY — Weather (local-specific) ───────────────────────────────────
-  { name: 'NWS Austin / San Antonio', lang: 'en', tags: ['hill-country','weather-disasters','breaking'],
-    url: 'https://www.weather.gov/rss_page.php?site_name=ewx', max: 8 },
+  { name: 'NWS · Hays County Alerts', lang: 'en', tags: ['hill-country','weather-disasters','breaking'],
+    url: 'https://alerts.weather.gov/cap/wwaatmget.php?x=TXC091&y=0', max: 8 },
   { name: 'Texas Hill Country Hazards', lang: 'en', tags: ['hill-country','weather-disasters','breaking'],
     url: 'https://news.google.com/rss/search?q=flood+OR+wildfire+texas+%22hill+country%22+OR+wimberley+OR+%22hays+county%22&hl=en-US&gl=US&ceid=US:en', max: 6 },
 
@@ -430,16 +430,17 @@ const FEEDS = [
   { name: 'ProPublica Texas', lang: 'en', tags: ['texas','civil-liberties-privacy'],
     url: 'https://news.google.com/rss/search?q=texas+site:propublica.org&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
-  // ── WEATHER & DISASTERS — NWS Forecast Offices (TX-relevant) ─────────────────
-  // EWX = Austin/San Antonio — primary office covering Wimberley directly
+  // ── WEATHER & DISASTERS — NWS Alerts (NOAA CAP/ATOM API) ─────────────────────
+  // Using alerts.weather.gov ATOM feeds by county FIPS — more proxy-friendly
+  // Hays County (TXC091) — Wimberley's home county, EWX office
   { name: 'NWS Austin / San Antonio', lang: 'en', tags: ['weather-disasters','breaking'],
-    url: 'https://www.weather.gov/rss_page.php?site_name=ewx', max: 8 },
-  // FWD = Dallas/Fort Worth — North Texas storms frequently track south through Hill Country
+    url: 'https://alerts.weather.gov/cap/wwaatmget.php?x=TXC091&y=0', max: 8 },
+  // Dallas County (TXC113) — FWD office; North TX storms track south
   { name: 'NWS Dallas / Fort Worth', lang: 'en', tags: ['weather-disasters','texas','breaking'],
-    url: 'https://www.weather.gov/rss_page.php?site_name=fwd', max: 6 },
-  // CRP = Corpus Christi — Gulf Coast storms, hurricane landfall track
+    url: 'https://alerts.weather.gov/cap/wwaatmget.php?x=TXC113&y=0', max: 6 },
+  // Nueces County (TXC355) — CRP office; Gulf Coast / hurricane track
   { name: 'NWS Corpus Christi', lang: 'en', tags: ['weather-disasters','texas','breaking'],
-    url: 'https://www.weather.gov/rss_page.php?site_name=crp', max: 5 },
+    url: 'https://alerts.weather.gov/cap/wwaatmget.php?x=TXC355&y=0', max: 5 },
 
   // ── WEATHER & DISASTERS — Hurricanes & Tropical ───────────────────────────────
   // NHC Atlantic — Gulf of Mexico landfalls are a direct Central TX flood driver
@@ -549,7 +550,7 @@ const FEEDS = [
   { name: 'GAO Reports', lang: 'en', tags: ['national'],
     url: 'https://www.gao.gov/rss/reports.xml', max: 5 },
   { name: 'Federal Register', lang: 'en', tags: ['national'],
-    url: 'https://www.federalregister.gov/documents/feed/current/', max: 5 },
+    url: 'https://news.google.com/rss/search?q="federal+register"+rule+OR+regulation+site:federalregister.gov&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── NATIONAL — SCOTUS & Legal ─────────────────────────────────────────────────
   { name: 'SCOTUSblog', lang: 'en', tags: ['national','civil-liberties-privacy'],
@@ -570,7 +571,7 @@ const FEEDS = [
   { name: 'Bloomberg · Economics', lang: 'en', tags: ['finance'],
     url: 'https://news.google.com/rss/search?q=economy+OR+inflation+OR+recession+OR+fed+rates+site:bloomberg.com&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'Calculated Risk', lang: 'en', tags: ['finance'],
-    url: 'https://feeds.feedburner.com/CalculatedRisk', max: 5 },
+    url: 'https://calculatedriskblog.com/feeds/posts/default', max: 5 },
   { name: 'Wolf Street', lang: 'en', tags: ['finance'],
     url: 'https://wolfstreet.com/feed/', max: 5 },
   // ── FINANCE & ECONOMY — Trade, tariffs & Texas economy ───────────────────────
@@ -632,15 +633,15 @@ const FEEDS = [
   { name: 'SCOTUSblog', lang: 'en', tags: ['civil-liberties-privacy','national'],
     url: 'https://www.scotusblog.com/feed/', max: 6 },
   { name: 'Lawfare', lang: 'en', tags: ['civil-liberties-privacy','national'],
-    url: 'https://www.lawfaremedia.org/feed', max: 6 },
+    url: 'https://news.google.com/rss/search?q=site:lawfaremedia.org&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'Just Security', lang: 'en', tags: ['civil-liberties-privacy','national'],
-    url: 'https://www.justsecurity.org/feed/', max: 5 },
+    url: 'https://news.google.com/rss/search?q=site:justsecurity.org&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'National Law Journal', lang: 'en', tags: ['civil-liberties-privacy','national'],
     url: 'https://news.google.com/rss/search?q="civil+rights"+OR+"civil+liberties"+federal+court+ruling&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── CIVIL LIBERTIES & PRIVACY — Immigration & Deportation ────────────────────
   { name: 'RAICES Texas', lang: 'en', tags: ['civil-liberties-privacy','texas'],
-    url: 'https://www.raicestexas.org/feed/', max: 5 },
+    url: 'https://news.google.com/rss/search?q=RAICES+texas+immigration+deportation&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'Nat\'l Immigration Law Ctr', lang: 'en', tags: ['civil-liberties-privacy','national'],
     url: 'https://www.nilc.org/feed/', max: 5 },
   { name: 'Immigration Impact', lang: 'en', tags: ['civil-liberties-privacy','national'],
@@ -654,7 +655,7 @@ const FEEDS = [
   { name: 'First Amendment Watch', lang: 'en', tags: ['civil-liberties-privacy','national'],
     url: 'https://firstamendmentwatch.org/feed/', max: 5 },
   { name: 'Reporters Without Borders', lang: 'en', tags: ['civil-liberties-privacy','national'],
-    url: 'https://rsf.org/en/rss', max: 5 },
+    url: 'https://news.google.com/rss/search?q="Reporters+Without+Borders"+OR+RSF+press+freedom&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── CIVIL LIBERTIES & PRIVACY — Voting Rights ────────────────────────────────
   { name: 'Brennan Center', lang: 'en', tags: ['civil-liberties-privacy','national'],
@@ -670,7 +671,7 @@ const FEEDS = [
 
   // ── CIVIL LIBERTIES & PRIVACY — Police & Criminal Justice ────────────────────
   { name: 'The Marshall Project', lang: 'en', tags: ['civil-liberties-privacy','national'],
-    url: 'https://feeds.themarshallproject.org/marshall-project-the-best-of-our-journalism', max: 6 },
+    url: 'https://news.google.com/rss/search?q=site:themarshallproject.org&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'Appeal · Criminal Justice', lang: 'en', tags: ['civil-liberties-privacy','national'],
     url: 'https://theappeal.org/feed/', max: 5 },
   { name: 'Police Accountability · TX', lang: 'en', tags: ['civil-liberties-privacy','texas'],
@@ -678,7 +679,7 @@ const FEEDS = [
 
   // ── CIVIL LIBERTIES & PRIVACY — Digital Surveillance ─────────────────────────
   { name: 'Privacy International', lang: 'en', tags: ['civil-liberties-privacy','national'],
-    url: 'https://privacyinternational.org/feed', max: 5 },
+    url: 'https://news.google.com/rss/search?q=site:privacyinternational.org&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'Surveillance · News', lang: 'en', tags: ['civil-liberties-privacy','national'],
     url: 'https://news.google.com/rss/search?q=government+surveillance+OR+"facial+recognition"+OR+"warrantless"+rights&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
@@ -708,7 +709,7 @@ const FEEDS = [
   { name: 'DFRLab (Atlantic Council)', lang: 'en', tags: ['civil-liberties-privacy','geopolitics'],
     url: 'https://dfrlab.org/feed/', max: 5 },
   { name: 'Mozilla Foundation', lang: 'en', tags: ['civil-liberties-privacy','national','cyber-ai-tech'],
-    url: 'https://foundation.mozilla.org/en/feed/blog/', max: 5 },
+    url: 'https://news.google.com/rss/search?q=site:foundation.mozilla.org&hl=en-US&gl=US&ceid=US:en', max: 5 },
   // ── Disinfo · US domestic & Texas ─────────────────────────────────────────────
   { name: 'Disinfo · Texas', lang: 'en', tags: ['civil-liberties-privacy','texas'],
     url: 'https://news.google.com/rss/search?q=disinformation+OR+misinformation+texas+election+OR+immigration&hl=en-US&gl=US&ceid=US:en', max: 5 },
@@ -734,7 +735,7 @@ const FEEDS = [
     url: 'https://news.google.com/rss/search?q="center+for+ai+safety"+OR+"AI+alignment"+OR+"existential+risk"+AI&hl=en-US&gl=US&ceid=US:en', max: 5 },
   // ── AI & Civil Society ────────────────────────────────────────────────────────
   { name: 'AlgorithmWatch', lang: 'en', tags: ['cyber-ai-tech','civil-liberties-privacy'],
-    url: 'https://algorithmwatch.org/en/feed/', max: 5 },
+    url: 'https://news.google.com/rss/search?q=site:algorithmwatch.org&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'AI Now Institute', lang: 'en', tags: ['cyber-ai-tech','national'],
     url: 'https://news.google.com/rss/search?q="AI+Now+Institute"+OR+algorithmic+bias+OR+"facial+recognition"+law+enforcement&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'Biometric Update', lang: 'en', tags: ['cyber-ai-tech'],
@@ -749,7 +750,7 @@ const FEEDS = [
   { name: 'WHO News', lang: 'en', tags: ['public-health','national'],
     url: 'https://www.who.int/rss-feeds/news-english.xml', max: 5 },
   { name: 'NIH News', lang: 'en', tags: ['public-health','national'],
-    url: 'https://www.nih.gov/news-events/feed.xml', max: 5 },
+    url: 'https://news.google.com/rss/search?q=NIH+research+health+site:nih.gov&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'FDA News', lang: 'en', tags: ['public-health','national'],
     url: 'https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml', max: 5 },
   // ── Investigative health journalism ───────────────────────────────────────────
@@ -761,7 +762,7 @@ const FEEDS = [
     url: 'https://undark.org/feed/', max: 5 },
   // ── Outbreak tracking & biosecurity ───────────────────────────────────────────
   { name: 'ProMED · Outbreaks', lang: 'en', tags: ['public-health','national','breaking'],
-    url: 'https://promedmail.org/promed-rss/', max: 6 },
+    url: 'https://promedmail.org/promed-rss-feed/', max: 6 },
   { name: 'HealthMap Alerts', lang: 'en', tags: ['public-health','national'],
     url: 'https://www.healthmap.org/en/feed/rss/', max: 5 },
   { name: 'Outbreak News Today', lang: 'en', tags: ['public-health','national'],
@@ -822,7 +823,7 @@ const FEEDS = [
 
   // ── GEOPOLITICS — Russia & Ukraine ───────────────────────────────────────────
   { name: 'Kyiv Independent', lang: 'en', tags: ['geopolitics'],
-    url: 'https://kyivindependent.com/feed/', max: 6 },
+    url: 'https://news.google.com/rss/search?q=ukraine+site:kyivindependent.com&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'RFE/RL', lang: 'en', tags: ['geopolitics'],
     url: 'https://www.rferl.org/api/zpqoueuuzemvu', max: 6 },
   { name: 'Moscow Times', lang: 'en', tags: ['geopolitics'],
@@ -832,7 +833,7 @@ const FEEDS = [
 
   // ── GEOPOLITICS — Middle East ─────────────────────────────────────────────────
   { name: 'Middle East Eye', lang: 'en', tags: ['geopolitics'],
-    url: 'https://www.middleeasteye.net/rss', max: 6 },
+    url: 'https://news.google.com/rss/search?q=middle+east+site:middleeasteye.net&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'Haaretz · English', lang: 'en', tags: ['geopolitics'],
     url: 'https://www.haaretz.com/cmlink/1.628765', max: 5 },
   { name: 'Al-Monitor', lang: 'en', tags: ['geopolitics'],
@@ -864,35 +865,35 @@ const FEEDS = [
   // IMPORTANT: MyMemory free API rate-limits hard at 7+ concurrent translations.
   // Capped at 5 Spanish-language feeds; the rest are Google News (already en-US)
   // or English-language Spanish-media outlets — no translation needed.
-  { name: 'Telemundo Austin', lang: 'es', tags: ['en-espanol','texas'],
-    url: 'https://www.telemundoaustin.com/arcio/rss/', max: 6 },
-  { name: 'BBC Mundo', lang: 'es', tags: ['en-espanol','geopolitics'],
-    url: 'https://feeds.bbci.co.uk/mundo/rss.xml', max: 5 },
-  { name: 'AP en Español', lang: 'es', tags: ['en-espanol','national'],
-    url: 'https://feeds.apnews.com/rss/apf-espanol', max: 6 },
+  { name: 'Telemundo Austin', lang: 'en', tags: ['en-espanol','texas'],
+    url: 'https://news.google.com/rss/search?q=texas+hispano+latino+noticias+espanol&hl=es-US&gl=US&ceid=US:es', max: 6 },
+  { name: 'BBC Mundo', lang: 'en', tags: ['en-espanol','geopolitics'],
+    url: 'https://news.google.com/rss/search?q=site:bbc.com/mundo&hl=en-US&gl=US&ceid=US:en', max: 5 },
+  { name: 'AP en Español', lang: 'en', tags: ['en-espanol','national'],
+    url: 'https://news.google.com/rss/search?q=site:apnews.com+espanol+OR+noticias&hl=en-US&gl=US&ceid=US:en', max: 6 },
   // English-language sources covering Latino/Spanish-speaking community — no translation needed:
   { name: 'Texas Tribune · Español', lang: 'en', tags: ['en-espanol','texas'],
-    url: 'https://www.texastribune.org/feeds/tag/espanol/', max: 6 },
+    url: 'https://news.google.com/rss/search?q=texas+noticias+espanol+site:texastribune.org&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'Univision Texas · EN', lang: 'en', tags: ['en-espanol','texas'],
     url: 'https://news.google.com/rss/search?q=texas+immigration+ICE+deportation+latino&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'Latino USA', lang: 'en', tags: ['en-espanol','national'],
-    url: 'https://latinousa.org/feed/', max: 5 },
+    url: 'https://news.google.com/rss/search?q=site:latinousa.org+OR+"Latino+USA"&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'Futuro Media', lang: 'en', tags: ['en-espanol','national'],
-    url: 'https://www.futuromediagroup.org/feed/', max: 5 },
+    url: 'https://news.google.com/rss/search?q=site:futuromediagroup.org+OR+"Futuro+Media"&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'Mundo Hispanic', lang: 'en', tags: ['en-espanol','texas'],
-    url: 'https://mundohispanico.com/feed/', max: 5 },
+    url: 'https://news.google.com/rss/search?q=hispano+texas+noticias+comunidad&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── HILL COUNTRY — Canyon Lake & Comal County ────────────────────────────────
   { name: 'My Canyon Lake', lang: 'en', tags: ['hill-country'],
-    url: 'https://mycanyonlake.com/feed/', max: 6 },
+    url: 'https://news.google.com/rss/search?q=%22Canyon+Lake%22+texas+comal+community&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'Comal County · Alerts', lang: 'en', tags: ['hill-country','weather-disasters','breaking'],
-    url: 'https://www.comalcounty.gov/RSSFeed.aspx?ModID=63&CID=All-0', max: 5 },
+    url: 'https://alerts.weather.gov/cap/wwaatmget.php?x=TXC046&y=0', max: 5 },
   { name: 'Comal County · News', lang: 'en', tags: ['hill-country'],
-    url: 'https://www.comalcounty.gov/RSSFeed.aspx?ModID=1&CID=All-newsflash.xml', max: 5 },
+    url: 'https://news.google.com/rss/search?q=%22Comal+County%22+texas+news&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'Canyon Lake · News', lang: 'en', tags: ['hill-country'],
     url: 'https://news.google.com/rss/search?q=%22Canyon+Lake%22+texas+comal&hl=en-US&gl=US&ceid=US:en', max: 6 },
-  { name: 'City of Blanco · MuniImpact', lang: 'en', tags: ['hill-country'],
-    url: 'https://blanco.municipalimpact.com/rss', max: 5 },
+  { name: 'City of Blanco · News', lang: 'en', tags: ['hill-country'],
+    url: 'https://news.google.com/rss/search?q=%22City+of+Blanco%22+OR+%22Blanco+Texas%22+city+county&hl=en-US&gl=US&ceid=US:en', max: 4 },
 
   // ── CYBER AI & TECH — Scoop News Group ───────────────────────────────────────
   { name: 'FedScoop', lang: 'en', tags: ['cyber-ai-tech','national'],
@@ -900,19 +901,19 @@ const FEEDS = [
   { name: 'DefenseScoop', lang: 'en', tags: ['cyber-ai-tech','national'],
     url: 'https://defensescoop.com/feed', max: 8 },
   { name: 'StateScoop', lang: 'en', tags: ['cyber-ai-tech','texas'],
-    url: 'https://statescoop.com/feed', max: 8 },
+    url: 'https://news.google.com/rss/search?q=state+government+technology+IT+site:statescoop.com&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'AIScoop', lang: 'en', tags: ['cyber-ai-tech'],
-    url: 'https://aiscoop.com/feed', max: 8 },
+    url: 'https://news.google.com/rss/search?q=artificial+intelligence+government+policy+site:aiscoop.com&hl=en-US&gl=US&ceid=US:en', max: 6 },
 
   // ── CYBER AI & TECH — Foundry / IDG ──────────────────────────────────────────
   { name: 'CIO', lang: 'en', tags: ['cyber-ai-tech'],
-    url: 'https://www.cio.com/feed', max: 8 },
+    url: 'https://news.google.com/rss/search?q=CIO+technology+enterprise+IT+site:cio.com&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'CSO Online', lang: 'en', tags: ['cyber-ai-tech'],
-    url: 'https://www.csoonline.com/feed', max: 8 },
+    url: 'https://news.google.com/rss/search?q=cybersecurity+CISO+site:csoonline.com&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'Computerworld', lang: 'en', tags: ['cyber-ai-tech'],
-    url: 'https://www.computerworld.com/feed', max: 8 },
+    url: 'https://news.google.com/rss/search?q=enterprise+technology+IT+site:computerworld.com&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'InfoWorld', lang: 'en', tags: ['cyber-ai-tech'],
-    url: 'https://www.infoworld.com/feed', max: 8 },
+    url: 'https://news.google.com/rss/search?q=software+development+cloud+AI+site:infoworld.com&hl=en-US&gl=US&ceid=US:en', max: 6 },
 
 ];
 
@@ -936,7 +937,7 @@ const LOCAL_SOURCES = new Set([
   'City of Buda · Alerts', 'City of Buda · News', 'City of Buda · Agendas',
   'City of Kyle · News', 'City of Blanco · News', 'City of San Marcos',
   'Hays County', 'LCRA News', 'Hill Country Alliance',
-  'NWS Austin / San Antonio', 'Texas Hill Country Hazards',
+  'NWS · Hays County Alerts', 'NWS Austin / San Antonio', 'Texas Hill Country Hazards',
   // Texas
   'Texas Tribune', 'Texas Tribune · Politics', 'Texas Tribune · Environment',
   'Texas Tribune · Border', 'Texas Observer', 'Texas Public Radio',
