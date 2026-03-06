@@ -1498,8 +1498,7 @@ async function loadAllFeeds() {
   const okCount = Object.values(sourceStatus).filter(s => s === 'ok').length;
 
   // Remove overlay
-  const ov = document.getElementById('loadingOverlay');
-  if (ov) ov.remove();
+  document.getElementById('loadingOverlay')?.remove();
 
   btn.classList.remove('loading');
   icon.className = '';
