@@ -558,40 +558,184 @@ const FEEDS = [
     url: 'https://www.darkreading.com/rss.xml', max: 6 },
   { name: 'Bleeping Computer', lang: 'en', tags: ['cyber-data','national'],
     url: 'https://www.bleepingcomputer.com/feed/', max: 6 },
+  { name: 'Recorded Future News', lang: 'en', tags: ['cyber-data','national'],
+    url: 'https://therecord.media/feed', max: 6 },
+  { name: 'CyberScoop', lang: 'en', tags: ['cyber-data','national'],
+    url: 'https://cyberscoop.com/feed/', max: 6 },
+  { name: 'SecurityWeek', lang: 'en', tags: ['cyber-data','national'],
+    url: 'https://feeds.feedburner.com/Securityweek', max: 5 },
+  // ── CYBER & DATA — Data Privacy & Surveillance ────────────────────────────────
+  { name: 'IAPP Privacy News', lang: 'en', tags: ['cyber-data','civil-liberties-privacy'],
+    url: 'https://iapp.org/news/rss/', max: 5 },
+  { name: 'Electronic Frontier Foundation', lang: 'en', tags: ['cyber-data','civil-liberties-privacy'],
+    url: 'https://www.eff.org/rss/updates.xml', max: 5 },
+  { name: 'Motherboard (Vice)', lang: 'en', tags: ['cyber-data','national'],
+    url: 'https://www.vice.com/en/rss/?section=tech', max: 5 },
+  // ── CYBER & DATA — Threat Intelligence & Vulnerabilities ─────────────────────
+  { name: 'US-CERT Alerts', lang: 'en', tags: ['cyber-data','national','breaking'],
+    url: 'https://www.cisa.gov/uscert/ncas/alerts.xml', max: 6 },
+  { name: 'SANS Internet Storm Ctr', lang: 'en', tags: ['cyber-data','national'],
+    url: 'https://isc.sans.edu/rssfeed_full.xml', max: 5 },
+  { name: 'Cyber · Infra Attacks', lang: 'en', tags: ['cyber-data','national','breaking'],
+    url: 'https://news.google.com/rss/search?q=cyberattack+OR+ransomware+OR+"data+breach"+critical+infrastructure&hl=en-US&gl=US&ceid=US:en', max: 6 },
 
-  // ── CIVIL LIBERTIES & PRIVACY ─────────────────────────────────────────────────
+  // ── CIVIL LIBERTIES & PRIVACY — Core Watchdogs ───────────────────────────────
   { name: 'EFF Deeplinks', lang: 'en', tags: ['civil-liberties-privacy','national','ai-risk'],
     url: 'https://www.eff.org/rss/updates.xml', max: 6 },
   { name: 'ACLU News', lang: 'en', tags: ['civil-liberties-privacy','national'],
     url: 'https://www.aclu.org/news/feed', max: 6 },
+  { name: 'ACLU of Texas', lang: 'en', tags: ['civil-liberties-privacy','texas'],
+    url: 'https://www.aclutx.org/en/rss.xml', max: 5 },
   { name: 'Reason', lang: 'en', tags: ['civil-liberties-privacy','national'],
     url: 'https://reason.com/feed/', max: 5 },
+  { name: 'Institute for Justice', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://ij.org/feed/', max: 5 },
+
+  // ── CIVIL LIBERTIES & PRIVACY — Law & Courts ──────────────────────────────────
+  { name: 'SCOTUSblog', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://www.scotusblog.com/feed/', max: 6 },
+  { name: 'Lawfare', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://www.lawfaremedia.org/feed', max: 6 },
+  { name: 'Just Security', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://www.justsecurity.org/feed/', max: 5 },
+  { name: 'National Law Journal', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://news.google.com/rss/search?q="civil+rights"+OR+"civil+liberties"+federal+court+ruling&hl=en-US&gl=US&ceid=US:en', max: 5 },
+
+  // ── CIVIL LIBERTIES & PRIVACY — Immigration & Deportation ────────────────────
+  { name: 'RAICES Texas', lang: 'en', tags: ['civil-liberties-privacy','texas'],
+    url: 'https://www.raicestexas.org/feed/', max: 5 },
+  { name: 'Nat\'l Immigration Law Ctr', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://www.nilc.org/feed/', max: 5 },
+  { name: 'Immigration Impact', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://immigrationimpact.com/feed/', max: 5 },
+  { name: 'Texas Immigration · News', lang: 'en', tags: ['civil-liberties-privacy','texas'],
+    url: 'https://news.google.com/rss/search?q=texas+immigration+deportation+ICE+rights&hl=en-US&gl=US&ceid=US:en', max: 6 },
+
+  // ── CIVIL LIBERTIES & PRIVACY — Press Freedom ────────────────────────────────
+  { name: 'Committee to Protect Journalists', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://cpj.org/feed/', max: 5 },
+  { name: 'First Amendment Watch', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://firstamendmentwatch.org/feed/', max: 5 },
+  { name: 'Reporters Without Borders', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://rsf.org/en/rss', max: 5 },
+
+  // ── CIVIL LIBERTIES & PRIVACY — Voting Rights ────────────────────────────────
+  { name: 'Brennan Center', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://www.brennancenter.org/rss.xml', max: 5 },
+  { name: 'Voting Rights · Texas', lang: 'en', tags: ['civil-liberties-privacy','texas'],
+    url: 'https://news.google.com/rss/search?q=texas+voting+rights+OR+"voter+suppression"+OR+"voter+ID"&hl=en-US&gl=US&ceid=US:en', max: 5 },
+
+  // ── CIVIL LIBERTIES & PRIVACY — Reproductive Rights ──────────────────────────
+  { name: 'The 19th', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://19thnews.org/feed/', max: 6 },
+  { name: 'Reproductive Rights · TX', lang: 'en', tags: ['civil-liberties-privacy','texas'],
+    url: 'https://news.google.com/rss/search?q=texas+abortion+OR+"reproductive+rights"+OR+"SB8"&hl=en-US&gl=US&ceid=US:en', max: 5 },
+
+  // ── CIVIL LIBERTIES & PRIVACY — Police & Criminal Justice ────────────────────
+  { name: 'The Marshall Project', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://feeds.themarshallproject.org/marshall-project-the-best-of-our-journalism', max: 6 },
+  { name: 'Appeal · Criminal Justice', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://theappeal.org/feed/', max: 5 },
+  { name: 'Police Accountability · TX', lang: 'en', tags: ['civil-liberties-privacy','texas'],
+    url: 'https://news.google.com/rss/search?q=texas+police+misconduct+OR+"use+of+force"+OR+"police+accountability"&hl=en-US&gl=US&ceid=US:en', max: 5 },
+
+  // ── CIVIL LIBERTIES & PRIVACY — Digital Surveillance ─────────────────────────
+  { name: 'Privacy International', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://privacyinternational.org/feed', max: 5 },
+  { name: 'Surveillance · News', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://news.google.com/rss/search?q=government+surveillance+OR+"facial+recognition"+OR+"warrantless"+rights&hl=en-US&gl=US&ceid=US:en', max: 5 },
+
+  // ── CIVIL LIBERTIES & PRIVACY — International Human Rights ───────────────────
+  { name: 'Amnesty International', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://www.amnesty.org/en/feed/', max: 5 },
+  { name: 'Human Rights Watch', lang: 'en', tags: ['civil-liberties-privacy','national'],
+    url: 'https://www.hrw.org/rss', max: 5 },
 
   // ── DISINFORMATION ────────────────────────────────────────────────────────────
+  // ── Core fact-checkers & media watchdogs ──────────────────────────────────────
   { name: 'Bellingcat', lang: 'en', tags: ['disinformation','geopolitics'],
     url: 'https://www.bellingcat.com/feed/', max: 6 },
   { name: 'Poynter', lang: 'en', tags: ['disinformation','national'],
     url: 'https://www.poynter.org/feed/', max: 5 },
   { name: 'First Draft', lang: 'en', tags: ['disinformation','national'],
     url: 'https://firstdraftnews.org/feed/', max: 5 },
+  { name: 'PolitiFact', lang: 'en', tags: ['disinformation','national'],
+    url: 'https://www.politifact.com/rss/statements/truth-o-meter/', max: 6 },
+  { name: 'FactCheck.org', lang: 'en', tags: ['disinformation','national'],
+    url: 'https://www.factcheck.org/feed/', max: 5 },
+  { name: 'Snopes', lang: 'en', tags: ['disinformation','national'],
+    url: 'https://www.snopes.com/feed/', max: 5 },
+  // ── Platform & AI-driven disinfo ──────────────────────────────────────────────
+  { name: 'Stanford Internet Observatory', lang: 'en', tags: ['disinformation','national','ai-risk'],
+    url: 'https://cyber.fsi.stanford.edu/io/rss.xml', max: 5 },
+  { name: 'DFRLab (Atlantic Council)', lang: 'en', tags: ['disinformation','geopolitics'],
+    url: 'https://dfrlab.org/feed/', max: 5 },
+  { name: 'Mozilla Foundation', lang: 'en', tags: ['disinformation','national','ai-risk'],
+    url: 'https://foundation.mozilla.org/en/feed/blog/', max: 5 },
+  // ── Disinfo · US domestic & Texas ─────────────────────────────────────────────
+  { name: 'Disinfo · Texas', lang: 'en', tags: ['disinformation','texas'],
+    url: 'https://news.google.com/rss/search?q=disinformation+OR+misinformation+texas+election+OR+immigration&hl=en-US&gl=US&ceid=US:en', max: 5 },
+  { name: 'Disinfo · AI-generated', lang: 'en', tags: ['disinformation','national','ai-risk'],
+    url: 'https://news.google.com/rss/search?q=%22AI-generated%22+OR+%22deepfake%22+disinformation+OR+misinformation&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── AI RISK ───────────────────────────────────────────────────────────────────
+  // ── Technical & policy research ───────────────────────────────────────────────
   { name: 'MIT Technology Review', lang: 'en', tags: ['ai-risk','national'],
     url: 'https://www.technologyreview.com/feed/', max: 6 },
-  { name: 'AI Safety News', lang: 'en', tags: ['ai-risk','national'],
-    url: 'https://news.google.com/rss/search?q=%22AI+safety%22+OR+%22AI+risk%22+OR+%22AI+regulation%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'Wired', lang: 'en', tags: ['national','cyber-data','ai-risk'],
     url: 'https://www.wired.com/feed/rss', max: 6 },
+  { name: 'AI Safety News', lang: 'en', tags: ['ai-risk','national'],
+    url: 'https://news.google.com/rss/search?q=%22AI+safety%22+OR+%22AI+risk%22+OR+%22AI+regulation%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
+  { name: 'The Gradient', lang: 'en', tags: ['ai-risk','national'],
+    url: 'https://thegradient.pub/rss/', max: 5 },
+  { name: '80,000 Hours', lang: 'en', tags: ['ai-risk','national'],
+    url: 'https://80000hours.org/feed/', max: 4 },
+  // ── AI Governance & Regulation ────────────────────────────────────────────────
+  { name: 'NIST AI News', lang: 'en', tags: ['ai-risk','national'],
+    url: 'https://news.google.com/rss/search?q=NIST+AI+framework+OR+AI+standard+OR+AI+regulation+government&hl=en-US&gl=US&ceid=US:en', max: 5 },
+  { name: 'AI Policy · Congress', lang: 'en', tags: ['ai-risk','national'],
+    url: 'https://news.google.com/rss/search?q=artificial+intelligence+bill+OR+legislation+OR+congress+regulation&hl=en-US&gl=US&ceid=US:en', max: 5 },
+  { name: 'Center for AI Safety', lang: 'en', tags: ['ai-risk','national'],
+    url: 'https://news.google.com/rss/search?q="center+for+ai+safety"+OR+"AI+alignment"+OR+"existential+risk"+AI&hl=en-US&gl=US&ceid=US:en', max: 5 },
+  // ── AI & Civil Society ────────────────────────────────────────────────────────
+  { name: 'AlgorithmWatch', lang: 'en', tags: ['ai-risk','civil-liberties-privacy'],
+    url: 'https://algorithmwatch.org/en/feed/', max: 5 },
+  { name: 'AI Now Institute', lang: 'en', tags: ['ai-risk','national'],
+    url: 'https://news.google.com/rss/search?q="AI+Now+Institute"+OR+algorithmic+bias+OR+"facial+recognition"+law+enforcement&hl=en-US&gl=US&ceid=US:en', max: 5 },
+  { name: 'Biometric Update', lang: 'en', tags: ['ai-risk','cyber-data'],
+    url: 'https://www.biometricupdate.com/feed', max: 5 },
 
   // ── PUBLIC HEALTH ─────────────────────────────────────────────────────────────
+  // ── Federal agencies & surveillance ───────────────────────────────────────────
   { name: 'CDC Newsroom', lang: 'en', tags: ['public-health','national'],
     url: 'https://tools.cdc.gov/api/v2/resources/media/132608.rss', max: 6 },
-  { name: 'STAT News', lang: 'en', tags: ['public-health','national'],
-    url: 'https://www.statnews.com/feed/', max: 6 },
-  { name: 'Kaiser Health News', lang: 'en', tags: ['public-health','national'],
-    url: 'https://kffhealthnews.org/feed/', max: 6 },
+  { name: 'CDC MMWR', lang: 'en', tags: ['public-health','national'],
+    url: 'https://www.cdc.gov/mmwr/rss/rss.html', max: 5 },
   { name: 'WHO News', lang: 'en', tags: ['public-health','national'],
     url: 'https://www.who.int/rss-feeds/news-english.xml', max: 5 },
+  { name: 'NIH News', lang: 'en', tags: ['public-health','national'],
+    url: 'https://www.nih.gov/news-events/feed.xml', max: 5 },
+  { name: 'FDA News', lang: 'en', tags: ['public-health','national'],
+    url: 'https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml', max: 5 },
+  // ── Investigative health journalism ───────────────────────────────────────────
+  { name: 'STAT News', lang: 'en', tags: ['public-health','national'],
+    url: 'https://www.statnews.com/feed/', max: 6 },
+  { name: 'KFF Health News', lang: 'en', tags: ['public-health','national'],
+    url: 'https://kffhealthnews.org/feed/', max: 6 },
+  { name: 'Undark', lang: 'en', tags: ['public-health','national'],
+    url: 'https://undark.org/feed/', max: 5 },
+  // ── Outbreak tracking & biosecurity ───────────────────────────────────────────
+  { name: 'ProMED · Outbreaks', lang: 'en', tags: ['public-health','national','breaking'],
+    url: 'https://promedmail.org/promed-rss/', max: 6 },
+  { name: 'HealthMap Alerts', lang: 'en', tags: ['public-health','national'],
+    url: 'https://www.healthmap.org/en/feed/rss/', max: 5 },
+  { name: 'Outbreak News Today', lang: 'en', tags: ['public-health','national'],
+    url: 'https://outbreaknewstoday.com/feed/', max: 6 },
+  // ── Texas public health ────────────────────────────────────────────────────────
+  { name: 'DSHS · Texas Health', lang: 'en', tags: ['public-health','texas'],
+    url: 'https://news.google.com/rss/search?q=texas+"department+of+state+health+services"+OR+DSHS+outbreak+OR+advisory&hl=en-US&gl=US&ceid=US:en', max: 5 },
+  { name: 'Health · Texas', lang: 'en', tags: ['public-health','texas'],
+    url: 'https://news.google.com/rss/search?q=texas+public+health+OR+outbreak+OR+disease+OR+"health+emergency"&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── GEOPOLITICS — Wires & Broad International ─────────────────────────────────
   { name: 'Reuters World', lang: 'en', tags: ['geopolitics','national'],
@@ -681,15 +825,27 @@ const FEEDS = [
   { name: 'Latin America · Reuters', lang: 'en', tags: ['geopolitics'],
     url: 'https://news.google.com/rss/search?q=latin+america+OR+brazil+OR+venezuela+OR+colombia+site:reuters.com&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
-  // ── EN ESPAÑOL — Texas & community Spanish-language ───────────────────────────
-  // Only 3 Spanish sources — within the safe threshold for MyMemory free API.
-  // These cover Texas/US news directly, so translation is minimal.
+  // ── EN ESPAÑOL — Texas & US Spanish-language ─────────────────────────────────
+  // IMPORTANT: MyMemory free API rate-limits hard at 7+ concurrent translations.
+  // Capped at 5 Spanish-language feeds; the rest are Google News (already en-US)
+  // or English-language Spanish-media outlets — no translation needed.
   { name: 'Telemundo Austin', lang: 'es', tags: ['en-espanol','texas','local'],
     url: 'https://www.telemundoaustin.com/arcio/rss/', max: 6 },
-  { name: 'Univision Texas', lang: 'es', tags: ['en-espanol','texas'],
-    url: 'https://news.google.com/rss/search?q=texas+inmigracion+OR+deportacion+OR+ICE&hl=es-US&gl=US&ceid=US:es', max: 5 },
-  { name: 'BBC Mundo', lang: 'es', tags: ['en-espanol','national','geopolitics'],
+  { name: 'BBC Mundo', lang: 'es', tags: ['en-espanol','geopolitics'],
     url: 'https://feeds.bbci.co.uk/mundo/rss.xml', max: 5 },
+  { name: 'AP en Español', lang: 'es', tags: ['en-espanol','national'],
+    url: 'https://feeds.apnews.com/rss/apf-espanol', max: 6 },
+  // English-language sources covering Latino/Spanish-speaking community — no translation needed:
+  { name: 'Texas Tribune · Español', lang: 'en', tags: ['en-espanol','texas'],
+    url: 'https://www.texastribune.org/feeds/tag/espanol/', max: 6 },
+  { name: 'Univision Texas · EN', lang: 'en', tags: ['en-espanol','texas'],
+    url: 'https://news.google.com/rss/search?q=texas+immigration+ICE+deportation+latino&hl=en-US&gl=US&ceid=US:en', max: 6 },
+  { name: 'Latino USA', lang: 'en', tags: ['en-espanol','national'],
+    url: 'https://latinousa.org/feed/', max: 5 },
+  { name: 'Futuro Media', lang: 'en', tags: ['en-espanol','national'],
+    url: 'https://www.futuromediagroup.org/feed/', max: 5 },
+  { name: 'Mundo Hispanic', lang: 'en', tags: ['en-espanol','texas'],
+    url: 'https://mundohispanico.com/feed/', max: 5 },
 
 ];
 
@@ -757,10 +913,34 @@ const LOCAL_SOURCES = new Set([
   'White House Briefings', 'GAO Reports', 'Federal Register',
   'SCOTUSblog', 'Federal Reserve', 'Treasury Dept', 'MarketWatch · Economy',
   'Krebs on Security', 'The Hacker News', 'Dark Reading', 'Bleeping Computer',
-  'EFF Deeplinks', 'ACLU News', 'Reason',
-  'Bellingcat', 'Poynter', 'First Draft',
-  'MIT Technology Review', 'AI Safety News', 'Wired',
-  'CDC Newsroom', 'STAT News', 'Kaiser Health News', 'WHO News',
+  // Civil liberties & privacy
+  'EFF Deeplinks', 'ACLU News', 'ACLU of Texas', 'Reason', 'Institute for Justice',
+  'SCOTUSblog', 'Lawfare', 'Just Security',
+  'RAICES Texas', "Nat'l Immigration Law Ctr", 'Immigration Impact',
+  'Committee to Protect Journalists', 'First Amendment Watch', 'Reporters Without Borders',
+  'Brennan Center', 'The 19th',
+  'The Marshall Project', 'Appeal · Criminal Justice',
+  'Privacy International',
+  'Amnesty International', 'Human Rights Watch',
+  // Disinformation
+  'Bellingcat', 'Poynter', 'First Draft', 'PolitiFact', 'FactCheck.org', 'Snopes',
+  'Stanford Internet Observatory', 'DFRLab (Atlantic Council)', 'Mozilla Foundation',
+  'Disinfo · Texas', 'Disinfo · AI-generated',
+  // AI Risk
+  'MIT Technology Review', 'AI Safety News', 'Wired', 'The Gradient', '80,000 Hours',
+  'NIST AI News', 'AI Policy · Congress', 'Center for AI Safety',
+  'AlgorithmWatch', 'AI Now Institute', 'Biometric Update',
+  // Public Health
+  'CDC Newsroom', 'CDC MMWR', 'STAT News', 'KFF Health News', 'WHO News', 'NIH News', 'FDA News',
+  'Undark', 'ProMED · Outbreaks', 'HealthMap Alerts', 'Outbreak News Today',
+  'DSHS · Texas Health', 'Health · Texas',
+  // Cyber & Data (new)
+  'Recorded Future News', 'CyberScoop', 'SecurityWeek', 'IAPP Privacy News',
+  'Electronic Frontier Foundation', 'Motherboard (Vice)', 'US-CERT Alerts',
+  'SANS Internet Storm Ctr', 'Cyber · Infra Attacks',
+  // En Español (new)
+  'Texas Tribune · Español', 'Univision Texas · EN', 'Latino USA', 'Futuro Media',
+  'Mundo Hispanic', 'AP en Español',
   'Foreign Policy', 'Foreign Affairs', 'Council on Foreign Relations', 'Chatham House', 'RAND · World',
   'Reuters World', 'BBC World', 'Al Jazeera English', 'AP Diplomacy', 'DW World', 'France 24',
   'Crisis Group', 'Bellingcat',
@@ -770,7 +950,7 @@ const LOCAL_SOURCES = new Set([
   'Middle East Eye', 'Haaretz · English', 'Al-Monitor', 'Middle East · Reuters',
   'South China Morning Post', 'The Diplomat', 'Nikkei Asia', 'Asia · Reuters',
   'Africa Report', 'AllAfrica', 'NACLA · Latin America', 'Latin America · Reuters',
-  'Telemundo Austin', 'Univision Texas',
+  'Telemundo Austin', 'BBC Mundo',
 ]);
 
 // Foreign Policy and Reuters World are broad — filter by keyword
@@ -794,6 +974,11 @@ const RELEVANCE_KEYWORDS = [
   'disinformation','misinformation','propaganda','fact-check',
   // Health
   'pandemic','outbreak','cdc','who','pathogen','biosecurity','virus','epidemic',
+  'disease','vaccine','public health','fda recall','drug shortage','food safety',
+  'promed','healthmap','mrna','antimicrobial','bioterror',
+  // En Español / Latino
+  'latino','latina','hispanic','inmigracion','deportacion','frontera',
+  'comunidad','español','español-language','telemundo','univision',
   // Geopolitics
   'nato','war','conflict','missile','nuclear','russia','ukraine','china',
   'middle east','iran','north korea','taiwan','sanctions',
