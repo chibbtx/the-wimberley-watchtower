@@ -291,7 +291,6 @@
     <div class="story-count" id="storyCount"></div>
   </div>
   <div id="newsContainer">
-    <div id="loadingOverlay" class="loading-overlay"><div class="loading-overlay-dot"></div><div class="loading-overlay-text">Fetching feeds…</div></div>
     <div class="skeleton-grid">
       <div class="skeleton-card"><div class="skel" style="height:10px;width:30%"></div><div class="skel" style="height:18px;width:90%"></div><div class="skel" style="height:14px;width:75%"></div><div class="skel" style="height:9px;width:20%"></div></div>
       <div class="skeleton-card"><div class="skel" style="height:10px;width:40%"></div><div class="skel" style="height:18px;width:85%"></div><div class="skel" style="height:14px;width:65%"></div><div class="skel" style="height:9px;width:20%"></div></div>
@@ -1477,15 +1476,14 @@ async function loadAllFeeds() {
   icon.textContent = '↻';
   sourceStatus = {};
 
-  // Show loading overlay over skeleton
+  // Show loading overlay — appended to body so innerHTML resets can't wipe it
   const existingOverlay = document.getElementById('loadingOverlay');
-  if (!existingOverlay) {
-    const ov = document.createElement('div');
-    ov.id = 'loadingOverlay';
-    ov.className = 'loading-overlay';
-    ov.innerHTML = '<div class="loading-overlay-dot"></div><div class="loading-overlay-text">Fetching feeds…</div>';
-    document.body.appendChild(ov);
-  }
+  if (existingOverlay) existingOverlay.remove();
+  const ov = document.createElement('div');
+  ov.id = 'loadingOverlay';
+  ov.className = 'loading-overlay';
+  ov.innerHTML = '<div class="loading-overlay-dot"></div><div class="loading-overlay-text">Fetching feeds…</div>';
+  document.body.appendChild(ov);
 
   document.getElementById('newsContainer').innerHTML =
     '<div class="skeleton-grid">' +
@@ -1610,16 +1608,16 @@ async function fetchWeather() {
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-loadAllFeeds();
-fetchWeather();
-setInterval(fetchWeather, 15 * 60 * 1000); // refresh weather every 15 min
-// Set Wimberley as the default active tab
+// Set Wimberley as the default active tab BEFORE loading feeds
 currentFilter = 'wimberley';
 document.querySelectorAll('.filter-tab').forEach(t => {
   if (t.getAttribute('onclick') && t.getAttribute('onclick').includes("'wimberley'")) {
     t.classList.add('active');
   }
 });
+loadAllFeeds();
+fetchWeather();
+setInterval(fetchWeather, 15 * 60 * 1000); // refresh weather every 15 min
 // Wire up tab arrow visibility on scroll and resize
 window.addEventListener('load', () => {
   const el = document.getElementById('filterInner');
