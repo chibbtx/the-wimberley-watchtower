@@ -327,17 +327,101 @@ const FEEDS = [
   { name: 'Wimberley Fire & Burn Ban', lang: 'en', tags: ['local','weather-disasters','breaking'],
     url: 'https://news.google.com/rss/search?q=%22Wimberley+fire%22+OR+%22burn+ban%22+%22Hays+County%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
-  // ── TEXAS ─────────────────────────────────────────────────────────────────────
+  // ── TEXAS — Statewide Journalism & Public Media ───────────────────────────────
   { name: 'Texas Tribune', lang: 'en', tags: ['texas','national'],
     url: 'https://feeds.texastribune.org/feeds/main/', max: 10 },
-  { name: 'KXAN Austin', lang: 'en', tags: ['local','texas'],
-    url: 'https://www.kxan.com/feed/', max: 8 },
-  { name: 'KUT Austin', lang: 'en', tags: ['local','texas'],
-    url: 'https://www.kut.org/rss.xml', max: 6 },
+  { name: 'Texas Tribune · Politics', lang: 'en', tags: ['texas'],
+    url: 'https://feeds.texastribune.org/feeds/politics/', max: 8 },
+  { name: 'Texas Tribune · Environment', lang: 'en', tags: ['texas','weather-disasters'],
+    url: 'https://feeds.texastribune.org/feeds/environment/', max: 6 },
   { name: 'Texas Observer', lang: 'en', tags: ['texas','national','civil-liberties-privacy'],
     url: 'https://www.texasobserver.org/feed/', max: 6 },
   { name: 'Texas Public Radio', lang: 'en', tags: ['texas','national'],
     url: 'https://www.tpr.org/index.rss', max: 6 },
+  { name: 'Texas Standard', lang: 'en', tags: ['texas'],
+    url: 'https://www.texasstandard.org/feed/', max: 6 },
+  { name: 'Texas Monthly', lang: 'en', tags: ['texas'],
+    url: 'https://www.texasmonthly.com/feed/', max: 6 },
+  { name: 'Dallas Morning News', lang: 'en', tags: ['texas'],
+    url: 'https://www.dallasnews.com/arc/outboundfeeds/rss/?outputType=xml', max: 8 },
+  { name: 'Houston Chronicle', lang: 'en', tags: ['texas'],
+    url: 'https://www.chron.com/rss/feed/News-270.php', max: 8 },
+  { name: 'San Antonio Express-News', lang: 'en', tags: ['texas'],
+    url: 'https://www.mysanantonio.com/news/feed/', max: 6 },
+  { name: 'Fort Worth Star-Telegram', lang: 'en', tags: ['texas'],
+    url: 'https://www.star-telegram.com/news/feed/', max: 6 },
+  { name: 'Austin American-Statesman', lang: 'en', tags: ['texas','local'],
+    url: 'https://www.statesman.com/arcio/rss/', max: 8 },
+
+  // ── TEXAS — TV Stations (Breaking News) ───────────────────────────────────────
+  { name: 'KXAN Austin', lang: 'en', tags: ['local','texas'],
+    url: 'https://www.kxan.com/feed/', max: 8 },
+  { name: 'KUT Austin', lang: 'en', tags: ['local','texas'],
+    url: 'https://www.kut.org/rss.xml', max: 6 },
+  { name: 'KVUE Austin', lang: 'en', tags: ['texas','local'],
+    url: 'https://www.kvue.com/feeds/syndication/rss/news', max: 6 },
+  { name: 'KHOU Houston', lang: 'en', tags: ['texas'],
+    url: 'https://www.khou.com/feeds/syndication/rss/news', max: 6 },
+  { name: 'NBC DFW', lang: 'en', tags: ['texas'],
+    url: 'https://www.nbcdfw.com/feed/', max: 6 },
+  { name: 'WFAA Dallas', lang: 'en', tags: ['texas'],
+    url: 'https://www.wfaa.com/feeds/syndication/rss/news', max: 6 },
+  { name: 'KSAT San Antonio · TX', lang: 'en', tags: ['texas'],
+    url: 'https://www.ksat.com/rss/news.rss', max: 6 },
+  { name: 'KENS5 San Antonio', lang: 'en', tags: ['texas'],
+    url: 'https://www.kens5.com/feeds/syndication/rss/news', max: 6 },
+
+  // ── TEXAS — Government, Policy & Legislature ──────────────────────────────────
+  { name: 'TX Legislature · Passed Bills', lang: 'en', tags: ['texas'],
+    url: 'https://capitol.texas.gov/MyTLO/RSS/RSS.aspx?Type=todaysbillspassed', max: 8 },
+  { name: 'TX Governor\'s Office', lang: 'en', tags: ['texas'],
+    url: 'https://news.google.com/rss/search?q="governor+abbott"+OR+"texas+governor"+site:gov.texas.gov&hl=en-US&gl=US&ceid=US:en', max: 6 },
+  { name: 'TX Comptroller', lang: 'en', tags: ['texas'],
+    url: 'https://comptroller.texas.gov/about/rss.php', max: 5 },
+  { name: 'TDEM · Emergency Mgmt', lang: 'en', tags: ['texas','weather-disasters','breaking'],
+    url: 'https://news.google.com/rss/search?q="texas+division+of+emergency+management"+OR+"TDEM"&hl=en-US&gl=US&ceid=US:en', max: 6 },
+  { name: 'TX Attorney General', lang: 'en', tags: ['texas','civil-liberties-privacy'],
+    url: 'https://news.google.com/rss/search?q="texas+attorney+general"+paxton&hl=en-US&gl=US&ceid=US:en', max: 5 },
+
+  // ── TEXAS — Energy & Grid ─────────────────────────────────────────────────────
+  { name: 'ERCOT News', lang: 'en', tags: ['texas','weather-disasters'],
+    url: 'https://news.google.com/rss/search?q=ERCOT+texas+grid+power&hl=en-US&gl=US&ceid=US:en', max: 6 },
+  { name: 'TX Energy · Houston Chron', lang: 'en', tags: ['texas'],
+    url: 'https://www.chron.com/rss/feed/Energy-274.php', max: 5 },
+
+  // ── TEXAS — Border, Immigration & Rio Grande Valley ───────────────────────────
+  { name: 'Texas Tribune · Border', lang: 'en', tags: ['texas'],
+    url: 'https://feeds.texastribune.org/feeds/immigration/', max: 6 },
+  { name: 'The Monitor (RGV)', lang: 'en', tags: ['texas'],
+    url: 'https://www.themonitor.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc', max: 6 },
+  { name: 'Border Report', lang: 'en', tags: ['texas'],
+    url: 'https://www.borderreport.com/feed/', max: 6 },
+  { name: 'Laredo Morning Times', lang: 'en', tags: ['texas'],
+    url: 'https://www.lmtonline.com/news/feed/', max: 5 },
+
+  // ── TEXAS — Agriculture & Rural ───────────────────────────────────────────────
+  { name: 'Texas Farm Bureau', lang: 'en', tags: ['texas'],
+    url: 'https://www.txfb.org/news/feed/', max: 5 },
+  { name: 'AgriLife Today', lang: 'en', tags: ['texas'],
+    url: 'https://agrilifetoday.tamu.edu/feed/', max: 5 },
+  { name: 'Texas Agriculture Daily', lang: 'en', tags: ['texas'],
+    url: 'https://news.google.com/rss/search?q=texas+agriculture+drought+farming+ranching&hl=en-US&gl=US&ceid=US:en', max: 5 },
+
+  // ── TEXAS — West Texas & Panhandle ────────────────────────────────────────────
+  { name: 'Lubbock Avalanche-Journal', lang: 'en', tags: ['texas'],
+    url: 'https://www.lubbockonline.com/news/feed/', max: 5 },
+  { name: 'El Paso Times', lang: 'en', tags: ['texas'],
+    url: 'https://www.elpasotimes.com/arcio/rss/', max: 5 },
+  { name: 'Amarillo Globe-News', lang: 'en', tags: ['texas'],
+    url: 'https://www.amarillo.com/news/feed/', max: 5 },
+
+  // ── TEXAS — Investigative & Policy ───────────────────────────────────────────
+  { name: 'Houston Landing', lang: 'en', tags: ['texas'],
+    url: 'https://houstonlanding.org/feed/', max: 6 },
+  { name: 'The Texas Newsroom', lang: 'en', tags: ['texas'],
+    url: 'https://www.thetexasnewsroom.org/feed/', max: 6 },
+  { name: 'ProPublica Texas', lang: 'en', tags: ['texas','civil-liberties-privacy'],
+    url: 'https://news.google.com/rss/search?q=texas+site:propublica.org&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── WEATHER & DISASTERS ───────────────────────────────────────────────────────
   // NWS Austin/San Antonio (EWX) — the forecast office covering Wimberley
@@ -441,8 +525,29 @@ const LOCAL_SOURCES = new Set([
   // Local — Government & emergency (Google News)
   'Hays County', 'Hays County Sheriff', 'Hays County DA',
   'Wimberley ISD', 'Wimberley Fire & Burn Ban',
-  // Texas statewide
-  'Texas Tribune', 'KXAN Austin', 'KUT Austin', 'Texas Observer', 'Texas Public Radio',
+  // Texas — statewide journalism & public media
+  'Texas Tribune', 'Texas Tribune · Politics', 'Texas Tribune · Environment',
+  'Texas Tribune · Border', 'KXAN Austin', 'KUT Austin', 'Texas Observer',
+  'Texas Public Radio', 'Texas Standard', 'Texas Monthly',
+  // Texas — major metro papers
+  'Dallas Morning News', 'Houston Chronicle', 'San Antonio Express-News',
+  'Fort Worth Star-Telegram', 'Austin American-Statesman',
+  // Texas — TV stations
+  'KVUE Austin', 'KHOU Houston', 'NBC DFW', 'WFAA Dallas',
+  'KSAT San Antonio · TX', 'KENS5 San Antonio',
+  // Texas — government & policy
+  'TX Legislature · Passed Bills', "TX Governor's Office", 'TX Comptroller',
+  'TDEM · Emergency Mgmt', 'TX Attorney General',
+  // Texas — energy & grid
+  'ERCOT News', 'TX Energy · Houston Chron',
+  // Texas — border & RGV
+  'The Monitor (RGV)', 'Border Report', 'Laredo Morning Times',
+  // Texas — agriculture & rural
+  'Texas Farm Bureau', 'AgriLife Today', 'Texas Agriculture Daily',
+  // Texas — West Texas & Panhandle
+  'Lubbock Avalanche-Journal', 'El Paso Times', 'Amarillo Globe-News',
+  // Texas — investigative
+  'Houston Landing', 'The Texas Newsroom', 'ProPublica Texas',
   // Weather
   'NWS Austin / San Antonio', 'NOAA News', 'Texas Hill Country Hazards',
   // All thematic sources — these are domain-specific so all pass
