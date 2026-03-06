@@ -36,7 +36,7 @@
   .spin { display: inline-block; animation: spin 1s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .filter-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0; position: sticky; top: 136px; z-index: 96; }
+  .filter-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0; position: sticky; top: 168px; z-index: 96; }
   .filter-bar-track { max-width: 1200px; margin: 0 auto; position: relative; display: flex; align-items: stretch; }
   .filter-inner { flex: 1; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
   .filter-inner::-webkit-scrollbar { display: none; }
@@ -49,12 +49,16 @@
   .filter-tab:hover { color: var(--text); }
   .filter-tab.active { color: var(--accent2); border-bottom-color: var(--accent2); }
 
-  .site-description { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; }
-  .site-description-inner { max-width: 1200px; margin: 0 auto; }
-  .site-desc-text { font-size: 0.78rem; color: var(--text-muted); font-weight: 300; line-height: 1.5; }
-  .site-desc-text strong { color: var(--text); font-weight: 500; }
+  /* DATE / CLOCK BAR */
+  .date-bar { background: var(--surface2); border-bottom: 1px solid var(--border); position: sticky; top: 64px; z-index: 99; height: 32px; }
+  .date-bar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 100%; padding: 0 24px; }
+  .date-bar-date { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.05em; }
+  .date-bar-clocks { display: flex; align-items: center; gap: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.04em; }
+  .date-bar-clocks span { display: flex; align-items: center; gap: 5px; }
+  .date-bar-clocks .time-val { color: var(--text); font-size: 0.7rem; }
+  .date-bar-clocks .time-label { color: var(--text-dim); font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; }
 
-  .toolbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; }
+  .toolbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; position: sticky; top: 212px; z-index: 95; }
   .toolbar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .search-wrap { position: relative; flex: 1; min-width: 180px; }
   .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 0.85rem; pointer-events: none; }
@@ -110,7 +114,7 @@
   .source-pill.err { border-color: #3a1e1e; color: #9a4a4a; }
 
   /* LOCAL ADVISORIES STRIP */
-  .alert-strip { background: #1a0800; border-bottom: 1px solid #5a1a00; overflow: hidden; position: sticky; top: 64px; z-index: 99; min-height: 32px; }
+  .alert-strip { background: #1a0800; border-bottom: 1px solid #5a1a00; overflow: hidden; position: sticky; top: 96px; z-index: 98; min-height: 32px; }
   .alert-strip-inner-wrap { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; height: 32px; overflow: hidden; position: relative; }
   .alert-strip-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: #ff6600; padding: 0 14px; white-space: nowrap; flex-shrink: 0; border-right: 1px solid #5a1a00; height: 100%; display: flex; align-items: center; gap: 6px; min-height: 32px; }
   .alert-strip-label .blink { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #ff4400; box-shadow: 0 0 6px #ff4400; animation: pulse 1s ease-in-out infinite; }
@@ -127,7 +131,7 @@
   .alert-strip-empty { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: #5a3a2a; padding: 0 16px; }
 
   /* SUB-BAR */
-  .sub-bar { background: var(--surface2); border-bottom: 1px solid var(--border); position: sticky; top: 96px; z-index: 97; }
+  .sub-bar { background: var(--surface2); border-bottom: 1px solid var(--border); position: sticky; top: 128px; z-index: 97; }
   .sub-bar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px; overflow-x: auto; scrollbar-width: none; }
   .sub-bar-inner::-webkit-scrollbar { display: none; }
   .sub-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em; padding: 5px 11px; border-radius: 2px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
@@ -152,9 +156,11 @@
     .toolbar { padding: 8px 16px; }
     .time-btn { padding: 5px 7px; font-size: 0.6rem; }
     .alert-strip-label span:last-child { display: none; }
-    .alert-strip { top: 56px; }
-    .sub-bar { top: 88px; }
-    .filter-bar { top: 122px; }
+    .date-bar { top: 56px; }
+    .alert-strip { top: 88px; }
+    .sub-bar { top: 120px; }
+    .filter-bar { top: 154px; }
+    .toolbar { top: 198px; }
     .sub-bar-inner { height: 34px; padding: 0 8px; gap: 4px; overflow-x: hidden; }
     .sub-btn { font-size: 0.58rem; padding: 3px 7px; gap: 3px; }
     .sub-btn svg { display: none; }
@@ -184,7 +190,15 @@
   </div>
 </header>
 
-<div class="alert-strip" id="alertStrip">
+<div class="date-bar" id="dateBar">
+  <div class="date-bar-inner">
+    <div class="date-bar-date" id="dateBarDate">—</div>
+    <div class="date-bar-clocks">
+      <span><span class="time-val" id="timeCT">—</span><span class="time-label">CT</span></span>
+      <span><span class="time-val" id="timeUTC">—</span><span class="time-label">UTC</span></span>
+    </div>
+  </div>
+</div>
   <div class="alert-strip-inner-wrap">
     <div class="alert-strip-label"><span class="blink"></span> <span>Local Advisories</span></div>
     <div class="alert-strip-track" id="alertStripTrack">
@@ -195,7 +209,7 @@
   </div>
 </div>
 
-<div class="sub-bar" id="subBar">
+<div class="alert-strip" id="alertStrip">
   <div class="sub-bar-inner">
     <a class="sub-btn" href="https://globe.adsbexchange.com/?lat=30.00&lon=-98.10&zoom=10" target="_blank" title="Live air traffic over Wimberley">
       ✈ In the Sky
@@ -222,23 +236,13 @@
       </svg>
       ISS
     </a>
-    <div class="sub-bar-weather" id="wxWidget" title="Current conditions in Wimberley, TX">
+    <div class="sub-bar-weather" id="wxWidget" title="Current conditions in Wimberley, TX" style="margin-left:auto;">
       <span class="wx-icon" id="wxIcon">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" id="wxSvg">
           <circle cx="7" cy="7" r="3" fill="currentColor" opacity="0.3"/>
         </svg>
       </span>
       <span class="wx-temp" id="wxTemp">—°</span>
-    </div>
-    <div class="sub-bar-time">
-      <span>
-        <span class="time-val" id="timeCT">—</span>
-        <span class="time-label">CT</span>
-      </span>
-      <span>
-        <span class="time-val" id="timeUTC">—</span>
-        <span class="time-label">UTC</span>
-      </span>
     </div>
   </div>
 </div>
@@ -260,14 +264,6 @@
     <button class="filter-tab" onclick="filterBy('en-espanol', this)">En Español</button>
   </div>
   <button class="tab-arrow tab-arrow-right" id="tabArrowRight" onclick="scrollTabs(200)" aria-label="Scroll tabs right">&#8250;</button>
-  </div>
-</div>
-
-<div class="site-description">
-  <div class="site-description-inner">
-    <div class="site-desc-text">
-      <strong>The Wimberley Watchtower</strong> aggregates local government alerts, community news, and global intelligence across weather, cybersecurity, civil liberties, and public health — your situational awareness hub for Wimberley, Texas and the wider world.
-    </div>
   </div>
 </div>
 
@@ -1613,8 +1609,10 @@ function updateClocks() {
   const now = new Date();
   const ctEl = document.getElementById('timeCT');
   const utcEl = document.getElementById('timeUTC');
+  const dateEl = document.getElementById('dateBarDate');
   if (ctEl) ctEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Chicago', hour12: false });
   if (utcEl) utcEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC', hour12: false }) + 'Z';
+  if (dateEl) dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Chicago' });
 }
 updateClocks();
 setInterval(updateClocks, 60 * 1000);
