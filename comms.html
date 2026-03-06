@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comms — Wimberley Watchtower</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0e; --surface: #161616; --surface2: #1f1f1f; --border: #2a2a2a;
+    --accent: #0bb8da; --accent2: #1ad157; --warn: #e8a020; --danger: #e05050;
+    --text: #e8e4dc; --text-muted: #a09890; --text-dim: #6a6560;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; min-height: 100vh; }
+  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+  .logo { display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; text-decoration: none; }
+  .logo-main { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.5rem; letter-spacing: -0.02em; }
+  .w1 { color: var(--text); } .w2 { color: var(--accent); } .w3 { color: var(--accent2); }
+  .logo-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase; }
+  .back-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; padding: 6px 14px; border-radius: 2px; text-decoration: none; transition: all 0.15s; }
+  .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .tab-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; }
+  .tab-inner { max-width: 1200px; margin: 0 auto; display: flex; overflow-x: auto; scrollbar-width: none; }
+  .tab-inner::-webkit-scrollbar { display: none; }
+  .tab-btn { padding: 12px 16px; font-size: 0.71rem; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; background: none; border-top: none; border-left: none; border-right: none; font-family: 'IBM Plex Sans', sans-serif; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  main { max-width: 1200px; margin: 0 auto; padding: 32px 24px 60px; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
+  .page-sub { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 28px; line-height: 1.5; }
+  .pri { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.57rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 6px; border-radius: 2px; margin-right: 4px; vertical-align: middle; white-space: nowrap; }
+  .p1 { background: #0a2e18; color: #2ecc71; border: 1px solid #1a5a30; }
+  .p2 { background: #0a1e2e; color: var(--accent); border: 1px solid #1a3a4e; }
+  .p3 { background: #2a1e08; color: var(--warn); border: 1px solid #4a3010; }
+  .px { background: #1a1a1a; color: var(--text-dim); border: 1px solid var(--border); }
+  .tbl-wrap { margin-bottom: 30px; }
+  .tbl-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.61rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+  th { font-family: 'IBM Plex Mono', monospace; font-size: 0.59rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); padding: 7px 11px; text-align: left; border-bottom: 1px solid var(--border); font-weight: 400; }
+  td { padding: 9px 11px; border-bottom: 1px solid #1c1c1c; vertical-align: top; line-height: 1.4; }
+  tr:hover td { background: var(--surface2); }
+  .freq { font-family: 'IBM Plex Mono', monospace; color: var(--accent); font-size: 0.9rem; white-space: nowrap; }
+  .lsb { color: #d2a8ff; } .usb { color: #79c0ff; } .nfm { color: #f78166; } .fam { color: var(--accent2); } .wx { color: var(--warn); }
+  .mm { font-family: 'IBM Plex Mono', monospace; font-size: 0.61rem; color: var(--text-dim); margin-left: 3px; }
+  .call { font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; color: var(--warn); }
+  .tone { font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem; color: var(--text-muted); }
+  .nc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.45; }
+  .sched { font-size: 0.73rem; color: var(--accent2); font-style: italic; }
+  .co { border-left: 3px solid var(--accent); background: #091d27; padding: 13px 17px; border-radius: 0 3px 3px 0; margin-bottom: 20px; font-size: 0.81rem; line-height: 1.6; color: var(--text-muted); }
+  .co strong { color: var(--text); font-weight: 500; }
+  .co.warn { border-left-color: var(--warn); background: #1e1400; }
+  .co.green { border-left-color: var(--accent2); background: #091e0d; }
+  .co.red { border-left-color: var(--danger); background: #1e0909; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+  @media (max-width: 720px) { .two-col { grid-template-columns: 1fr; } }
+  .sdr-card { background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: 2px; }
+  .sdr-card h4 { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 11px; }
+  .sdr-row { display: flex; justify-content: space-between; align-items: baseline; padding: 5px 0; border-bottom: 1px solid #191919; font-size: 0.79rem; gap: 8px; }
+  .sdr-row:last-child { border-bottom: none; }
+  .sdr-l { color: var(--text-muted); } .sdr-v { font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; color: var(--text); text-align: right; }
+  .sdr-note { font-size: 0.69rem; color: var(--text-dim); padding: 3px 0 5px; border-bottom: 1px solid #191919; line-height: 1.4; }
+  .quick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-bottom: 24px; }
+  .qcard { background: var(--surface); border: 1px solid var(--border); padding: 13px 15px; border-radius: 2px; }
+  .qcard.primary { border-left: 3px solid var(--accent2); }
+  .qcard.backup { border-left: 3px solid var(--accent); }
+  .qcard.mon { border-left: 3px solid var(--warn); }
+  .qf { font-family: 'IBM Plex Mono', monospace; font-size: 1.02rem; color: var(--accent); }
+  .ql { font-size: 0.73rem; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
+  .qm { font-family: 'IBM Plex Mono', monospace; font-size: 0.59rem; color: var(--text-dim); margin-top: 2px; }
+  .link-row { padding: 10px 11px; border-bottom: 1px solid #1c1c1c; }
+  .link-row:last-child { border-bottom: none; }
+  .link-row a { color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 0.83rem; text-decoration: none; }
+  .link-row a:hover { text-decoration: underline; }
+  .link-desc { font-size: 0.74rem; color: var(--text-muted); margin-top: 3px; }
+  .page-footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--border); font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-dim); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  @media (max-width: 600px) { .logo-sub { display: none; } main { padding: 20px 14px 40px; } .tab-btn { padding: 10px 12px; font-size: 0.67rem; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <div class="logo-main"><span class="w1">Wimberley </span><span class="w2">Watch</span><span class="w3">tower</span></div>
+      <div class="logo-sub">Comms Reference</div>
+    </a>
+    <a class="back-btn" href="index.html">← Dashboard</a>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('local',this)">📍 Local Repeaters</button>
+    <button class="tab-btn" onclick="showTab('publicsafety',this)">🚒 Public Safety</button>
+    <button class="tab-btn" onclick="showTab('noaa',this)">🌩 NOAA Weather</button>
+    <button class="tab-btn" onclick="showTab('broadcast',this)">📻 AM/FM Broadcast</button>
+    <button class="tab-btn" onclick="showTab('emergency',this)">🚨 Emergency Nets</button>
+    <button class="tab-btn" onclick="showTab('gmrs',this)">📡 GMRS / MURS</button>
+    <button class="tab-btn" onclick="showTab('sdr',this)">🔭 SDR Quick Ref</button>
+    <button class="tab-btn" onclick="showTab('links',this)">🔗 Links</button>
+  </div>
+</div>
+
+<main>
+
+<!-- LOCAL REPEATERS -->
+<div class="section active" id="tab-local">
+  <div class="page-title">Local Repeaters</div>
+  <div class="page-sub">All from your CHIRP programming file. Tones are transmit-only — you don't need to set them to <em>listen</em>. NFM mode, squelch 20–30.</div>
+  <div class="co green"><strong>Primary local net:</strong> KE5LOT (HCARC) 147.050 MHz — Hays/Caldwell Amateur Radio Club. Weekly net <strong>Tuesdays 7:30 PM</strong>. First call during any local emergency.</div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">2-Meter (VHF) Repeaters</div>
+    <table>
+      <thead><tr><th>Callsign</th><th>Output</th><th>Offset</th><th>TX Tone</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><span class="call">WA5AP</span></td><td><span class="freq nfm">147.100</span></td><td class="tone">+600k</td><td class="tone">141.3</td><td class="nc"><span class="pri p1">Primary</span>Closest to Wimberley — under 1 mile. Try this first.</td></tr>
+        <tr><td><span class="call">KE5LOT</span> <span style="color:var(--text-dim);font-size:0.7rem">HCARC</span></td><td><span class="freq nfm">147.050</span></td><td class="tone">+600k</td><td class="tone">114.8</td><td class="nc"><span class="pri p1">Club Net</span>Hays/Caldwell ARC. <span class="sched">Tuesdays 7:30 PM</span></td></tr>
+        <tr><td><span class="call">W5FUA</span></td><td><span class="freq nfm">147.060</span></td><td class="tone">+600k</td><td class="tone">103.5</td><td class="nc"><span class="pri p2">Backup</span></td></tr>
+        <tr><td><span class="call">WB5LVI</span></td><td><span class="freq nfm">147.000</span></td><td class="tone">+600k</td><td class="tone">103.5</td><td class="nc"><span class="pri p2">Backup</span>Also on 147.220 (+600k, 103.5 Hz)</td></tr>
+        <tr><td><span class="call">N5OAK</span></td><td><span class="freq nfm">147.250</span></td><td class="tone">+600k</td><td class="tone">114.8</td><td class="nc"><span class="pri p2">Backup</span>Same tone as HCARC</td></tr>
+        <tr><td><span class="call">AK5Q</span></td><td><span class="freq nfm">145.250</span></td><td class="tone">−600k</td><td class="tone">162.2</td><td class="nc"><span class="pri p2">Backup</span>Negative offset. CHIRP also has KF5KOI entry on same freq (77 Hz tone)</td></tr>
+        <tr><td><span class="call">KE5AMB</span></td><td><span class="freq nfm">145.430</span></td><td class="tone">−600k</td><td class="tone">114.8</td><td class="nc"><span class="pri p3">Monitor</span>Also on 443.000 UHF (same tone)</td></tr>
+        <tr><td><span class="call">AC5AS</span></td><td><span class="freq nfm">146.680</span></td><td class="tone">−600k</td><td class="tone">94.8</td><td class="nc"><span class="pri p3">Monitor</span></td></tr>
+        <tr><td><span class="call">W5DK</span></td><td><span class="freq nfm">146.920</span></td><td class="tone">−600k</td><td class="tone">131.8</td><td class="nc"><span class="pri p3">Monitor</span>W5DK also has 224.58 / 442.675 / 443.500 / 444.350 pairs</td></tr>
+        <tr><td><span class="call">W5MIX</span></td><td><span class="freq nfm">146.740</span></td><td class="tone">−600k</td><td class="tone">—</td><td class="nc"><span class="pri p3">Monitor</span>No tone required</td></tr>
+        <tr><td><span class="call">W5TAA</span></td><td><span class="freq nfm">145.563</span></td><td class="tone">−600k</td><td class="tone">—</td><td class="nc"><span class="pri p3">Monitor</span>No tone required</td></tr>
+        <tr><td><em style="color:var(--text-dim);font-size:0.78rem">(unnamed)</em></td><td><span class="freq nfm">146.880</span></td><td class="tone">−600k</td><td class="tone">100.0</td><td class="nc"><span class="pri p3">Monitor</span>In your CHIRP file without a name</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">70-Centimeter (UHF) Repeaters</div>
+    <table>
+      <thead><tr><th>Callsign</th><th>Output</th><th>Offset</th><th>TX Tone</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><span class="call">WA5AP</span></td><td><span class="freq nfm">442.550</span></td><td class="tone">+5 MHz</td><td class="tone">141.3</td><td class="nc"><span class="pri p1">Primary UHF</span>Same trustee as closest 2m repeater</td></tr>
+        <tr><td><span class="call">WA5PAX</span></td><td><span class="freq nfm">444.150</span></td><td class="tone">+5 MHz</td><td class="tone">114.8</td><td class="nc"><span class="pri p2">Backup</span>Same tone as HCARC 2m</td></tr>
+        <tr><td><span class="call">KG5IWQ</span></td><td><span class="freq nfm">440.625</span></td><td class="tone">+5 MHz</td><td class="tone">103.5</td><td class="nc"><span class="pri p2">Backup</span></td></tr>
+        <tr><td><span class="call">KE5AMB</span></td><td><span class="freq nfm">443.000</span></td><td class="tone">+5 MHz</td><td class="tone">114.8</td><td class="nc"><span class="pri p2">Backup</span>Pair with 145.430</td></tr>
+        <tr><td><span class="call">W5DK</span></td><td><span class="freq nfm">442.675</span></td><td class="tone">+5 MHz</td><td class="tone">131.8</td><td class="nc"><span class="pri p3">Monitor</span>Also 443.500 (141.3) and 444.350 (151.4)</td></tr>
+        <tr><td><span class="call">AE5BA</span></td><td><span class="freq nfm">443.525</span></td><td class="tone">+5 MHz</td><td class="tone">114.8</td><td class="nc"><span class="pri p3">Monitor</span></td></tr>
+        <tr><td><span class="call">WB5LVI</span></td><td><span class="freq nfm">443.850</span></td><td class="tone">+5 MHz</td><td class="tone">103.5</td><td class="nc"><span class="pri p3">Monitor</span>Same trustee as 147.000 / 147.220</td></tr>
+        <tr><td><span class="call">WA5KBQ</span></td><td><span class="freq nfm">443.250</span></td><td class="tone">+5 MHz</td><td class="tone">103.5</td><td class="nc"><span class="pri p3">Monitor</span></td></tr>
+        <tr><td><span class="call">W5MOT</span></td><td><span class="freq nfm">444.325</span></td><td class="tone">+5 MHz</td><td class="tone">186.2</td><td class="nc"><span class="pri p3">Monitor</span>Unusual tone — note carefully</td></tr>
+        <tr><td><span class="call">K5TRA</span></td><td><span class="freq nfm">444.500</span></td><td class="tone">+5 MHz</td><td class="tone">110.9</td><td class="nc"><span class="pri p3">Monitor</span></td></tr>
+        <tr><td><span class="call">W5ERX</span></td><td><span class="freq nfm">444.450</span></td><td class="tone">+5 MHz</td><td class="tone">114.8</td><td class="nc"><span class="pri p3">Monitor</span></td></tr>
+        <tr><td><span class="call">KG5PVG</span></td><td><span class="freq nfm">442.700</span></td><td class="tone">+5 MHz</td><td class="tone">123.0</td><td class="nc"><span class="pri p3">Monitor</span></td></tr>
+        <tr><td><span class="call">WS5DRC</span></td><td><span class="freq nfm">440.275</span></td><td class="tone">+5 MHz</td><td class="tone">—</td><td class="nc"><span class="pri p3">Monitor</span>No tone</td></tr>
+        <tr><td><span class="call">WA5JEC</span></td><td><span class="freq nfm">443.975</span></td><td class="tone">+5 MHz</td><td class="tone">—</td><td class="nc"><span class="pri p3">Monitor</span>No tone</td></tr>
+        <tr><td><span class="call">AI5TX</span></td><td><span class="freq nfm">443.650</span></td><td class="tone">+5 MHz</td><td class="tone">—</td><td class="nc"><span class="pri p3">Monitor</span>No tone</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">1.25-Meter (222 MHz) Repeaters</div>
+    <table>
+      <thead><tr><th>Callsign</th><th>Output</th><th>Offset</th><th>TX Tone</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><span class="call">W5DK</span></td><td><span class="freq nfm">224.580</span></td><td class="tone">−1.6 MHz</td><td class="tone">131.8</td><td class="nc"><span class="pri p3">Monitor</span>Rarely congested — useful for local tactical comms</td></tr>
+        <tr><td><span class="call">K1LFK</span></td><td><span class="freq nfm">224.900</span></td><td class="tone">−1.6 MHz</td><td class="tone">100.0</td><td class="nc"><span class="pri p3">Monitor</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">Simplex Calling Frequencies</div>
+    <table>
+      <thead><tr><th>Frequency</th><th>Band</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><span class="freq nfm">146.520 MHz</span></td><td class="tone">2m</td><td class="nc"><span class="pri p1">National</span><strong>National 2m simplex calling. First place to call if repeaters are down.</strong> CHIRP: HAM2MNAT</td></tr>
+        <tr><td><span class="freq nfm">146.420 MHz</span></td><td class="tone">2m</td><td class="nc"><span class="pri p2">Prepper</span>Informal SHTF simplex. CHIRP: HAMSHTF</td></tr>
+        <tr><td><span class="freq nfm">146.440 MHz</span></td><td class="tone">2m</td><td class="nc"><span class="pri p2">Prepper</span>Informal preparedness simplex. CHIRP: HAMPREP</td></tr>
+        <tr><td><span class="freq nfm">446.000 MHz</span></td><td class="tone">70cm</td><td class="nc"><span class="pri p2">National</span>National UHF simplex calling. CHIRP: HAM70CM</td></tr>
+        <tr><td><span class="freq nfm">446.100 MHz</span></td><td class="tone">70cm</td><td class="nc"><span class="pri p3">Monitor</span>Secondary UHF simplex. CHIRP: HAM70CMG</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="co">Tones (CTCSS/PL) are transmit-only. To listen to any repeater, just tune the output frequency in NFM mode with squelch at 20–30. You'll hear all traffic regardless of tone settings.</div>
+</div>
+
+<!-- PUBLIC SAFETY -->
+<div class="section" id="tab-publicsafety">
+  <div class="page-title">Public Safety — Hays County</div>
+  <div class="page-sub">All from your CHIRP file. Fire, EMS, Sheriff, SAR, emergency management, and more. <strong>Receive/monitor only.</strong></div>
+  <div class="co red"><strong>Receive only.</strong> These are licensed public safety frequencies. Transmitting without authorization is a federal crime. Monitor passively for situational awareness during emergencies.</div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">Wimberley / Hays County Fire & EMS</div>
+    <table>
+      <thead><tr><th>CHIRP Name</th><th>Frequency</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="nc"><strong>WVFD</strong></td><td><span class="freq">154.010 MHz</span><span class="mm">NFM</span></td><td class="nc"><span class="pri p1">Primary</span><strong>Wimberley Volunteer Fire Department.</strong> Most important channel during a local fire or flood.</td></tr>
+        <tr><td class="nc"><strong>NHayFire</strong></td><td><span class="freq">154.250 MHz</span><span class="mm">NFM</span></td><td class="nc"><span class="pri p2">North Hays</span>North Hays County fire dispatch</td></tr>
+        <tr><td class="nc"><strong>SHayFire</strong></td><td><span class="freq">154.355 MHz</span><span class="mm">NFM</span></td><td class="nc"><span class="pri p2">South Hays</span>South Hays fire — uses DCS code 351 in your CHIRP file</td></tr>
+        <tr><td class="nc"><strong>EHayFire</strong></td><td><span class="freq">154.385 MHz</span><span class="mm">NFM</span></td><td class="nc"><span class="pri p2">East Hays</span>East Hays County fire dispatch</td></tr>
+        <tr><td class="nc"><strong>SAR</strong></td><td><span class="freq">155.160 MHz</span><span class="mm">NFM</span></td><td class="nc"><span class="pri p3">Search &amp; Rescue</span>Hays County SAR operations</td></tr>
+        <tr><td class="nc"><strong>WFire/EM</strong></td><td><span class="freq">155.895 MHz</span><span class="mm">NFM</span></td><td class="nc"><span class="pri p1">Wildfire / EM</span><strong>Wildfire and Emergency Management coordination.</strong> Regional mutual aid and OEM operations during fire events.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">Sheriff, State & Federal</div>
+    <table>
+      <thead><tr><th>CHIRP Name</th><th>Frequency</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="nc"><strong>HaysSher</strong></td><td><span class="freq">155.865 MHz</span><span class="mm">NFM</span></td><td class="nc"><span class="pri p1">Primary</span>Hays County Sheriff primary dispatch</td></tr>
+        <tr><td class="nc"><strong>HayCoShe</strong></td><td><span class="freq">155.970 MHz</span><span class="mm">NFM</span></td><td class="nc"><span class="pri p2">Backup</span>Hays County Sheriff secondary / tactical</td></tr>
+        <tr><td class="nc"><strong>STAPOL</strong></td><td><span class="freq">155.475 MHz</span><span class="mm">NFM</span></td><td class="nc"><span class="pri p3">Monitor</span>Texas DPS / State Police interoperability</td></tr>
+        <tr><td class="nc"><strong>NATGAR</strong></td><td><span class="freq">149.538 MHz</span><span class="mm">NFM</span></td><td class="nc"><span class="pri p3">Monitor</span>National Guard tactical — activated during major declared disasters</td></tr>
+        <tr><td class="nc"><strong>FEMAOP</strong></td><td><span class="freq">163.100 MHz</span><span class="mm">NFM</span></td><td class="nc"><span class="pri p3">Monitor</span>FEMA operational — active during federal disaster declarations</td></tr>
+        <tr><td class="nc"><strong>REDCRSS</strong></td><td><span class="freq">47.420 MHz</span><span class="mm">FM</span></td><td class="nc"><span class="pri p3">Monitor</span>American Red Cross low-band VHF coordination. Use Balun One Nine + wire antenna (low VHF).</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">Aviation, Marine & Specialty</div>
+    <table>
+      <thead><tr><th>CHIRP Name</th><th>Frequency</th><th>Mode</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="nc"><strong>AIRTG / Guard</strong></td><td><span class="freq fam">121.500 MHz</span></td><td class="tone">AM</td><td class="nc"><span class="pri p3">Monitor</span>International aeronautical emergency guard. All aircraft + ATC 24/7. Listen for MAYDAY and medevac traffic during large incidents.</td></tr>
+        <tr><td class="nc"><strong>CTAF</strong></td><td><span class="freq fam">122.900 MHz</span></td><td class="tone">AM</td><td class="nc"><span class="pri p3">Monitor</span>Common Traffic Advisory — uncontrolled airspace. Useful during aerial firefighting ops.</td></tr>
+        <tr><td class="nc"><strong>MILEMER</strong></td><td><span class="freq fam">243.000 MHz</span></td><td class="tone">AM</td><td class="nc"><span class="pri p3">Monitor</span>Military UHF emergency guard (10× 121.5 MHz). Military aircraft and medevac helicopters.</td></tr>
+        <tr><td class="nc"><strong>MAR16DIS</strong></td><td><span class="freq">156.800 MHz</span></td><td class="tone">NFM</td><td class="nc"><span class="pri p3">Monitor</span>Marine Channel 16 — international distress and calling. Monitored by USCG 24/7.</td></tr>
+        <tr><td class="nc"><strong>MAR9BOAT</strong></td><td><span class="freq">156.450 MHz</span></td><td class="tone">NFM</td><td class="nc"><span class="pri p3">Monitor</span>Marine Ch 9 — boater calling. Canyon Lake and Guadalupe River waterway traffic.</td></tr>
+        <tr><td class="nc"><strong>RAILRD</strong></td><td><span class="freq">160.230 MHz</span></td><td class="tone">NFM</td><td class="nc"><span class="pri p3">Monitor</span>Railroad dispatch — useful during derailments or hazmat incidents near rail lines.</td></tr>
+        <tr><td class="nc"><strong>ISSDL</strong></td><td><span class="freq">145.800 MHz</span></td><td class="tone">NFM</td><td class="nc"><span class="pri px">RX only</span>ISS downlink — infrequent voice passes, ~10 min windows when overhead.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- NOAA WEATHER -->
+<div class="section" id="tab-noaa">
+  <div class="page-title">NOAA Weather Radio</div>
+  <div class="page-sub">NFM mode. ANT500 extended to ~44 cm. RF gain 30–40 dB. All 7 WX channels are in your CHIRP file (NOAA 1–8 plus satellite entries).</div>
+  <div class="co green"><strong>Best for Wimberley:</strong> WXK27 on 162.400 MHz — Austin transmitter covering Hays County. SAME code <strong>048209</strong> for Hays County-only alerts on a dedicated weather radio.</div>
+  <div class="quick-grid">
+    <div class="qcard primary"><div class="qf">162.400 MHz</div><div class="ql"><strong>WXK27</strong> — Austin, TX<br>Hays, Travis, Blanco, Bastrop, Caldwell, Burnet, Williamson, Lee counties</div><div class="qm">NFM · CHIRP: NOAA 2</div></div>
+    <div class="qcard backup"><div class="qf">162.475 MHz</div><div class="ql">San Antonio area backup<br>Try if Austin signal is weak</div><div class="qm">NFM · CHIRP: NOAA 5</div></div>
+    <div class="qcard mon"><div class="qf">Scan all 7</div><div class="ql">162.400 → 162.425 → 162.450 → 162.475 → 162.500 → 162.525 → 162.550</div><div class="qm">If primary is off-air</div></div>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">NOAA Weather Satellites (SDR receive)</div>
+    <table>
+      <thead><tr><th>CHIRP / Source</th><th>Frequency</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="nc">NOAASAT (CHIRP)</td><td><span class="freq">137.100 MHz</span></td><td class="nc">APT downlink. Decode images with WXtoImg or noaa-apt. V4 dipole at 54 cm per element.</td></tr>
+        <tr><td class="nc">NOAA-15</td><td><span class="freq">137.500 MHz</span></td><td class="nc">NFM mode. ~14 passes/day over Wimberley.</td></tr>
+        <tr><td class="nc">NOAA-19</td><td><span class="freq">137.620 MHz</span></td><td class="nc">Most active NOAA satellite as of 2026.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="co warn"><strong>SAME code for Hays County: 048209.</strong> Program this on a Midland or Uniden weather radio to wake the alarm only for local county alerts — filters out surrounding counties.</div>
+</div>
+
+<!-- AM/FM BROADCAST -->
+<div class="section" id="tab-broadcast">
+  <div class="page-title">AM/FM Broadcast Stations</div>
+  <div class="page-sub">FM: WFM mode. AM: AM mode, RF gain 40–50 dB, Balun One Nine + wire antenna for best results.</div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">Local Wimberley FM — Emergency Stations</div>
+    <table>
+      <thead><tr><th>Freq</th><th>Call</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><span class="freq fam">94.3 FM</span></td><td class="call">KWVH-LP</td><td class="nc"><span class="pri p1">Local Emergency</span><strong>Wimberley Valley Radio</strong> — your community's emergency broadcaster, born from the 2011 wildfires and 2015 Memorial Day flood. 100W nonprofit. <em>wimberleyvalleyradio.org</em></td></tr>
+        <tr><td><span class="freq fam">104.1 FM</span></td><td class="call">KOWO</td><td class="nc"><span class="pri p2">Local</span><strong>Wimberley Texan Radio</strong> — volunteer community station. <em>wimberleyradio.org</em></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">Regional FM</div>
+    <table>
+      <thead><tr><th>Freq</th><th>Call</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><span class="freq fam">103.9 FM</span></td><td class="call">KBEY</td><td class="nc">Hill Country news — Blanco, Burnet, Marble Falls, Johnson City. News on the hour mornings/evenings weekdays.</td></tr>
+        <tr><td><span class="freq fam">98.1 FM</span></td><td class="call">KVET</td><td class="nc">Austin news/talk. CBS News affiliate.</td></tr>
+        <tr><td><span class="freq fam">90.5 FM</span></td><td class="call">KUT</td><td class="nc">UT Austin NPR. Extended emergency coverage.</td></tr>
+        <tr><td><span class="freq fam">107.1 FM</span></td><td class="call">KLBJ</td><td class="nc">Austin legacy news/talk. ABC News affiliate.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">AM Band</div>
+    <table>
+      <thead><tr><th>Freq</th><th>Call</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><span class="freq fam">590 AM</span></td><td class="call">KLBJ</td><td class="nc"><span class="pri p1">Emergency</span>Austin's main news/talk AM. ABC News. Stays on during most disasters.</td></tr>
+        <tr><td><span class="freq fam">1300 AM</span></td><td class="call">WOAI</td><td class="nc"><span class="pri p2">San Antonio</span>SA major news/talk. Good when Austin signals disrupted.</td></tr>
+        <tr><td><span class="freq fam">740 AM</span></td><td class="call">KTRH</td><td class="nc"><span class="pri p3">Night DX</span>Houston 50kW clear-channel. Audible at night via skywave.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="co">After sunset, the ionosphere reflects AM signals hundreds of miles. Stations from Dallas (WBAP 820), Houston (KTRH 740), and SA (WOAI 1300) become audible — useful if local stations are knocked off-air.</div>
+</div>
+
+<!-- EMERGENCY NETS -->
+<div class="section" id="tab-emergency">
+  <div class="page-title">Emergency Nets & HF Frequencies</div>
+  <div class="page-sub">For licensed amateur operators. HF nets are the backbone of long-range emergency comms when repeaters and internet are down.</div>
+  <div class="co red"><strong>Grid-down priority:</strong> (1) Monitor 147.100 / 147.050 local repeaters → (2) If repeaters down, call 146.520 simplex → (3) Regional/statewide info on TX ARES HF nets → (4) Family welfare traffic: 3.935 MHz LSB</div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">Texas ARES / RACES HF Emergency Frequencies</div>
+    <table>
+      <thead><tr><th>Frequency</th><th>Mode</th><th>Net</th><th>Schedule</th></tr></thead>
+      <tbody>
+        <tr><td><span class="freq lsb">3.873 MHz</span></td><td class="tone">LSB</td><td class="nc"><span class="pri p1">TX ARES</span><strong>Texas State ARES Net</strong> — primary statewide emergency net</td><td class="sched">Mon 6:30 PM CT · Active during disasters</td></tr>
+        <tr><td><span class="freq lsb">7.285 MHz</span></td><td class="tone">LSB</td><td class="nc"><span class="pri p1">TX ARES Day</span>Texas ARES Emergency Daytime — when 80m is long</td><td class="sched">Daytime disasters · TX Traffic Net daily</td></tr>
+        <tr><td><span class="freq lsb">3.910 MHz</span></td><td class="tone">LSB</td><td class="nc"><span class="pri p2">Central TX</span><strong>Central Texas Emergency Net</strong> — Austin/Hill Country regional</td><td class="sched">Active during regional emergencies</td></tr>
+        <tr><td><span class="freq lsb">3.935 MHz</span></td><td class="tone">LSB</td><td class="nc"><span class="pri p2">H&amp;W</span>Texas ARES Health &amp; Welfare Traffic — family welfare messages</td><td class="sched">Active during disasters</td></tr>
+        <tr><td><span class="freq lsb">7.248 MHz</span></td><td class="tone">LSB</td><td class="nc"><span class="pri p2">TX RACES</span>Texas RACES Primary — government-activated only</td><td class="sched">Gov't activation only</td></tr>
+        <tr><td><span class="freq lsb">3.975 MHz</span></td><td class="tone">LSB</td><td class="nc"><span class="pri p3">TX RACES Alt</span>Texas RACES Alternate</td><td class="sched">Backup to 7.248</td></tr>
+        <tr><td><span class="freq lsb">7.290 MHz</span></td><td class="tone">LSB</td><td class="nc"><span class="pri p3">H&amp;W Day</span>Texas ARES Health &amp; Welfare daytime</td><td class="sched">Daytime backup</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">HF Propagation Guide</div>
+    <table>
+      <thead><tr><th>Band</th><th>Frequency</th><th>Mode</th><th>Best Time</th><th>Reach</th></tr></thead>
+      <tbody>
+        <tr><td>80m</td><td><span class="freq lsb">3.5–4.0 MHz</span></td><td class="tone">LSB</td><td class="tone">Night</td><td class="nc">Regional — Texas and neighboring states. TX ARES nets live here.</td></tr>
+        <tr><td>40m</td><td><span class="freq lsb">7.0–7.3 MHz</span></td><td class="tone">LSB</td><td class="tone">Eve/Night</td><td class="nc">Regional to national. TX traffic nets active daytime.</td></tr>
+        <tr><td>20m</td><td><span class="freq usb">14.0–14.35 MHz</span></td><td class="tone">USB</td><td class="tone">Daytime</td><td class="nc">National to international. SATERN disaster net: 14.265 MHz.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="co"><strong>HCARC / Hays County ARES:</strong> hchams.org is the local ARES affiliate. Tuesday net on 147.050 connects you with local operators. Register with ARES before a disaster — not during one.</div>
+</div>
+
+<!-- GMRS / MURS -->
+<div class="section" id="tab-gmrs">
+  <div class="page-title">GMRS & MURS — License-Light Comms</div>
+  <div class="page-sub">All channels are in your CHIRP file. GMRS requires a $35 FCC license (no test, covers whole family). MURS is completely license-free.</div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">GMRS Key Channels (from your CHIRP file)</div>
+    <table>
+      <thead><tr><th>CHIRP Name</th><th>Frequency</th><th>Power</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="nc"><strong>GMRSEME</strong></td><td><span class="freq">462.675 MHz</span></td><td class="tone">5W</td><td class="nc"><span class="pri p1">Emergency Ch 20</span><strong>GMRS national emergency/calling channel.</strong> Monitor during any event. All GMRS and BaoFeng GMRS handhelds reach this.</td></tr>
+        <tr><td class="nc">GMRS1–7</td><td><span class="freq">462.5625–462.7125</span></td><td class="tone">5W</td><td class="nc">Main GMRS simplex channels. Programmed with 88.5 Hz tone in your radio.</td></tr>
+        <tr><td class="nc">GMRS8–14</td><td><span class="freq">467.5625–467.7125</span></td><td class="tone">2W</td><td class="nc">Interstitial channels — lower power, shorter range.</td></tr>
+        <tr><td class="nc">GMRS15–19, 21–22</td><td><span class="freq">462.550–462.725</span></td><td class="tone">5W</td><td class="nc">Wide-channel GMRS frequencies.</td></tr>
+        <tr><td class="nc">RPT1–8</td><td><span class="freq">462.550–462.725 +5 MHz</span></td><td class="tone">5W</td><td class="nc"><span class="pri p2">Repeater input</span>+5 MHz offset. Use if a local GMRS repeater is available in the area.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">MURS Channels (no license required)</div>
+    <table>
+      <thead><tr><th>CHIRP Name</th><th>Frequency</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="nc">MURS 1</td><td><span class="freq">151.820 MHz</span></td><td class="nc" rowspan="3">VHF cuts through terrain better than UHF. Useful for farm/ranch, neighborhood, or town square area comms. No tone needed. 2W max by FCC rule. NFM mode.</td></tr>
+        <tr><td class="nc">MURS 2</td><td><span class="freq">151.880 MHz</span></td></tr>
+        <tr><td class="nc">MURS 3</td><td><span class="freq">151.940 MHz</span></td></tr>
+        <tr><td class="nc">MURS 4 / BLUDOT</td><td><span class="freq">154.570 MHz</span></td><td class="nc">Dual entry in your CHIRP file (MURS 4 and BLUDOT). Same frequency.</td></tr>
+        <tr><td class="nc">MURS 5</td><td><span class="freq">154.600 MHz</span></td><td class="nc">Widest bandwidth MURS channel.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">CB Radio (from your CHIRP file)</div>
+    <table>
+      <thead><tr><th>CHIRP Name</th><th>Frequency</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="nc"><strong>CB19</strong></td><td><span class="freq">27.185 MHz</span></td><td class="nc">Trucker channel — active on I-35. Road condition reports and awareness. (Note: real CB radios use AM mode; your radio has it as FM — SDR monitoring use AM mode.)</td></tr>
+        <tr><td class="nc"><strong>CB9EMER</strong></td><td><span class="freq">27.065 MHz</span></td><td class="nc">Official CB emergency channel. Monitored by REACT teams. Range 5–20 miles.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="co"><strong>GMRS vs ham:</strong> GMRS is the simplest path to family/neighborhood comms — $35 FCC license, no exam, covers everyone in your household. Midland T71 and similar radios work with your CHIRP channels. Ham radio has more power, more bands, and better emergency infrastructure, but GMRS is a solid fallback.</div>
+</div>
+
+<!-- SDR QUICK REF -->
+<div class="section" id="tab-sdr">
+  <div class="page-title">SDR Quick Reference</div>
+  <div class="page-sub">RTL-SDR Blog V4 · SDR# · Balun One Nine + Wire (HF) · ANT500 (VHF/UHF) · V4 Dipole Kit (satellites/ADS-B)</div>
+  <div class="two-col">
+    <div class="sdr-card">
+      <h4>⚙️ Mode Selection</h4>
+      <div class="sdr-row"><span class="sdr-l">WFM — Wideband FM</span><span class="sdr-v">FM broadcast 88–108 MHz</span></div>
+      <div class="sdr-row"><span class="sdr-l">NFM — Narrow FM</span><span class="sdr-v">Repeaters, weather, public safety</span></div>
+      <div class="sdr-row"><span class="sdr-l">AM</span><span class="sdr-v">AM band, shortwave, air band, CB</span></div>
+      <div class="sdr-row"><span class="sdr-l">USB — Upper Sideband</span><span class="sdr-v">Ham voice above 10 MHz</span></div>
+      <div class="sdr-row"><span class="sdr-l">LSB — Lower Sideband</span><span class="sdr-v">Ham voice below 10 MHz · TX ARES nets</span></div>
+    </div>
+    <div class="sdr-card">
+      <h4>🎚️ RF Gain by Band</h4>
+      <div class="sdr-row"><span class="sdr-l">FM Broadcast</span><span class="sdr-v">5–15 dB</span></div>
+      <div class="sdr-row"><span class="sdr-l">VHF (144 MHz repeaters)</span><span class="sdr-v">20–30 dB</span></div>
+      <div class="sdr-row"><span class="sdr-l">Public Safety (150–160 MHz)</span><span class="sdr-v">25–35 dB</span></div>
+      <div class="sdr-row"><span class="sdr-l">NOAA Weather (162 MHz)</span><span class="sdr-v">30–40 dB</span></div>
+      <div class="sdr-row"><span class="sdr-l">UHF (440 MHz repeaters)</span><span class="sdr-v">30–40 dB</span></div>
+      <div class="sdr-row"><span class="sdr-l">HF Shortwave (3–30 MHz)</span><span class="sdr-v">35–50 dB</span></div>
+      <div class="sdr-row"><span class="sdr-l">AM Broadcast</span><span class="sdr-v">40–50 dB</span></div>
+    </div>
+  </div>
+  <div class="two-col">
+    <div class="sdr-card">
+      <h4>🔌 Antenna Guide</h4>
+      <div class="sdr-row"><span class="sdr-l">Balun One Nine + Wire</span><span class="sdr-v">HF 0.5–30 MHz</span></div>
+      <div class="sdr-note">Red wire (7.5m) → ANT post · Black wire (2.5m) → GND post. Also usable for VHF low-band (47–160 MHz) public safety monitoring.</div>
+      <div class="sdr-row"><span class="sdr-l">ANT500 Telescopic</span><span class="sdr-v">VHF/UHF</span></div>
+      <div class="sdr-note">Extend to ~44 cm for NOAA (162 MHz) and 2m repeaters. Best antenna for public safety + ham monitoring.</div>
+      <div class="sdr-row"><span class="sdr-l">V4 Dipole Kit</span><span class="sdr-v">Satellites / ADS-B</span></div>
+      <div class="sdr-note">54 cm per element for NOAA satellites (137 MHz) · Short elements for ADS-B (1090 MHz).</div>
+    </div>
+    <div class="sdr-card">
+      <h4>🕐 Always-On Reference</h4>
+      <div class="sdr-row"><span class="sdr-l">WWV Fort Collins, CO</span><span class="sdr-v" style="font-size:0.7rem">2.5 / 5 / 10 / 15 / 20 MHz AM</span></div>
+      <div class="sdr-note">UTC time ticks + propagation reports 24/7. Can't hear WWV on 10 MHz? Your HF setup has a problem.</div>
+      <div class="sdr-row"><span class="sdr-l">CHU Ottawa, Canada</span><span class="sdr-v" style="font-size:0.7rem">3.330 / 7.850 / 14.670 MHz AM</span></div>
+      <div class="sdr-note">Canadian time signal, EN/FR.</div>
+      <div class="sdr-row"><span class="sdr-l">SDR# frequency entry</span><span class="sdr-v"></span></div>
+      <div class="sdr-note">Right-click frequency display to type directly. Format in Hz — 6.05 MHz = type 6050000.</div>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-label">Best Shortwave Bands (⭐ = Prime)</div>
+    <table>
+      <thead><tr><th>Band</th><th>Frequency</th><th>Best Time</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>49m ⭐</td><td><span class="freq">5.900–6.200 MHz</span></td><td class="tone">Evening/Night</td><td class="nc">Best evening band — lots of international broadcasters</td></tr>
+        <tr><td>31m ⭐</td><td><span class="freq">9.400–9.900 MHz</span></td><td class="tone">Day &amp; Eve</td><td class="nc">Prime international band. Very active.</td></tr>
+        <tr><td>19m ⭐</td><td><span class="freq">15.100–15.800 MHz</span></td><td class="tone">Daytime</td><td class="nc">Best daytime band. WWV at 15.000 MHz.</td></tr>
+        <tr><td>41m</td><td><span class="freq">7.200–7.450 MHz</span></td><td class="tone">Evening/Night</td><td class="nc">Broadcasters + 40m ham (LSB). TX ARES nets active here evenings.</td></tr>
+        <tr><td>25m</td><td><span class="freq">11.600–12.100 MHz</span></td><td class="tone">Day/Early Eve</td><td class="nc">Radio Martí at 11.930 MHz</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="co warn"><strong>Waterfall too red?</strong> Reduce RF gain — background should be dark blue. <strong>Audio fuzzy?</strong> Check gain first, then verify the correct mode (AM vs USB vs WFM). <strong>Signal at an unexpected frequency?</strong> Disconnect the antenna — if it disappears, the signal was real; if it stays, it's an internal artifact.</div>
+</div>
+
+<!-- LINKS -->
+<div class="section" id="tab-links">
+  <div class="page-title">Useful Links</div>
+  <div class="page-sub">Online resources for frequency lookup, repeater data, satellite passes, weather, and local club info.</div>
+  <div class="two-col">
+    <div>
+      <div class="tbl-label" style="margin-bottom:12px">Ham Radio &amp; Repeaters</div>
+      <div class="link-row"><a href="https://hchams.org" target="_blank" rel="noopener">hchams.org</a><div class="link-desc">Hays/Caldwell Amateur Radio Club — local nets, events, ARES info</div></div>
+      <div class="link-row"><a href="https://repeaterbook.com" target="_blank" rel="noopener">repeaterbook.com</a><div class="link-desc">Find local repeaters, verify tones, check activity comments</div></div>
+      <div class="link-row"><a href="https://www.radioreference.com" target="_blank" rel="noopener">radioreference.com</a><div class="link-desc">Complete frequency database — scanner, public safety, ham</div></div>
+      <div class="link-row"><a href="https://rtl-sdr.com" target="_blank" rel="noopener">rtl-sdr.com</a><div class="link-desc">RTL-SDR V4 users guide, tutorials, project ideas</div></div>
+    </div>
+    <div>
+      <div class="tbl-label" style="margin-bottom:12px">Shortwave &amp; Propagation</div>
+      <div class="link-row"><a href="https://shortwave.live" target="_blank" rel="noopener">shortwave.live</a><div class="link-desc">Look up any frequency (in kHz) to see what's broadcasting right now</div></div>
+      <div class="link-row"><a href="https://short-wave.info" target="_blank" rel="noopener">short-wave.info</a><div class="link-desc">Schedule search by frequency, language, or station</div></div>
+      <div class="link-row"><a href="https://radio-locator.com" target="_blank" rel="noopener">radio-locator.com</a><div class="link-desc">Identify AM broadcast stations by frequency</div></div>
+      <div class="link-row"><a href="https://www.swpc.noaa.gov" target="_blank" rel="noopener">swpc.noaa.gov</a><div class="link-desc">NOAA Space Weather — solar conditions affecting HF propagation</div></div>
+    </div>
+  </div>
+  <div class="two-col">
+    <div>
+      <div class="tbl-label" style="margin-bottom:12px">Weather &amp; Emergency</div>
+      <div class="link-row"><a href="https://weather.gov/ewx" target="_blank" rel="noopener">weather.gov/ewx</a><div class="link-desc">NWS Austin/San Antonio — your local forecast office</div></div>
+      <div class="link-row"><a href="https://alerts.weather.gov" target="_blank" rel="noopener">alerts.weather.gov</a><div class="link-desc">Active alerts — search Hays County for current warnings</div></div>
+      <div class="link-row"><a href="https://www.hayscountytx.gov" target="_blank" rel="noopener">hayscountytx.gov</a><div class="link-desc">Hays County OEM — local emergency management</div></div>
+    </div>
+    <div>
+      <div class="tbl-label" style="margin-bottom:12px">Aircraft &amp; Satellite</div>
+      <div class="link-row"><a href="https://globe.adsbexchange.com/?lat=30.0&lon=-98.1&zoom=10" target="_blank" rel="noopener">ADS-B Exchange</a><div class="link-desc">Real-time aircraft over Wimberley — unfiltered, no military exclusions</div></div>
+      <div class="link-row"><a href="https://www.flightradar24.com/30.0,-98.1/10" target="_blank" rel="noopener">flightradar24.com</a><div class="link-desc">Commercial aircraft tracking</div></div>
+      <div class="link-row"><a href="https://www.n2yo.com/?s=33591" target="_blank" rel="noopener">n2yo.com — NOAA-19 passes</a><div class="link-desc">Pass predictions for Wimberley — plan your APT satellite captures</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="page-footer">
+  <span>Wimberley Watchtower · Comms Reference · Wimberley, TX 78676</span>
+  <span>Sources: CHIRP programming file (Apr 2025) + research · Verify all frequencies before relying on them in an emergency</span>
+</div>
+</main>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

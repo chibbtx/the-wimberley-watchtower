@@ -29,7 +29,17 @@
   .logo-main { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.5rem; letter-spacing: -0.02em; color: var(--text); }
   .logo-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase; }
   .header-right { display: flex; align-items: center; gap: 16px; }
-  .timestamp { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.05em; }
+  /* SUB-BAR */
+  .sub-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; position: sticky; top: 96px; z-index: 98; }
+  .sub-bar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 0; height: 36px; }
+  .sub-btn { display: flex; align-items: center; gap: 7px; padding: 0 16px; height: 100%; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em; color: var(--text-muted); text-decoration: none; border-right: 1px solid var(--border); transition: all 0.15s; white-space: nowrap; background: none; border-top: none; border-left: none; border-bottom: none; cursor: pointer; }
+  .sub-btn:first-child { padding-left: 0; }
+  .sub-btn:hover { color: var(--text); }
+  .sub-btn.adsb:hover { color: var(--accent2); }
+  .sub-btn.comms:hover { color: var(--accent); }
+  .sub-time { display: flex; flex-direction: column; justify-content: center; gap: 1px; padding: 0 0 0 16px; margin-left: auto; }
+  .sub-time-row { font-family: 'IBM Plex Mono', monospace; font-size: 0.59rem; color: var(--text-muted); white-space: nowrap; }
+  .sub-time-row .tl { color: var(--text-dim); font-size: 0.54rem; letter-spacing: 0.08em; text-transform: uppercase; margin-right: 4px; }
   .refresh-btn { background: var(--accent); color: #0e0e0e; border: none; padding: 8px 18px; font-family: 'IBM Plex Sans', sans-serif; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 7px; border-radius: 2px; }
   .refresh-btn:hover { filter: brightness(0.85); }
   .refresh-btn:active { transform: scale(0.97); }
@@ -37,7 +47,7 @@
   .spin { display: inline-block; animation: spin 1s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .filter-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0; position: sticky; top: 96px; z-index: 98; }
+  .filter-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0; position: sticky; top: 132px; z-index: 97; }
   .filter-bar-track { max-width: 1200px; margin: 0 auto; position: relative; display: flex; align-items: stretch; }
   .filter-inner { flex: 1; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
   .filter-inner::-webkit-scrollbar { display: none; }
@@ -124,7 +134,7 @@
 
   @media (max-width: 600px) {
     .logo-sub { display: none; }
-    .timestamp { display: none; }
+    .sub-bar { display: none; }
     .header-inner { height: 56px; }
     main { padding: 16px; }
     .news-grid, .skeleton-grid { grid-template-columns: 1fr; }
@@ -146,7 +156,6 @@
       <div class="logo-sub">Situational Awareness Dashboard</div>
     </div>
     <div class="header-right">
-      <div class="timestamp" id="timestamp">—</div>
       <button class="refresh-btn" id="refreshBtn" onclick="loadAllFeeds()">
         <span id="refreshIcon">↻</span> Refresh
       </button>
@@ -156,11 +165,42 @@
 
 <div class="alert-strip" id="alertStrip">
   <div class="alert-strip-inner-wrap">
-    <div class="alert-strip-label"><span class="blink"></span> <span>Breaking</span></div>
+    <div class="alert-strip-label"><span class="blink"></span> <span>Local Advisories</span></div>
     <div class="alert-strip-track" id="alertStripTrack">
       <div class="alert-strip-inner" id="alertStripInner">
         <span class="alert-strip-empty">Loading alerts…</span>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="sub-bar">
+  <div class="sub-bar-inner">
+    <a class="sub-btn adsb" href="https://globe.adsbexchange.com/?lat=30.0&lon=-98.1&zoom=10" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 1L5 6H2L6 8.5L4.5 13L7 10.5L9.5 13L8 8.5L12 6H9L7 1Z" fill="currentColor" opacity="0.7"/><path d="M7 2.5L5.5 6.5H3.5L6.5 8.5L5.2 12L7 10L8.8 12L7.5 8.5L10.5 6.5H8.5L7 2.5Z" fill="currentColor"/></svg>
+      What's Flying Above?
+    </a>
+    <a class="sub-btn comms" href="comms.html" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Tower mast -->
+        <rect x="6.4" y="7" width="1.2" height="5.5" fill="currentColor"/>
+        <!-- Base struts -->
+        <line x1="7" y1="12.5" x2="4" y2="12.5" stroke="currentColor" stroke-width="1"/>
+        <line x1="7" y1="12.5" x2="10" y2="12.5" stroke="currentColor" stroke-width="1"/>
+        <!-- Cross-arms -->
+        <line x1="4.5" y1="9.5" x2="9.5" y2="9.5" stroke="currentColor" stroke-width="1"/>
+        <line x1="5.5" y1="8" x2="8.5" y2="8" stroke="currentColor" stroke-width="1"/>
+        <!-- Signal arcs -->
+        <path d="M4.5 5.5 Q7 3 9.5 5.5" stroke="currentColor" stroke-width="1" fill="none" opacity="0.9"/>
+        <path d="M3 4 Q7 0.5 11 4" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6"/>
+        <!-- Lightning bolt -->
+        <path d="M8 2.5L6.5 5H8L6 7.5L8.5 4.5H7L8 2.5Z" fill="currentColor"/>
+      </svg>
+      Emergency Comms
+    </a>
+    <div class="sub-time">
+      <div class="sub-time-row"><span class="tl">UTC</span><span id="timeUTC">—</span></div>
+      <div class="sub-time-row"><span class="tl">Local</span><span id="timeLocal">—</span></div>
     </div>
   </div>
 </div>
@@ -1427,7 +1467,9 @@ async function loadAllFeeds() {
   btn.classList.remove('loading');
   icon.className = '';
   icon.textContent = '↻';
-  document.getElementById('timestamp').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const now = new Date();
+  document.getElementById('timeUTC').textContent = now.toUTCString().slice(17, 22) + ' UTC';
+  document.getElementById('timeLocal').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Chicago' }) + ' CT';
 
   renderSourcePills();
   renderAlertStrip();
@@ -1438,17 +1480,33 @@ async function loadAllFeeds() {
 // ─── ALERT STRIP ──────────────────────────────────────────────────────────────
 function renderAlertStrip() {
   const cutoff = Date.now() - 8 * 3600 * 1000;
+
+  // Local relevance keywords — only show advisories mentioning Wimberley-area terms
+  const LOCAL_ADVISORY_KEYWORDS = [
+    'wimberley','hays county','hays co','blanco river','cypress creek',
+    'hill country','comal county','san marcos','kyle','buda','dripping springs',
+    'wimberley valley','woodcreek','lcra','gbra','eaa','aquifer',
+    'jacob\'s well','devil\'s backbone','wimberly',
+    'texas hill country','central texas','flash flood warning',
+    'flash flood watch','tornado warning','tornado watch',
+    'severe thunderstorm','winter storm warning','fire weather watch',
+    'red flag warning','drought','wildfire'
+  ];
+
   const alerts = allArticles
-    .filter(a => a.tags.includes('breaking') && a.date && a.date.getTime() >= cutoff)
+    .filter(a => {
+      if (!a.tags.includes('breaking')) return false;
+      if (!a.date || a.date.getTime() < cutoff) return false;
+      const hay = (a.title + ' ' + (a.summary || '')).toLowerCase();
+      return LOCAL_ADVISORY_KEYWORDS.some(kw => hay.includes(kw));
+    })
     .slice(0, 20);
 
   const inner = document.getElementById('alertStripInner');
-  const strip = document.getElementById('alertStrip');
   if (!inner) return;
 
   if (!alerts.length) {
-    inner.innerHTML = '<span class="alert-strip-empty">No breaking alerts in the last 8 hours</span>';
-    // Reset animation width
+    inner.innerHTML = '<span class="alert-strip-empty">No local advisories in the last 8 hours</span>';
     inner.style.animation = 'none';
     return;
   }
