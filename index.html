@@ -23,8 +23,8 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; min-height: 100vh; }
 
-  header { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0; position: sticky; top: 0; z-index: 100; }
-  .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; padding: 0 24px; background: var(--surface); }
+  header { background: var(--bg); padding: 0; position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; padding: 0 24px; background: var(--surface); border-bottom: 1px solid var(--border); }
   .logo { display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; cursor: pointer; min-width: 0; }
   .logo-main { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.5rem; letter-spacing: -0.02em; color: var(--text); white-space: nowrap; }
   .logo-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase; white-space: nowrap; }
@@ -49,17 +49,64 @@
   .filter-tab:hover { color: var(--text); }
   .filter-tab.active { color: var(--accent2); border-bottom-color: var(--accent2); }
 
+  /* ── STICKY STACK ─────────────────────────────────────────────────────────── */
+  /* Single sticky wrapper — all bars move as one unit, no independent top values */
+  .sticky-stack { position: sticky; top: 64px; z-index: 99; background: var(--bg); }
+
   /* DATE / CLOCK BAR */
-  .date-bar { background: var(--bg); border-bottom: 1px solid var(--border); position: sticky; top: 64px; z-index: 99; height: 32px; }
-  .date-bar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 100%; padding: 0 24px; background: var(--surface2); }
+  .date-bar { background: var(--bg); }
+  .date-bar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 32px; padding: 0 24px; background: var(--surface2); border-bottom: 1px solid var(--border); }
   .date-bar-date { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text); letter-spacing: 0.05em; }
   .date-bar-clocks { display: flex; align-items: center; gap: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.04em; }
   .date-bar-clocks span { display: flex; align-items: center; gap: 5px; }
   .date-bar-clocks .time-val { color: var(--text); font-size: 0.7rem; }
   .date-bar-clocks .time-label { color: var(--text-dim); font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; }
 
-  .toolbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0; position: sticky; top: 214px; z-index: 95; }
-  .toolbar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 24px; background: var(--surface); }
+  /* LOCAL ADVISORIES STRIP */
+  .alert-strip { background: var(--bg); overflow: hidden; }
+  .alert-strip-inner-wrap { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; height: 32px; overflow: hidden; position: relative; background: #1a0800; border-bottom: 1px solid #5a1a00; }
+  .alert-strip-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: #ff6600; padding: 0 14px; white-space: nowrap; flex-shrink: 0; border-right: 1px solid #5a1a00; height: 100%; display: flex; align-items: center; gap: 6px; min-height: 32px; }
+  .alert-strip-label .blink { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #ff4400; box-shadow: 0 0 6px #ff4400; animation: pulse 1s ease-in-out infinite; }
+  .alert-strip-track { flex: 1; overflow: hidden; position: relative; height: 32px; }
+  .alert-strip-inner { display: flex; align-items: center; gap: 0; position: absolute; white-space: nowrap; animation: ticker 60s linear infinite; }
+  .alert-strip-inner:hover { animation-play-state: paused; }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .alert-item { display: inline-flex; align-items: center; gap: 10px; padding: 0 20px; height: 32px; cursor: pointer; transition: background 0.15s; text-decoration: none; }
+  .alert-item:hover { background: rgba(255,102,0,0.08); }
+  .alert-item-source { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: #ff6600; letter-spacing: 0.08em; text-transform: uppercase; flex-shrink: 0; }
+  .alert-item-title { font-size: 0.78rem; color: #e8c4a0; font-weight: 400; }
+  .alert-item-time { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: #7a4a2a; flex-shrink: 0; }
+  .alert-sep { color: #5a2a0a; padding: 0 4px; font-size: 0.7rem; }
+  .alert-strip-empty { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: #5a3a2a; padding: 0 16px; }
+
+  /* SUB-BAR */
+  .sub-bar { background: var(--bg); }
+  .sub-bar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px; overflow-x: auto; scrollbar-width: none; background: var(--surface2); border-bottom: 1px solid var(--border); }
+  .sub-bar-inner::-webkit-scrollbar { display: none; }
+  .sub-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em; padding: 5px 11px; border-radius: 2px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
+  .sub-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .sub-btn-iss:hover { border-color: var(--accent2) !important; color: var(--accent2) !important; }
+  .sub-bar-weather { display: flex; align-items: center; gap: 5px; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); flex-shrink: 0; padding-right: 10px; border-right: 1px solid var(--border); margin-right: 4px; }
+  .sub-bar-weather .wx-temp { color: var(--text); font-size: 0.72rem; font-weight: 500; }
+  .sub-bar-weather .wx-icon { color: var(--accent2); flex-shrink: 0; }
+
+  /* FILTER BAR */
+  .filter-bar { background: var(--bg); }
+  .filter-bar-track { max-width: 1200px; margin: 0 auto; position: relative; display: flex; align-items: stretch; background: var(--surface); border-bottom: 1px solid var(--border); }
+  .filter-inner { flex: 1; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
+  .filter-inner::-webkit-scrollbar { display: none; }
+  .tab-arrow { display: none; align-items: center; justify-content: center; background: var(--surface); border: none; color: var(--text-muted); font-size: 1rem; padding: 0 10px; cursor: pointer; transition: color 0.15s, background 0.15s; flex-shrink: 0; z-index: 2; }
+  .tab-arrow:hover { color: var(--text); background: var(--surface2); }
+  .tab-arrow.visible { display: flex; }
+  .tab-arrow-left { border-right: 1px solid var(--border); }
+  .tab-arrow-right { border-left: 1px solid var(--border); }
+  .filter-tab { padding: 12px 20px; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; background: none; border-top: none; border-left: none; border-right: none; font-family: 'IBM Plex Sans', sans-serif; }
+  .filter-tab:hover { color: var(--text); }
+  .filter-tab.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+
+  /* TOOLBAR */
+  .toolbar { background: var(--bg); }
+  .toolbar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 24px; background: var(--surface); border-bottom: 1px solid var(--border); }
   .search-wrap { position: relative; flex: 1; min-width: 180px; }
   .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 0.85rem; pointer-events: none; }
   .search-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 0.8rem; padding: 7px 10px 7px 30px; border-radius: 2px; outline: none; transition: border-color 0.2s; }
@@ -113,60 +160,24 @@
   .source-pill.ok { border-color: #1e3a1e; color: #4a9a4a; }
   .source-pill.err { border-color: #3a1e1e; color: #9a4a4a; }
 
-  /* LOCAL ADVISORIES STRIP */
-  .alert-strip { background: var(--bg); border-bottom: 1px solid #5a1a00; overflow: hidden; position: sticky; top: 96px; z-index: 98; min-height: 32px; }
-  .alert-strip-inner-wrap { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; height: 32px; overflow: hidden; position: relative; background: #1a0800; }
-  .alert-strip-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: #ff6600; padding: 0 14px; white-space: nowrap; flex-shrink: 0; border-right: 1px solid #5a1a00; height: 100%; display: flex; align-items: center; gap: 6px; min-height: 32px; }
-  .alert-strip-label .blink { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #ff4400; box-shadow: 0 0 6px #ff4400; animation: pulse 1s ease-in-out infinite; }
-  .alert-strip-track { flex: 1; overflow: hidden; position: relative; height: 32px; }
-  .alert-strip-inner { display: flex; align-items: center; gap: 0; position: absolute; white-space: nowrap; animation: ticker 60s linear infinite; }
-  .alert-strip-inner:hover { animation-play-state: paused; }
-  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-  .alert-item { display: inline-flex; align-items: center; gap: 10px; padding: 0 20px; height: 32px; cursor: pointer; transition: background 0.15s; text-decoration: none; }
-  .alert-item:hover { background: rgba(255,102,0,0.08); }
-  .alert-item-source { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: #ff6600; letter-spacing: 0.08em; text-transform: uppercase; flex-shrink: 0; }
-  .alert-item-title { font-size: 0.78rem; color: #e8c4a0; font-weight: 400; }
-  .alert-item-time { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: #7a4a2a; flex-shrink: 0; }
-  .alert-sep { color: #5a2a0a; padding: 0 4px; font-size: 0.7rem; }
-  .alert-strip-empty { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: #5a3a2a; padding: 0 16px; }
+  /* LOCAL ADVISORIES STRIP — see sticky-stack section above */
 
-  /* SUB-BAR */
-  .sub-bar { background: var(--bg); border-bottom: 1px solid var(--border); position: sticky; top: 128px; z-index: 97; }
-  .sub-bar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px; overflow-x: auto; scrollbar-width: none; background: var(--surface2); }
-  .sub-bar-inner::-webkit-scrollbar { display: none; }
-  .sub-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em; padding: 5px 11px; border-radius: 2px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
-  .sub-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .sub-btn-iss:hover { border-color: var(--accent2) !important; color: var(--accent2) !important; }
-  .sub-bar-time { margin-left: auto; flex-shrink: 0; display: flex; align-items: center; gap: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.04em; white-space: nowrap; }
-  .sub-bar-time span { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
-  .sub-bar-time .time-val { color: var(--text); font-size: 0.7rem; }
-  .sub-bar-time .time-label { color: var(--text-dim); font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; }
-  .sub-bar-weather { display: flex; align-items: center; gap: 5px; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); flex-shrink: 0; padding-right: 10px; border-right: 1px solid var(--border); margin-right: 4px; }
-  .sub-bar-weather .wx-temp { color: var(--text); font-size: 0.72rem; font-weight: 500; }
-  .sub-bar-weather .wx-icon { color: var(--accent2); flex-shrink: 0; }
+  /* SUB-BAR — see sticky-stack section above */
 
   @media (max-width: 600px) {
     .header-inner { height: 56px; }
+    .sticky-stack { top: 56px; }
     .logo { flex-direction: column; align-items: flex-start; gap: 1px; }
     .logo-main { font-size: 1.2rem; }
     .logo-sub { font-size: 0.52rem; letter-spacing: 0.1em; }
     main { padding: 16px; }
     .news-grid, .skeleton-grid { grid-template-columns: 1fr; }
-    .site-description { padding: 12px 16px; }
-    .toolbar { padding: 8px 16px; }
+    .toolbar-inner { padding: 8px 16px; }
     .time-btn { padding: 5px 7px; font-size: 0.6rem; }
     .alert-strip-label span:last-child { display: none; }
-    .date-bar { top: 56px; }
-    .alert-strip { top: 88px; }
-    .sub-bar { top: 120px; }
-    .filter-bar { top: 154px; }
-    .toolbar { top: 200px; padding: 0; }
-    .toolbar-inner { padding: 8px 16px; }
-    .sub-bar-inner { height: 34px; padding: 0 8px; gap: 4px; overflow-x: hidden; }
+    .sub-bar-inner { height: 34px; padding: 0 8px; gap: 4px; }
     .sub-btn { font-size: 0.58rem; padding: 3px 7px; gap: 3px; }
     .sub-btn svg { display: none; }
-    .sub-bar-time { gap: 8px; font-size: 0.56rem; }
-    .sub-bar-time .time-val { font-size: 0.6rem; }
     .sub-bar-weather { gap: 3px; }
     .sub-bar-weather .wx-temp { font-size: 0.64rem; }
     .sub-bar-weather svg { width: 12px; height: 12px; }
@@ -191,98 +202,104 @@
   </div>
 </header>
 
-<div class="date-bar" id="dateBar">
-  <div class="date-bar-inner">
-    <div class="date-bar-date" id="dateBarDate">—</div>
-    <div class="date-bar-clocks">
-      <span><span class="time-val" id="timeCT">—</span><span class="time-label">CT</span></span>
-      <span><span class="time-val" id="timeUTC">—</span><span class="time-label">UTC</span></span>
-    </div>
-  </div>
-</div>
-  <div class="alert-strip-inner-wrap">
-    <div class="alert-strip-label"><span class="blink"></span> <span>Local Advisories</span></div>
-    <div class="alert-strip-track" id="alertStripTrack">
-      <div class="alert-strip-inner" id="alertStripInner">
-        <span class="alert-strip-empty">Loading alerts…</span>
+<div class="sticky-stack" id="stickyStack">
+
+  <div class="date-bar" id="dateBar">
+    <div class="date-bar-inner">
+      <div class="date-bar-date" id="dateBarDate">—</div>
+      <div class="date-bar-clocks">
+        <span><span class="time-val" id="timeCT">—</span><span class="time-label">CT</span></span>
+        <span><span class="time-val" id="timeUTC">—</span><span class="time-label">UTC</span></span>
       </div>
     </div>
   </div>
-</div>
 
-<div class="alert-strip" id="alertStrip">
-  <div class="sub-bar-inner">
-    <a class="sub-btn" href="https://globe.adsbexchange.com/?lat=30.00&lon=-98.10&zoom=10" target="_blank" title="Live air traffic over Wimberley">
-      ✈ In the Sky
-    </a>
-    <a class="sub-btn" href="comms.html" target="_blank" title="HAM Radio &amp; Emergency Comms Reference">
-      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
-        <line x1="6.5" y1="12" x2="6.5" y2="6" stroke="currentColor" stroke-width="1.2"/>
-        <line x1="4" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="1.2"/>
-        <line x1="6.5" y1="6" x2="2" y2="2" stroke="currentColor" stroke-width="1"/>
-        <line x1="6.5" y1="6" x2="11" y2="2" stroke="currentColor" stroke-width="1"/>
-        <line x1="6.5" y1="6" x2="1" y2="5" stroke="currentColor" stroke-width="1"/>
-        <line x1="6.5" y1="6" x2="12" y2="5" stroke="currentColor" stroke-width="1"/>
-        <circle cx="6.5" cy="5.5" r="1" fill="currentColor"/>
-        <line x1="6.5" y1="1" x2="7.5" y2="3" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
-        <line x1="7.5" y1="3" x2="6.5" y2="3" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
-      </svg>
-      Radio
-    </a>
-    <a class="sub-btn sub-btn-iss" href="https://www.heavens-above.com/PassSummary.aspx?satid=25544&lat=30.00&lng=-98.10&loc=Wimberley&alt=300&tz=CST" target="_blank" title="ISS pass times for Wimberley">
-      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
-        <circle cx="7" cy="7" r="2.2" fill="currentColor" opacity="0.85"/>
-        <ellipse cx="7" cy="7" rx="6" ry="3.2" stroke="currentColor" stroke-width="1" fill="none" opacity="0.55" transform="rotate(-30 7 7)"/>
-        <circle cx="11.2" cy="4.6" r="1.1" fill="currentColor"/>
-      </svg>
-      ISS
-    </a>
-    <div class="sub-bar-weather" id="wxWidget" title="Current conditions in Wimberley, TX" style="margin-left:auto;">
-      <span class="wx-icon" id="wxIcon">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" id="wxSvg">
-          <circle cx="7" cy="7" r="3" fill="currentColor" opacity="0.3"/>
+  <div class="alert-strip" id="alertStrip">
+    <div class="alert-strip-inner-wrap">
+      <div class="alert-strip-label"><span class="blink"></span> <span>Local Advisories</span></div>
+      <div class="alert-strip-track" id="alertStripTrack">
+        <div class="alert-strip-inner" id="alertStripInner">
+          <span class="alert-strip-empty">Loading alerts…</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-bar" id="subBar">
+    <div class="sub-bar-inner">
+      <a class="sub-btn" href="https://globe.adsbexchange.com/?lat=30.00&lon=-98.10&zoom=10" target="_blank" title="Live air traffic over Wimberley">
+        ✈ In the Sky
+      </a>
+      <a class="sub-btn" href="comms.html" target="_blank" title="HAM Radio &amp; Emergency Comms Reference">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+          <line x1="6.5" y1="12" x2="6.5" y2="6" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="4" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="6.5" y1="6" x2="2" y2="2" stroke="currentColor" stroke-width="1"/>
+          <line x1="6.5" y1="6" x2="11" y2="2" stroke="currentColor" stroke-width="1"/>
+          <line x1="6.5" y1="6" x2="1" y2="5" stroke="currentColor" stroke-width="1"/>
+          <line x1="6.5" y1="6" x2="12" y2="5" stroke="currentColor" stroke-width="1"/>
+          <circle cx="6.5" cy="5.5" r="1" fill="currentColor"/>
+          <line x1="6.5" y1="1" x2="7.5" y2="3" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
+          <line x1="7.5" y1="3" x2="6.5" y2="3" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>
         </svg>
-      </span>
-      <span class="wx-temp" id="wxTemp">—°</span>
+        Radio
+      </a>
+      <a class="sub-btn sub-btn-iss" href="https://www.heavens-above.com/PassSummary.aspx?satid=25544&lat=30.00&lng=-98.10&loc=Wimberley&alt=300&tz=CST" target="_blank" title="ISS pass times for Wimberley">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+          <circle cx="7" cy="7" r="2.2" fill="currentColor" opacity="0.85"/>
+          <ellipse cx="7" cy="7" rx="6" ry="3.2" stroke="currentColor" stroke-width="1" fill="none" opacity="0.55" transform="rotate(-30 7 7)"/>
+          <circle cx="11.2" cy="4.6" r="1.1" fill="currentColor"/>
+        </svg>
+        ISS
+      </a>
+      <div class="sub-bar-weather" id="wxWidget" title="Current conditions in Wimberley, TX" style="margin-left:auto;">
+        <span class="wx-icon" id="wxIcon">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" id="wxSvg">
+            <circle cx="7" cy="7" r="3" fill="currentColor" opacity="0.3"/>
+          </svg>
+        </span>
+        <span class="wx-temp" id="wxTemp">—°</span>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="filter-bar">
-  <div class="filter-bar-track">
-  <button class="tab-arrow tab-arrow-left" id="tabArrowLeft" onclick="scrollTabs(-200)" aria-label="Scroll tabs left">&#8249;</button>
-  <div class="filter-inner" id="filterInner">
-    <button class="filter-tab" onclick="filterBy('wimberley', this)">Wimberley</button>
-    <button class="filter-tab" onclick="filterBy('hill-country', this)">Hill Country</button>
-    <button class="filter-tab" onclick="filterBy('texas', this)">Texas</button>
-    <button class="filter-tab" onclick="filterBy('national', this)">National</button>
-    <button class="filter-tab" onclick="filterBy('finance', this)">Finance &amp; Economy</button>
-    <button class="filter-tab" onclick="filterBy('weather-disasters', this)">Weather &amp; Disasters</button>
-    <button class="filter-tab" onclick="filterBy('geopolitics', this)">Geopolitics</button>
-    <button class="filter-tab" onclick="filterBy('civil-liberties-privacy', this)">Civil Liberties &amp; Privacy</button>
-    <button class="filter-tab" onclick="filterBy('cyber-ai-tech', this)">Cyber, AI &amp; Tech</button>
-    <button class="filter-tab" onclick="filterBy('public-health', this)">Public Health</button>
-    <button class="filter-tab" onclick="filterBy('en-espanol', this)">En Español</button>
+  <div class="filter-bar">
+    <div class="filter-bar-track">
+      <button class="tab-arrow tab-arrow-left" id="tabArrowLeft" onclick="scrollTabs(-200)" aria-label="Scroll tabs left">&#8249;</button>
+      <div class="filter-inner" id="filterInner">
+        <button class="filter-tab" onclick="filterBy('wimberley', this)">Wimberley</button>
+        <button class="filter-tab" onclick="filterBy('hill-country', this)">Hill Country</button>
+        <button class="filter-tab" onclick="filterBy('texas', this)">Texas</button>
+        <button class="filter-tab" onclick="filterBy('national', this)">National</button>
+        <button class="filter-tab" onclick="filterBy('finance', this)">Finance &amp; Economy</button>
+        <button class="filter-tab" onclick="filterBy('weather-disasters', this)">Weather &amp; Disasters</button>
+        <button class="filter-tab" onclick="filterBy('geopolitics', this)">Geopolitics</button>
+        <button class="filter-tab" onclick="filterBy('civil-liberties-privacy', this)">Civil Liberties &amp; Privacy</button>
+        <button class="filter-tab" onclick="filterBy('cyber-ai-tech', this)">Cyber, AI &amp; Tech</button>
+        <button class="filter-tab" onclick="filterBy('public-health', this)">Public Health</button>
+        <button class="filter-tab" onclick="filterBy('en-espanol', this)">En Español</button>
+      </div>
+      <button class="tab-arrow tab-arrow-right" id="tabArrowRight" onclick="scrollTabs(200)" aria-label="Scroll tabs right">&#8250;</button>
+    </div>
   </div>
-  <button class="tab-arrow tab-arrow-right" id="tabArrowRight" onclick="scrollTabs(200)" aria-label="Scroll tabs right">&#8250;</button>
-  </div>
-</div>
 
-<div class="toolbar">
-  <div class="toolbar-inner">
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input class="search-input" id="searchInput" type="text" placeholder="Search headlines and summaries…" oninput="applyDisplayFilters()">
-    </div>
-    <div class="time-filter-group">
-      <button class="time-btn" data-hours="1" onclick="setTimeFilter(1, this)">1h</button>
-      <button class="time-btn" data-hours="8" onclick="setTimeFilter(8, this)">8h</button>
-      <button class="time-btn" data-hours="24" onclick="setTimeFilter(24, this)">24h</button>
-      <button class="time-btn" data-hours="72" onclick="setTimeFilter(72, this)">3d</button>
-      <button class="time-btn active" data-hours="168" onclick="setTimeFilter(168, this)">7d</button>
+  <div class="toolbar">
+    <div class="toolbar-inner">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" id="searchInput" type="text" placeholder="Search headlines and summaries…" oninput="applyDisplayFilters()">
+      </div>
+      <div class="time-filter-group">
+        <button class="time-btn" data-hours="1" onclick="setTimeFilter(1, this)">1h</button>
+        <button class="time-btn" data-hours="8" onclick="setTimeFilter(8, this)">8h</button>
+        <button class="time-btn" data-hours="24" onclick="setTimeFilter(24, this)">24h</button>
+        <button class="time-btn" data-hours="72" onclick="setTimeFilter(72, this)">3d</button>
+        <button class="time-btn active" data-hours="168" onclick="setTimeFilter(168, this)">7d</button>
+      </div>
     </div>
   </div>
-</div>
+
+</div><!-- /.sticky-stack -->
 
 <main>
   <div class="status-bar">
