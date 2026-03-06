@@ -212,23 +212,90 @@
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
 // ─────────────────────────────────────────────────────────────────────────────
-// NOTE: CISA RSS feeds were discontinued May 2025.
-// Replaced with: The Hacker News, Dark Reading, Bleeping Computer.
-//
-// Wimberley View has no public RSS feed.
-// Using Hays Free Press Wimberley category feed as primary local source
-// (verified URL: https://www.haysfreepress.com/rss/articles/en/22/wimberley)
+// NOTES:
+// • CISA RSS feeds discontinued May 2025. Replaced: THN, Dark Reading, Bleeping Computer.
+// • Wimberley View has no public RSS. Using Hays Free Press Wimberley feed.
+// • Hays County has no native RSS. Using Google News search fallback.
+// • Wimberley ISD uses Blackboard CMS — no RSS. Google News fallback.
+// • Wimberley Fire (ESD #4) uses Wix — no RSS. Google News fallback.
+// • City of Kyle uses kyletxnews.com (WordPress) — feed may need proxy test.
+// • City of Blanco recently migrated CivicEngage — feed URL may need testing.
+// • GBRA = Guadalupe-Blanco River Authority (Canyon Reservoir & Guadalupe R.)
+// • LCRA = Lower Colorado River Authority (Highland Lakes & Blanco River basin)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const FEEDS = [
 
-  // ── LOCAL — Wimberley & Hays County ──────────────────────────────────────────
+  // ── LOCAL — City of Wimberley (CivicEngage granular feeds) ───────────────────
+  // Alerts first — burn bans, flood warnings, boil water, road closures
+  { name: 'Wimberley · Alerts', lang: 'en', tags: ['local','weather-disasters'],
+    url: 'https://www.cityofwimberley.com/RSSFeed.aspx?ModID=63&CID=All-0', max: 6 },
+  { name: 'Wimberley · News', lang: 'en', tags: ['local'],
+    url: 'https://www.cityofwimberley.com/RSSFeed.aspx?ModID=1&CID=All-newsflash.xml', max: 6 },
+  { name: 'Wimberley · City Council', lang: 'en', tags: ['local'],
+    url: 'https://www.cityofwimberley.com/RSSFeed.aspx?ModID=65&CID=City-Council-8', max: 5 },
+  { name: 'Wimberley · Planning & Zoning', lang: 'en', tags: ['local'],
+    url: 'https://www.cityofwimberley.com/RSSFeed.aspx?ModID=65&CID=Planning-Zoning-Commission-6', max: 5 },
+
+  // ── LOCAL — City of Woodcreek (Wimberley's neighbor, CivicEngage) ─────────────
+  { name: 'Woodcreek · Alerts', lang: 'en', tags: ['local','weather-disasters'],
+    url: 'https://www.woodcreektx.gov/RSSFeed.aspx?ModID=63&CID=All-0', max: 5 },
+  { name: 'Woodcreek · News', lang: 'en', tags: ['local'],
+    url: 'https://www.woodcreektx.gov/RSSFeed.aspx?ModID=1&CID=All-newsflash.xml', max: 5 },
+
+  // ── LOCAL — Hays County newspapers ───────────────────────────────────────────
   { name: 'Hays Free Press · Wimberley', lang: 'en', tags: ['local','texas'],
     url: 'https://www.haysfreepress.com/rss/articles/en/22/wimberley', max: 8 },
   { name: 'Hays Free Press · Hays County', lang: 'en', tags: ['local','texas'],
     url: 'https://www.haysfreepress.com/rss/articles/en/17/hays-county', max: 6 },
-  { name: 'City of Wimberley', lang: 'en', tags: ['local'],
-    url: 'https://www.cityofwimberley.com/rss.aspx', max: 5 },
+  { name: 'SM Corridor News', lang: 'en', tags: ['local','texas'],
+    url: 'https://smcorridornews.com/category/news/feed/', max: 6 },
+  { name: 'Community Impact · Hays County', lang: 'en', tags: ['local','texas'],
+    url: 'https://communityimpact.com/news/austin/san-marcos-buda-kyle/feed/', max: 6 },
+  { name: 'Community Impact · Dripping Springs', lang: 'en', tags: ['local','texas'],
+    url: 'https://communityimpact.com/news/austin/southwest-austin-dripping-springs/feed/', max: 6 },
+
+  // ── LOCAL — Neighboring cities (CivicEngage confirmed) ───────────────────────
+  { name: 'City of Buda · Alerts', lang: 'en', tags: ['local','weather-disasters'],
+    url: 'https://budatx.gov/RSSFeed.aspx?ModID=63&CID=Emergency-Alerts-1', max: 5 },
+  { name: 'City of Buda · News', lang: 'en', tags: ['local'],
+    url: 'https://budatx.gov/RSSFeed.aspx?ModID=1&CID=All-newsflash.xml', max: 5 },
+  { name: 'City of Kyle · News', lang: 'en', tags: ['local','texas'],
+    url: 'https://kyletxnews.com/feed/', max: 5 },
+  { name: 'City of Blanco · News', lang: 'en', tags: ['local'],
+    url: 'https://www.cityofblancotx.gov/RSSFeed.aspx?ModID=1&CID=All-newsflash.xml', max: 4 },
+  { name: 'City of San Marcos', lang: 'en', tags: ['local','texas'],
+    url: 'https://www.sanmarcostx.gov/RSSFeed.aspx?ModID=1&CID=All-0', max: 5 },
+
+  // ── LOCAL — Water & environmental authorities ──────────────────────────────────
+  // LCRA manages Highland Lakes & Blanco River basin — critical for flood intelligence
+  { name: 'LCRA News', lang: 'en', tags: ['local','weather-disasters','texas'],
+    url: 'https://www.lcra.org/category/news/feed/', max: 6 },
+  // GBRA manages Canyon Reservoir & Guadalupe; Canyon Lake levels affect Wimberley
+  { name: 'GBRA News', lang: 'en', tags: ['local','weather-disasters'],
+    url: 'https://www.gbra.org/news/feed/', max: 5 },
+  // Wimberley's local water/land conservation org
+  { name: 'Watershed Association', lang: 'en', tags: ['local'],
+    url: 'https://watershedassociation.org/feed/', max: 4 },
+  // Hill-country-wide land & water conservation advocacy
+  { name: 'Hill Country Alliance', lang: 'en', tags: ['local','texas'],
+    url: 'https://hillcountryalliance.org/feed/', max: 4 },
+
+  // ── LOCAL — Hill Country regional media ───────────────────────────────────────
+  { name: 'Hill Country News', lang: 'en', tags: ['local','texas'],
+    url: 'https://www.hillcountrynews.com/feed/', max: 5 },
+
+  // ── LOCAL — County/government via Google News ─────────────────────────────────
+  // Hays County has no native RSS; Google News search is the reliable fallback
+  { name: 'Hays County', lang: 'en', tags: ['local','texas'],
+    url: 'https://news.google.com/rss/search?q=%22Hays+County%22+texas&hl=en-US&gl=US&ceid=US:en', max: 6 },
+  { name: 'Hays County Sheriff', lang: 'en', tags: ['local'],
+    url: 'https://news.google.com/rss/search?q=%22Hays+County+Sheriff%22+OR+%22Hays+County+Constable%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
+  { name: 'Wimberley ISD', lang: 'en', tags: ['local'],
+    url: 'https://news.google.com/rss/search?q=%22Wimberley+ISD%22+OR+%22Wimberley+Independent+School%22&hl=en-US&gl=US&ceid=US:en', max: 4 },
+  // Burn bans & fire/ESD activity — no official RSS, Google News fallback
+  { name: 'Wimberley Fire & Burn Ban', lang: 'en', tags: ['local','weather-disasters'],
+    url: 'https://news.google.com/rss/search?q=%22Wimberley+fire%22+OR+%22burn+ban%22+%22Hays+County%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── TEXAS ─────────────────────────────────────────────────────────────────────
   { name: 'Texas Tribune', lang: 'en', tags: ['texas','national'],
@@ -322,35 +389,34 @@ const FEEDS = [
 // Sources in LOCAL_SOURCES pass without keyword filtering — they're inherently
 // on-topic for the Wimberley threat intelligence scope.
 const LOCAL_SOURCES = new Set([
-  'Hays Free Press · Wimberley',
-  'Hays Free Press · Hays County',
-  'City of Wimberley',
-  'Texas Tribune',
-  'KXAN Austin',
-  'Texas Observer',
-  'Texas Public Radio',
-  'NWS Austin / San Antonio',
-  'NOAA News',
-  'Texas Hill Country Hazards',
-  'ProPublica',
-  'The Intercept',
-  'Krebs on Security',
-  'The Hacker News',
-  'Dark Reading',
-  'Bleeping Computer',
-  'EFF Deeplinks',
-  'ACLU News',
-  'Bellingcat',
-  'Poynter',
-  'MIT Technology Review',
-  'AI Safety News',
-  'CDC Newsroom',
-  'STAT News',
-  'Crisis Group',
-  'Reuters Conflict Watch',
-  'AP War & Conflict',
-  'Telemundo Austin',
-  'Univision Texas',
+  // Local — Wimberley city
+  'Wimberley · Alerts', 'Wimberley · News', 'Wimberley · City Council', 'Wimberley · Planning & Zoning',
+  // Local — Woodcreek
+  'Woodcreek · Alerts', 'Woodcreek · News',
+  // Local — Hays County newspapers
+  'Hays Free Press · Wimberley', 'Hays Free Press · Hays County',
+  'SM Corridor News', 'Community Impact · Hays County', 'Community Impact · Dripping Springs',
+  // Local — Neighboring cities
+  'City of Buda · Alerts', 'City of Buda · News',
+  'City of Kyle · News', 'City of Blanco · News', 'City of San Marcos',
+  // Local — Water & environment
+  'LCRA News', 'GBRA News', 'Watershed Association', 'Hill Country Alliance',
+  // Local — Regional media & government
+  'Hill Country News', 'Hays County', 'Hays County Sheriff',
+  'Wimberley ISD', 'Wimberley Fire & Burn Ban',
+  // Texas statewide
+  'Texas Tribune', 'KXAN Austin', 'Texas Observer', 'Texas Public Radio',
+  // Weather
+  'NWS Austin / San Antonio', 'NOAA News', 'Texas Hill Country Hazards',
+  // All thematic sources — these are domain-specific so all pass
+  'ProPublica', 'The Intercept',
+  'Krebs on Security', 'The Hacker News', 'Dark Reading', 'Bleeping Computer',
+  'EFF Deeplinks', 'ACLU News',
+  'Bellingcat', 'Poynter',
+  'MIT Technology Review', 'AI Safety News',
+  'CDC Newsroom', 'STAT News',
+  'Crisis Group', 'Reuters Conflict Watch', 'AP War & Conflict',
+  'Telemundo Austin', 'Univision Texas',
 ]);
 
 // Foreign Policy and Reuters World are broad — filter by keyword
