@@ -37,9 +37,15 @@
   .spin { display: inline-block; animation: spin 1s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .filter-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; }
-  .filter-inner { max-width: 1200px; margin: 0 auto; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
+  .filter-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0; position: relative; }
+  .filter-bar-track { max-width: 1200px; margin: 0 auto; position: relative; display: flex; align-items: stretch; }
+  .filter-inner { flex: 1; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
   .filter-inner::-webkit-scrollbar { display: none; }
+  .tab-arrow { display: none; align-items: center; justify-content: center; background: var(--surface); border: none; color: var(--text-muted); font-size: 1rem; padding: 0 10px; cursor: pointer; transition: color 0.15s, background 0.15s; flex-shrink: 0; z-index: 2; }
+  .tab-arrow:hover { color: var(--text); background: var(--surface2); }
+  .tab-arrow.visible { display: flex; }
+  .tab-arrow-left { border-right: 1px solid var(--border); }
+  .tab-arrow-right { border-left: 1px solid var(--border); }
   .filter-tab { padding: 12px 20px; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; background: none; border-top: none; border-left: none; border-right: none; font-family: 'IBM Plex Sans', sans-serif; }
   .filter-tab:hover { color: var(--text); }
   .filter-tab.active { color: var(--accent2); border-bottom-color: var(--accent2); }
@@ -143,7 +149,9 @@
 </header>
 
 <div class="filter-bar">
-  <div class="filter-inner">
+  <div class="filter-bar-track">
+  <button class="tab-arrow tab-arrow-left" id="tabArrowLeft" onclick="scrollTabs(-200)" aria-label="Scroll tabs left">&#8249;</button>
+  <div class="filter-inner" id="filterInner">
     <button class="filter-tab active" onclick="filterBy('all', this)">All Sources</button>
     <button class="filter-tab filter-tab-breaking" onclick="filterBy('breaking', this)">🔴 Breaking &amp; Alerts</button>
     <button class="filter-tab" onclick="filterBy('local', this)">Local</button>
@@ -158,6 +166,8 @@
     <button class="filter-tab" onclick="filterBy('cyber-data', this)">Cyber &amp; Data</button>
     <button class="filter-tab" onclick="filterBy('en-espanol', this)">En Español</button>
     <button class="filter-tab filter-tab-conflict" onclick="filterBy('conflict', this)">⚠ Conflict &amp; Violence</button>
+  </div>
+  <button class="tab-arrow tab-arrow-right" id="tabArrowRight" onclick="scrollTabs(200)" aria-label="Scroll tabs right">&#8250;</button>
   </div>
 </div>
 
@@ -766,6 +776,23 @@ function filterBy(tag, el) {
   applyDisplayFilters();
 }
 
+// ─── TAB SCROLL ARROWS ───────────────────────────────────────────────────────
+function scrollTabs(px) {
+  const el = document.getElementById('filterInner');
+  if (el) el.scrollBy({ left: px, behavior: 'smooth' });
+}
+
+function updateTabArrows() {
+  const el = document.getElementById('filterInner');
+  const left = document.getElementById('tabArrowLeft');
+  const right = document.getElementById('tabArrowRight');
+  if (!el || !left || !right) return;
+  const atStart = el.scrollLeft <= 4;
+  const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
+  left.classList.toggle('visible', !atStart);
+  right.classList.toggle('visible', !atEnd);
+}
+
 // ─── MAIN LOAD ────────────────────────────────────────────────────────────────
 async function loadAllFeeds() {
   const btn = document.getElementById('refreshBtn');
@@ -807,6 +834,15 @@ async function loadAllFeeds() {
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 loadAllFeeds();
+// Wire up tab arrow visibility on scroll and resize
+window.addEventListener('load', () => {
+  const el = document.getElementById('filterInner');
+  if (el) {
+    el.addEventListener('scroll', updateTabArrows);
+    updateTabArrows();
+  }
+});
+window.addEventListener('resize', updateTabArrows);
 </script>
 </body>
 </html>
