@@ -25,10 +25,10 @@
 
   header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; position: sticky; top: 0; z-index: 100; }
   .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
-  .logo { display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; cursor: pointer; }
-  .logo-main { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.5rem; letter-spacing: -0.02em; color: var(--text); }
-  .logo-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase; }
-  .header-right { display: flex; align-items: center; gap: 16px; }
+  .logo { display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; cursor: pointer; min-width: 0; }
+  .logo-main { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.5rem; letter-spacing: -0.02em; color: var(--text); white-space: nowrap; }
+  .logo-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase; white-space: nowrap; }
+  .header-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
   .refresh-btn { background: var(--accent); color: #0e0e0e; border: none; padding: 8px 18px; font-family: 'IBM Plex Sans', sans-serif; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 7px; border-radius: 2px; }
   .refresh-btn:hover { filter: brightness(0.85); }
   .refresh-btn:active { transform: scale(0.97); }
@@ -132,9 +132,15 @@
   .sub-bar-time span { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
   .sub-bar-time .time-val { color: var(--text); font-size: 0.7rem; }
   .sub-bar-time .time-label { color: var(--text-dim); font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .sub-bar-weather { display: flex; align-items: center; gap: 5px; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); flex-shrink: 0; padding-right: 10px; border-right: 1px solid var(--border); margin-right: 4px; }
+  .sub-bar-weather .wx-temp { color: var(--text); font-size: 0.72rem; font-weight: 500; }
+  .sub-bar-weather .wx-icon { color: var(--accent2); flex-shrink: 0; }
 
   @media (max-width: 600px) {
     .header-inner { height: 56px; }
+    .logo { flex-direction: column; align-items: flex-start; gap: 1px; }
+    .logo-main { font-size: 1.2rem; }
+    .logo-sub { font-size: 0.52rem; letter-spacing: 0.1em; }
     main { padding: 16px; }
     .news-grid, .skeleton-grid { grid-template-columns: 1fr; }
     .site-description { padding: 12px 16px; }
@@ -142,10 +148,14 @@
     .time-btn { padding: 5px 7px; font-size: 0.6rem; }
     .alert-strip-label span:last-child { display: none; }
     .sub-bar { top: 96px; }
-    .sub-bar-inner { height: 36px; padding: 0 10px; gap: 5px; }
-    .sub-btn { font-size: 0.62rem; padding: 4px 9px; }
-    .sub-bar-time { gap: 10px; font-size: 0.6rem; }
-    .sub-bar-time .time-val { font-size: 0.64rem; }
+    .sub-bar-inner { height: 34px; padding: 0 8px; gap: 4px; overflow-x: hidden; }
+    .sub-btn { font-size: 0.58rem; padding: 3px 7px; gap: 3px; }
+    .sub-btn svg { display: none; }
+    .sub-bar-time { gap: 8px; font-size: 0.56rem; }
+    .sub-bar-time .time-val { font-size: 0.6rem; }
+    .sub-bar-weather { gap: 3px; }
+    .sub-bar-weather .wx-temp { font-size: 0.64rem; }
+    .sub-bar-weather svg { width: 12px; height: 12px; }
   }
 </style>
 </head>
@@ -205,6 +215,14 @@
       </svg>
       ISS
     </a>
+    <div class="sub-bar-weather" id="wxWidget" title="Current conditions in Wimberley, TX">
+      <span class="wx-icon" id="wxIcon">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" id="wxSvg">
+          <circle cx="7" cy="7" r="3" fill="currentColor" opacity="0.3"/>
+        </svg>
+      </span>
+      <span class="wx-temp" id="wxTemp">—°</span>
+    </div>
     <div class="sub-bar-time">
       <span>
         <span class="time-val" id="timeCT">—</span>
@@ -1549,8 +1567,44 @@ function renderAlertStrip() {
   inner.style.animationDuration = duration + 's';
 }
 
+// ─── WEATHER WIDGET ───────────────────────────────────────────────────────────
+// WMO weather code → SVG icon paths (Wimberley, TX — accent2 green tint)
+function wxSvgPath(code) {
+  // Sun
+  if (code === 0) return '<circle cx="7" cy="7" r="2.8" fill="currentColor"/><line x1="7" y1="1" x2="7" y2="2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="7" y1="11.5" x2="7" y2="13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="1" y1="7" x2="2.5" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11.5" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="2.8" y1="2.8" x2="3.8" y2="3.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="10.2" y1="10.2" x2="11.2" y2="11.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11.2" y1="2.8" x2="10.2" y2="3.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="3.8" y1="10.2" x2="2.8" y2="11.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>';
+  // Partly cloudy
+  if (code <= 2) return '<circle cx="5.5" cy="7.5" r="2" fill="currentColor" opacity="0.5"/><circle cx="4" cy="6" r="2.5" fill="currentColor" opacity="0.6"/><path d="M2 8.5 Q1 8.5 1 7.5 Q1 6 2.5 6 Q2.8 4 5 4 Q7 4 7.5 6 Q9 6 9 7.5 Q9 8.5 8 8.5Z" fill="currentColor"/><circle cx="9" cy="5" r="2" fill="currentColor" opacity="0.7"/><line x1="9" y1="1.5" x2="9" y2="2.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="11.5" y1="5" x2="12.5" y2="5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="11" y1="3" x2="11.8" y2="2.2" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>';
+  // Overcast
+  if (code === 3) return '<path d="M2.5 9.5 Q1 9.5 1 8 Q1 6.5 2.5 6.2 Q3 4 5.5 4 Q7.8 4 8.5 6 Q10.5 6 11 8 Q11 9.5 9.5 9.5Z" fill="currentColor"/>';
+  // Fog
+  if (code <= 49) return '<line x1="2" y1="5" x2="12" y2="5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="1" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="2" y1="9" x2="12" y2="9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>';
+  // Drizzle / light rain
+  if (code <= 67) return '<path d="M2.5 7 Q1 7 1 5.5 Q1 4 2.5 3.7 Q3 1.5 5.5 1.5 Q7.8 1.5 8.5 3.5 Q10.5 3.5 11 5.5 Q11 7 9.5 7Z" fill="currentColor" opacity="0.8"/><line x1="4" y1="9" x2="3.5" y2="11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="7" y1="9" x2="6.5" y2="11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="10" y1="9" x2="9.5" y2="11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>';
+  // Snow
+  if (code <= 77) return '<path d="M2.5 7 Q1 7 1 5.5 Q1 4 2.5 3.7 Q3 1.5 5.5 1.5 Q7.8 1.5 8.5 3.5 Q10.5 3.5 11 5.5 Q11 7 9.5 7Z" fill="currentColor" opacity="0.7"/><line x1="4" y1="9" x2="4" y2="12" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="2.5" y1="10.5" x2="5.5" y2="10.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="7.5" y1="9" x2="7.5" y2="12" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="6" y1="10.5" x2="9" y2="10.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>';
+  // Thunderstorm
+  return '<path d="M1.5 7.5 Q0.5 7.5 0.5 6 Q0.5 4.5 2 4.2 Q2.5 2 5 2 Q7.3 2 8 4 Q10 4 10.5 6 Q10.5 7.5 9 7.5Z" fill="currentColor" opacity="0.8"/><polyline points="6,7.5 4.5,10 6.5,10 5,13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>';
+}
+
+async function fetchWeather() {
+  try {
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=30.00&longitude=-98.10&current=temperature_2m,weathercode&temperature_unit=fahrenheit&timezone=America%2FChicago', { signal: AbortSignal.timeout(6000) });
+    const d = await r.json();
+    const temp = Math.round(d.current.temperature_2m);
+    const code = d.current.weathercode;
+    const tempEl = document.getElementById('wxTemp');
+    const svgEl = document.getElementById('wxSvg');
+    if (tempEl) tempEl.textContent = temp + '°';
+    if (svgEl) svgEl.innerHTML = wxSvgPath(code);
+  } catch(e) {
+    // silently fail — widget stays at —°
+  }
+}
+
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 loadAllFeeds();
+fetchWeather();
+setInterval(fetchWeather, 15 * 60 * 1000); // refresh weather every 15 min
 // Set Wimberley as the default active tab
 currentFilter = 'wimberley';
 document.querySelectorAll('.filter-tab').forEach(t => {
