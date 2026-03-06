@@ -16,8 +16,8 @@
     --accent: #0bb8da;
     --accent2: #1ad157;
     --text: #e8e4dc;
-    --text-muted: #7a7570;
-    --text-dim: #4a4540;
+    --text-muted: #a09890;
+    --text-dim: #6a6560;
     --green: #2ecc71;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -314,11 +314,11 @@ const FEEDS = [
   { name: 'Austin American-Statesman', lang: 'en', tags: ['hill-country','texas'],
     url: 'https://www.statesman.com/arcio/rss/', max: 8 },
   { name: 'KXAN Austin', lang: 'en', tags: ['hill-country','texas'],
-    url: 'https://www.kxan.com/feed/', max: 8 },
+    url: 'https://www.kxan.com/feed/', max: 3 },
   { name: 'KUT Austin', lang: 'en', tags: ['hill-country','texas'],
     url: 'https://www.kut.org/rss.xml', max: 6 },
   { name: 'KVUE Austin', lang: 'en', tags: ['hill-country','texas'],
-    url: 'https://www.kvue.com/feeds/syndication/rss/news', max: 6 },
+    url: 'https://www.kvue.com/feeds/syndication/rss/news', max: 3 },
 
   // ── HILL COUNTRY — Neighboring cities ────────────────────────────────────────
   { name: 'City of Buda · Alerts', lang: 'en', tags: ['hill-country','weather-disasters','breaking'],
@@ -362,27 +362,27 @@ const FEEDS = [
   { name: 'Texas Standard', lang: 'en', tags: ['texas'],
     url: 'https://www.texasstandard.org/feed/', max: 6 },
   { name: 'Texas Monthly', lang: 'en', tags: ['texas'],
-    url: 'https://www.texasmonthly.com/feed/', max: 6 },
+    url: 'https://www.texasmonthly.com/category/politics/feed/', max: 4 },
   { name: 'Dallas Morning News', lang: 'en', tags: ['texas'],
-    url: 'https://www.dallasnews.com/arc/outboundfeeds/rss/?outputType=xml', max: 8 },
+    url: 'https://www.dallasnews.com/arc/outboundfeeds/rss/?outputType=xml', max: 4 },
   { name: 'Houston Chronicle', lang: 'en', tags: ['texas'],
-    url: 'https://www.chron.com/rss/feed/News-270.php', max: 8 },
+    url: 'https://www.chron.com/rss/feed/News-270.php', max: 4 },
   { name: 'San Antonio Express-News', lang: 'en', tags: ['texas'],
-    url: 'https://www.mysanantonio.com/news/feed/', max: 6 },
+    url: 'https://www.mysanantonio.com/news/feed/', max: 4 },
   { name: 'Fort Worth Star-Telegram', lang: 'en', tags: ['texas'],
-    url: 'https://www.star-telegram.com/news/feed/', max: 6 },
+    url: 'https://www.star-telegram.com/news/feed/', max: 3 },
 
   // ── TEXAS — TV Stations (statewide coverage) ──────────────────────────────────
   { name: 'KHOU Houston', lang: 'en', tags: ['texas'],
-    url: 'https://www.khou.com/feeds/syndication/rss/news', max: 6 },
+    url: 'https://www.khou.com/feeds/syndication/rss/news', max: 3 },
   { name: 'NBC DFW', lang: 'en', tags: ['texas'],
-    url: 'https://www.nbcdfw.com/feed/', max: 6 },
+    url: 'https://www.nbcdfw.com/feed/', max: 3 },
   { name: 'WFAA Dallas', lang: 'en', tags: ['texas'],
-    url: 'https://www.wfaa.com/feeds/syndication/rss/news', max: 6 },
+    url: 'https://www.wfaa.com/feeds/syndication/rss/news', max: 3 },
   { name: 'KSAT San Antonio · TX', lang: 'en', tags: ['texas'],
-    url: 'https://www.ksat.com/rss/news.rss', max: 6 },
+    url: 'https://www.ksat.com/rss/news.rss', max: 3 },
   { name: 'KENS5 San Antonio', lang: 'en', tags: ['texas'],
-    url: 'https://www.kens5.com/feeds/syndication/rss/news', max: 6 },
+    url: 'https://www.kens5.com/feeds/syndication/rss/news', max: 3 },
 
   // ── TEXAS — Government, Policy & Legislature ──────────────────────────────────
   { name: 'TX Legislature · Passed Bills', lang: 'en', tags: ['texas'],
@@ -513,11 +513,11 @@ const FEEDS = [
 
   // ── NATIONAL — General News Wires & Public Media ──────────────────────────────
   { name: 'NPR News', lang: 'en', tags: ['national'],
-    url: 'https://feeds.npr.org/1001/rss.xml', max: 8 },
+    url: 'https://feeds.npr.org/1001/rss.xml', max: 5 },
   { name: 'NPR Politics', lang: 'en', tags: ['national'],
     url: 'https://feeds.npr.org/1014/rss.xml', max: 6 },
   { name: 'AP Top News', lang: 'en', tags: ['national'],
-    url: 'https://feeds.apnews.com/rss/apf-topnews', max: 8 },
+    url: 'https://feeds.apnews.com/rss/apf-topnews', max: 6 },
   { name: 'AP Politics', lang: 'en', tags: ['national'],
     url: 'https://feeds.apnews.com/rss/apf-politics', max: 6 },
   { name: 'Reuters US', lang: 'en', tags: ['national'],
@@ -531,9 +531,9 @@ const FEEDS = [
   { name: 'The Intercept', lang: 'en', tags: ['national','civil-liberties-privacy','geopolitics'],
     url: 'https://theintercept.com/feed/?rss', max: 6 },
   { name: 'The Atlantic', lang: 'en', tags: ['national'],
-    url: 'https://www.theatlantic.com/feed/all/', max: 6 },
+    url: 'https://www.theatlantic.com/feed/channel/politics/', max: 6 },
   { name: 'Axios', lang: 'en', tags: ['national'],
-    url: 'https://api.axios.com/feed/', max: 6 },
+    url: 'https://api.axios.com/feed/politics/', max: 6 },
   { name: 'Politico', lang: 'en', tags: ['national'],
     url: 'https://www.politico.com/rss/politicopicks.xml', max: 6 },
   { name: 'The Hill', lang: 'en', tags: ['national'],
@@ -721,8 +721,6 @@ const FEEDS = [
   // ── Technical & policy research ───────────────────────────────────────────────
   { name: 'MIT Technology Review', lang: 'en', tags: ['cyber-ai-tech','national'],
     url: 'https://www.technologyreview.com/feed/', max: 6 },
-  { name: 'Wired', lang: 'en', tags: ['national','cyber-ai-tech'],
-    url: 'https://www.wired.com/feed/rss', max: 6 },
   { name: 'AI Safety News', lang: 'en', tags: ['cyber-ai-tech','national'],
     url: 'https://news.google.com/rss/search?q=%22AI+safety%22+OR+%22AI+risk%22+OR+%22AI+regulation%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'The Gradient', lang: 'en', tags: ['cyber-ai-tech','national'],
@@ -1090,6 +1088,29 @@ const BLOCK_KEYWORDS = [
   'recipe','best restaurants','things to do this weekend',
   'travel guide','horoscope','zodiac sign',
   'lottery winner','real estate listing','home for sale',
+  // Product reviews & consumer tech
+  'buying guide','best laptop','best phone','best tablet','best headphones',
+  'best router','best wi-fi','best thumb drive','best hard drive','best monitor',
+  'hands-on review','hands on review','unboxing','price drop','deal alert',
+  'black friday','cyber monday','prime day','best deals','gift guide',
+  'product review','first look:','vs. review',
+  // Sports not already blocked
+  'formula 1','f1 race','f1 season','tour de france','wimbledon',
+  'us open tennis','masters golf','pga tour','ufc fight',
+  'boxing match','olympic games','olympics 2','world cup','premier league',
+  'la liga','bundesliga','serie a','champions league','nba playoffs',
+  'nba finals','mlb playoffs','world series','stanley cup',
+  // Entertainment & celebrity
+  'taylor swift','beyoncé','beyonce','kanye','kardashian',
+  'trailer released','official trailer','season finale','renewed for',
+  'cancelled after','streaming now','now streaming','what to watch',
+  'movie trailer','album drops','tour dates',
+  // Lifestyle & soft news
+  'weight loss','skin care','skincare','fashion week','red carpet',
+  'best places to live','cost of living ranking','road trip guide',
+  'travel tips','weekend getaway',
+  'best coffee','best tacos','restaurant review','bar review',
+  'home decor','interior design','wedding','engagement announced',
 ];
 
 // ─── DEDUPLICATION ────────────────────────────────────────────────────────────
