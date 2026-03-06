@@ -629,6 +629,46 @@ const BLOCK_KEYWORDS = [
   'lottery winner','real estate listing','home for sale',
 ];
 
+// ─── DEDUPLICATION ────────────────────────────────────────────────────────────
+// Strips a title down to a normalized fingerprint for comparison:
+// lowercase, remove punctuation/stopwords, collapse whitespace.
+function titleFingerprint(title) {
+  return title.toLowerCase()
+    .replace(/[^a-z0-9 ]/g, ' ')
+    .replace(/\b(a|an|the|in|on|at|to|for|of|and|or|is|are|was|were|says|say)\b/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Given a sorted array of articles, remove duplicates by title similarity.
+// Keeps the first occurrence (earliest in sort order = most recent date).
+// Two articles are considered duplicates if their fingerprints share
+// >= DEDUPE_THRESHOLD fraction of words.
+const DEDUPE_THRESHOLD = 0.6; // 60% word overlap = duplicate
+
+function deduplicate(articles) {
+  const kept = [];
+  const fingerprints = [];
+
+  for (const article of articles) {
+    const fp = titleFingerprint(article.title);
+    const fpWords = new Set(fp.split(' ').filter(w => w.length > 2));
+    if (!fpWords.size) { kept.push(article); continue; }
+
+    const isDupe = fingerprints.some(existingWords => {
+      const intersection = [...fpWords].filter(w => existingWords.has(w)).length;
+      const union = new Set([...fpWords, ...existingWords]).size;
+      return intersection / union >= DEDUPE_THRESHOLD;
+    });
+
+    if (!isDupe) {
+      kept.push(article);
+      fingerprints.push(fpWords);
+    }
+  }
+  return kept;
+}
+
 function isBlocked(article) {
   const haystack = (article.title + ' ' + (article.summary || '')).toLowerCase();
   return BLOCK_KEYWORDS.some(kw => haystack.includes(kw));
@@ -919,7 +959,8 @@ async function loadAllFeeds() {
 
   const results = await Promise.allSettled(FEEDS.map(f => fetchFeed(f)));
   const rawArticles = results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
-  allArticles = rawArticles.sort((a, b) => b.date - a.date);
+  const sorted = rawArticles.sort((a, b) => b.date - a.date);
+  allArticles = deduplicate(sorted);
 
   const okCount = Object.values(sourceStatus).filter(s => s === 'ok').length;
   const errCount = Object.values(sourceStatus).filter(s => s === 'error').length;
