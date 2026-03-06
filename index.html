@@ -608,7 +608,8 @@ const FEEDS = [
     url: 'https://iapp.org/news/rss/', max: 5 },
   { name: 'Electronic Frontier Foundation', lang: 'en', tags: ['cyber-ai-tech','civil-liberties-privacy'],
     url: 'https://www.eff.org/rss/updates.xml', max: 5 },
-  
+  { name: 'Motherboard (Vice)', lang: 'en', tags: ['cyber-ai-tech','national'],
+    url: 'https://www.vice.com/en/rss/?section=tech', max: 5 },
   // ── CYBER & DATA — Threat Intelligence & Vulnerabilities ─────────────────────
   { name: 'US-CERT Alerts', lang: 'en', tags: ['cyber-ai-tech','national','breaking'],
     url: 'https://www.cisa.gov/uscert/ncas/alerts.xml', max: 6 },
@@ -974,7 +975,7 @@ const LOCAL_SOURCES = new Set([
   '404 Media', 'Wired · Security', 'Wired',
   'Krebs on Security', 'The Hacker News', 'Dark Reading', 'Bleeping Computer',
   'Recorded Future News', 'CyberScoop', 'SecurityWeek', 'IAPP Privacy News',
-  'Electronic Frontier Foundation', 'US-CERT Alerts',
+  'Electronic Frontier Foundation', 'Motherboard (Vice)', 'US-CERT Alerts',
   'SANS Internet Storm Ctr', 'Cyber · Infra Attacks',
   'MIT Technology Review', 'AI Safety News', 'The Gradient', '80,000 Hours',
   'NIST AI News', 'AI Policy · Congress', 'Center for AI Safety',
@@ -1175,6 +1176,7 @@ async function translate(text, fromLang = 'es') {
 let allArticles = [];
 let sourceStatus = {};
 let currentFilter = 'breaking';
+let lastLoadTime = 0;
 let currentTimeHours = 168;
 
 // ─── PROXY HELPERS ────────────────────────────────────────────────────────────
@@ -1431,6 +1433,7 @@ async function loadAllFeeds() {
   renderSourcePills();
   renderAlertStrip();
   applyDisplayFilters();
+  lastLoadTime = Date.now();
 }
 
 // ─── ALERT STRIP ──────────────────────────────────────────────────────────────
@@ -1489,6 +1492,19 @@ window.addEventListener('load', () => {
   }
 });
 window.addEventListener('resize', updateTabArrows);
+
+// ─── AUTO-REFRESH ─────────────────────────────────────────────────────────────
+// 1. Staleness check on tab restore — if you return after 1+ hour, reload immediately
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    const hoursSince = (Date.now() - lastLoadTime) / 3600000;
+    if (hoursSince >= 1) loadAllFeeds();
+  }
+});
+// 2. Background interval — quietly refresh every 30 minutes while tab is visible
+setInterval(() => {
+  if (document.visibilityState === 'visible') loadAllFeeds();
+}, 30 * 60 * 1000);
 </script>
 </body>
 </html>
