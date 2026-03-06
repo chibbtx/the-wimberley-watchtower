@@ -108,6 +108,8 @@
   .warning-btn:hover { background: #7a2a2a; }
   .filter-tab-conflict { color: #8a4a4a !important; }
   .filter-tab-conflict.active { color: #e05050 !important; border-bottom-color: #e05050 !important; }
+  .filter-tab-breaking { color: #cc6600 !important; }
+  .filter-tab-breaking.active { color: #ff8800 !important; border-bottom-color: #ff8800 !important; }
 
   @media (max-width: 600px) {
     .logo-sub { display: none; }
@@ -129,7 +131,7 @@
       <div class="logo-main">
         <span style="color:var(--text)">The </span><span style="color:var(--accent)">Wimberley </span><span style="color:var(--accent2)">Watchtower</span>
       </div>
-      <div class="logo-sub">Personal Threat Intelligence</div>
+      <div class="logo-sub">Situational Awareness Dashboard</div>
     </div>
     <div class="header-right">
       <div class="timestamp" id="timestamp">—</div>
@@ -143,6 +145,7 @@
 <div class="filter-bar">
   <div class="filter-inner">
     <button class="filter-tab active" onclick="filterBy('all', this)">All Sources</button>
+    <button class="filter-tab filter-tab-breaking" onclick="filterBy('breaking', this)">🔴 Breaking &amp; Alerts</button>
     <button class="filter-tab" onclick="filterBy('local', this)">Local</button>
     <button class="filter-tab" onclick="filterBy('texas', this)">Texas</button>
     <button class="filter-tab" onclick="filterBy('national', this)">National</button>
@@ -161,7 +164,7 @@
 <div class="site-description">
   <div class="site-description-inner">
     <div class="site-desc-text">
-      <strong>The Wimberley Watchtower</strong> aggregates open-source threat intelligence across weather, cybersecurity, geopolitics, civil liberties, and public health — built for situational awareness in Wimberley, Texas.
+      <strong>The Wimberley Watchtower</strong> aggregates local government alerts, community news, and global intelligence across weather, cybersecurity, civil liberties, and public health — your situational awareness hub for Wimberley, Texas and the wider world.
     </div>
   </div>
 </div>
@@ -228,7 +231,7 @@ const FEEDS = [
 
   // ── LOCAL — City of Wimberley (CivicEngage granular feeds) ───────────────────
   // Alerts first — burn bans, flood warnings, boil water, road closures
-  { name: 'Wimberley · Alerts', lang: 'en', tags: ['local','weather-disasters'],
+  { name: 'Wimberley · Alerts', lang: 'en', tags: ['local','weather-disasters','breaking'],
     url: 'https://www.cityofwimberley.com/RSSFeed.aspx?ModID=63&CID=All-0', max: 6 },
   { name: 'Wimberley · News', lang: 'en', tags: ['local'],
     url: 'https://www.cityofwimberley.com/RSSFeed.aspx?ModID=1&CID=All-newsflash.xml', max: 6 },
@@ -240,7 +243,7 @@ const FEEDS = [
     url: 'https://www.cityofwimberley.com/RSSFeed.aspx?ModID=51&CID=All-blog.xml', max: 4 },
 
   // ── LOCAL — City of Woodcreek (Wimberley's neighbor, CivicEngage) ─────────────
-  { name: 'Woodcreek · Alerts', lang: 'en', tags: ['local','weather-disasters'],
+  { name: 'Woodcreek · Alerts', lang: 'en', tags: ['local','weather-disasters','breaking'],
     url: 'https://www.woodcreektx.gov/RSSFeed.aspx?ModID=63&CID=All-0', max: 5 },
   { name: 'Woodcreek · News', lang: 'en', tags: ['local'],
     url: 'https://www.woodcreektx.gov/RSSFeed.aspx?ModID=1&CID=All-newsflash.xml', max: 5 },
@@ -258,7 +261,7 @@ const FEEDS = [
     url: 'https://communityimpact.com/news/austin/southwest-austin-dripping-springs/feed/', max: 6 },
 
   // ── LOCAL — Neighboring cities (CivicEngage confirmed) ───────────────────────
-  { name: 'City of Buda · Alerts', lang: 'en', tags: ['local','weather-disasters'],
+  { name: 'City of Buda · Alerts', lang: 'en', tags: ['local','weather-disasters','breaking'],
     url: 'https://budatx.gov/RSSFeed.aspx?ModID=63&CID=Emergency-Alerts-1', max: 5 },
   { name: 'City of Buda · News', lang: 'en', tags: ['local'],
     url: 'https://budatx.gov/RSSFeed.aspx?ModID=1&CID=All-newsflash.xml', max: 5 },
@@ -273,10 +276,10 @@ const FEEDS = [
 
   // ── LOCAL — Water & environmental authorities ──────────────────────────────────
   // LCRA manages Highland Lakes & Blanco River basin — critical for flood intelligence
-  { name: 'LCRA News', lang: 'en', tags: ['local','weather-disasters','texas'],
+  { name: 'LCRA News', lang: 'en', tags: ['local','weather-disasters','texas','breaking'],
     url: 'https://www.lcra.org/category/news/feed/', max: 6 },
   // GBRA manages Canyon Reservoir & Guadalupe; Canyon Lake levels affect Wimberley
-  { name: 'GBRA News', lang: 'en', tags: ['local','weather-disasters'],
+  { name: 'GBRA News', lang: 'en', tags: ['local','weather-disasters','breaking'],
     url: 'https://www.gbra.org/news/feed/', max: 5 },
   // Edwards Aquifer Authority — Wimberley's water supply; drought stage alerts
   { name: 'Edwards Aquifer Authority', lang: 'en', tags: ['local','weather-disasters'],
@@ -311,7 +314,7 @@ const FEEDS = [
   { name: 'Wimberley ISD', lang: 'en', tags: ['local'],
     url: 'https://news.google.com/rss/search?q=%22Wimberley+ISD%22+OR+%22Wimberley+Independent+School%22&hl=en-US&gl=US&ceid=US:en', max: 4 },
   // Burn bans & fire/ESD activity — no official RSS, Google News fallback
-  { name: 'Wimberley Fire & Burn Ban', lang: 'en', tags: ['local','weather-disasters'],
+  { name: 'Wimberley Fire & Burn Ban', lang: 'en', tags: ['local','weather-disasters','breaking'],
     url: 'https://news.google.com/rss/search?q=%22Wimberley+fire%22+OR+%22burn+ban%22+%22Hays+County%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── TEXAS ─────────────────────────────────────────────────────────────────────
@@ -328,13 +331,13 @@ const FEEDS = [
 
   // ── WEATHER & DISASTERS ───────────────────────────────────────────────────────
   // NWS Austin/San Antonio (EWX) — the forecast office covering Wimberley
-  { name: 'NWS Austin / San Antonio', lang: 'en', tags: ['weather-disasters','local'],
+  { name: 'NWS Austin / San Antonio', lang: 'en', tags: ['weather-disasters','local','breaking'],
     url: 'https://www.weather.gov/rss_page.php?site_name=ewx', max: 8 },
   // NOAA national news — major weather events, climate hazards
-  { name: 'NOAA News', lang: 'en', tags: ['weather-disasters','national'],
+  { name: 'NOAA News', lang: 'en', tags: ['weather-disasters','national','breaking'],
     url: 'https://www.noaanews.noaa.gov/rss.xml', max: 6 },
   // Texas wildfire/flood monitoring via Google News (Hill Country specific risk)
-  { name: 'Texas Hill Country Hazards', lang: 'en', tags: ['weather-disasters','texas','local'],
+  { name: 'Texas Hill Country Hazards', lang: 'en', tags: ['weather-disasters','texas','local','breaking'],
     url: 'https://news.google.com/rss/search?q=flood+OR+wildfire+texas+%22hill+country%22+OR+wimberley+OR+%22hays+county%22&hl=en-US&gl=US&ceid=US:en', max: 6 },
 
   // ── NATIONAL ──────────────────────────────────────────────────────────────────
@@ -719,18 +722,23 @@ function setTimeFilter(hours, el) {
 function applyDisplayFilters() {
   const query = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
   const isConflictTab = currentFilter === 'conflict';
+  const isBreakingTab = currentFilter === 'breaking';
 
   let filtered;
   if (isConflictTab) {
     filtered = allArticles.filter(a => a.tags.includes('conflict'));
+  } else if (isBreakingTab) {
+    filtered = allArticles.filter(a => a.tags.includes('breaking'));
   } else if (currentFilter === 'all') {
     filtered = allArticles.filter(a => !a.tags.includes('conflict'));
   } else {
     filtered = allArticles.filter(a => !a.tags.includes('conflict') && a.tags.includes(currentFilter));
   }
 
-  if (currentTimeHours > 0) {
-    const cutoff = Date.now() - currentTimeHours * 3600 * 1000;
+  // Breaking tab defaults to 24h; otherwise use the user's selected time filter
+  const effectiveHours = isBreakingTab && currentTimeHours === 0 ? 24 : currentTimeHours;
+  if (effectiveHours > 0) {
+    const cutoff = Date.now() - effectiveHours * 3600 * 1000;
     filtered = filtered.filter(a => a.date && a.date.getTime() >= cutoff);
   }
 
@@ -749,6 +757,12 @@ function filterBy(tag, el) {
   currentFilter = tag;
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
   if (el) el.classList.add('active');
+  // Breaking tab: visually highlight the 24h button to signal the auto-filter
+  if (tag === 'breaking') {
+    document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+    const btn24 = document.querySelector('.time-btn[data-hours="24"]');
+    if (btn24) btn24.classList.add('active');
+  }
   applyDisplayFilters();
 }
 
