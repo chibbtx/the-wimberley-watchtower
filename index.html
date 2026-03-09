@@ -77,7 +77,7 @@
   .alert-item-title { font-size: 0.78rem; color: #e8c4a0; font-weight: 400; }
   .alert-item-time { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: #7a4a2a; flex-shrink: 0; }
   .alert-sep { color: #5a2a0a; padding: 0 4px; font-size: 0.7rem; }
-  .alert-strip-empty { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: #5a3a2a; padding: 0 16px; }
+  .alert-strip-empty { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: #5a3a2a; padding: 0 16px; height: 32px; display: inline-flex; align-items: center; }
   .burn-ban-chip { display: inline-flex; align-items: center; padding: 0 20px; height: 32px; text-decoration: none; flex-shrink: 0; }
   .burn-ban-chip:hover { background: rgba(255,80,0,0.1); }
   .burn-ban-chip-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #ff6600; }
@@ -1573,7 +1573,7 @@ function renderAlertStrip() {
   if (!inner) return;
 
   if (!alerts.length) {
-    inner.innerHTML = '<span class="alert-strip-empty">No local advisories in the last 8 hours</span>';
+    inner.innerHTML = '<span class="alert-strip-empty">No active advisories</span>';
     inner.style.animation = 'none';
     return;
   }
