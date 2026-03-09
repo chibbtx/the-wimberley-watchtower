@@ -78,6 +78,10 @@
   .alert-item-time { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: #7a4a2a; flex-shrink: 0; }
   .alert-sep { color: #5a2a0a; padding: 0 4px; font-size: 0.7rem; }
   .alert-strip-empty { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: #5a3a2a; padding: 0 16px; }
+  .burn-ban-chip { display: inline-flex; align-items: center; gap: 7px; padding: 0 20px; height: 32px; text-decoration: none; flex-shrink: 0; }
+  .burn-ban-chip:hover { background: rgba(255,80,0,0.1); }
+  .burn-ban-chip-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #ff4400; box-shadow: 0 0 6px #ff4400; animation: pulse 1s ease-in-out infinite; flex-shrink: 0; }
+  .burn-ban-chip-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #ff6600; }
 
   /* SUB-BAR */
   .sub-bar { background: var(--bg); }
@@ -1016,7 +1020,7 @@ const LOCAL_SOURCES = new Set([
   'Woodcreek · Alerts', 'Woodcreek · News',
   'Hays Free Press · Wimberley', 'Wimberley ISD', 'Wimberley Fire & Burn Ban',
   'GBRA News', 'Edwards Aquifer Authority', 'Watershed Association', 'Blanco River Watch',
-  'Hays County Sheriff', 'Hays County DA',
+  'Hays County Sheriff', 'Hays County DA', 'Hays County Fire Marshal',
   // Hill Country
   'Hays Free Press · Hays County', 'SM Corridor News',
   'Community Impact · Hays County', 'Community Impact · Dripping Springs',
@@ -1506,12 +1510,13 @@ async function loadAllFeeds() {
     Array(6).fill('<div class="skeleton-card"><div class="skel" style="height:10px;width:30%;margin-bottom:4px"></div><div class="skel" style="height:18px;width:88%"></div><div class="skel" style="height:13px;width:70%"></div><div class="skel" style="height:9px;width:20%"></div></div>').join('') +
     '</div>';
 
-  const [results, nwsAlerts] = await Promise.all([
+  const [results, nwsAlerts, burnBanArticle] = await Promise.all([
     Promise.allSettled(FEEDS.map(f => fetchFeed(f))),
-    fetchNWSAlerts()
+    fetchNWSAlerts(),
+    fetchBurnBan()
   ]);
   const rawArticles = results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
-  const combined = [...rawArticles, ...nwsAlerts];
+  const combined = [...rawArticles, ...nwsAlerts, ...(burnBanArticle ? [burnBanArticle] : [])];
   const sorted = combined.sort((a, b) => b.date - a.date);
   allArticles = deduplicate(sorted);
 
@@ -1575,6 +1580,12 @@ function renderAlertStrip() {
 
   // Build two copies for seamless loop
   const buildItems = () => alerts.map(a => {
+    if (a.isBurnBan) {
+      return '<a class="burn-ban-chip" href="' + a.link + '" target="_blank" rel="noopener noreferrer">' +
+        '<span class="burn-ban-chip-dot"></span>' +
+        '<span class="burn-ban-chip-label">Burn Ban ON</span>' +
+        '</a><span class="alert-sep">·</span>';
+    }
     const ago = timeAgo(a.date);
     return '<a class="alert-item" href="' + a.link + '" target="_blank" rel="noopener noreferrer">' +
       '<span class="alert-item-source">' + a.source + '</span>' +
@@ -1637,6 +1648,49 @@ async function fetchNWSAlerts() {
   } catch(e) {
     return [];
   }
+}
+
+// ─── BURN BAN CHECK (Texas A&M Forest Service ArcGIS) ────────────────────────
+// Queries the TFS statewide burn ban FeatureServer for Hays County.
+// Caches result for 24 hours — re-checks on page load if stale.
+// If BurnBan === 'Yes', injects a synthetic article into allArticles so it
+// appears in the ticker and on the Wimberley/weather-disasters tabs.
+let burnBanCache = null; // { status: 'Yes'|'No', checkedAt: timestamp }
+
+async function fetchBurnBan() {
+  const CACHE_MS = 24 * 60 * 60 * 1000; // 24 hours
+  const now = Date.now();
+  if (burnBanCache && (now - burnBanCache.checkedAt) < CACHE_MS) {
+    return burnBanCache.status === 'Yes' ? makeBurnBanArticle() : null;
+  }
+  try {
+    const url = "https://tfsgis.tfs.tamu.edu/arcgis/rest/services/BurnBan/BurnBan/MapServer/0/query" +
+      "?where=County%3D'Hays'&outFields=County,BurnBan,StartDate&f=json";
+    const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    if (!r.ok) return null;
+    const data = await r.json();
+    const feat = data.features && data.features[0];
+    const status = feat ? (feat.attributes.BurnBan || 'No') : 'No';
+    burnBanCache = { status, checkedAt: now };
+    return status === 'Yes' ? makeBurnBanArticle() : null;
+  } catch(e) {
+    return null;
+  }
+}
+
+function makeBurnBanArticle() {
+  return {
+    title: 'Burn Ban: ON',
+    summary: 'Hays County burn ban is currently in effect.',
+    rawTitle: 'Burn Ban: ON',
+    rawSummary: '',
+    link: 'https://www.haysinformed.com/',
+    source: 'Hays County Fire Marshal',
+    lang: 'en',
+    tags: ['wimberley', 'weather-disasters', 'breaking'],
+    date: new Date(),
+    isBurnBan: true
+  };
 }
 
 // ─── WEATHER WIDGET ───────────────────────────────────────────────────────────
