@@ -4,12 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Wimberley Watchtower</title>
-<meta property="og:title" content="The Wimberley Watchtower">
-<meta property="og:description" content="The Wimberley Valley's Situational Awareness Dashboard">
-<meta property="og:image" content="https://raw.githubusercontent.com/chibbtx/the-wimberley-watchtower/main/og-image.png">
-<meta property="og:url" content="https://chibbtx.github.io/the-wimberley-watchtower/">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗼</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
@@ -1548,12 +1542,17 @@ function renderAlertStrip() {
     'burn ban'
   ];
 
+  const NWS_SOURCES = new Set(['NWS Austin / San Antonio', 'Comal County · Alerts']);
+
   const cutoff = Date.now() - 8 * 3600 * 1000;
   const alerts = allArticles
     .filter(a => {
       if (!a.tags.includes('breaking')) return false;
       if (!a.date || a.date.getTime() < cutoff) return false;
       const hay = (a.title + ' ' + (a.summary || '') + ' ' + (a.rawTitle || '')).toLowerCase();
+      if (NWS_SOURCES.has(a.source)) {
+        return hay.includes('hays') || hay.includes('wimberley');
+      }
       return ADVISORY_KEYWORDS.some(kw => hay.includes(kw));
     })
     .slice(0, 20);
