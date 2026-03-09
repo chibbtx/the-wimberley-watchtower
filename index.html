@@ -1506,9 +1506,13 @@ async function loadAllFeeds() {
     Array(6).fill('<div class="skeleton-card"><div class="skel" style="height:10px;width:30%;margin-bottom:4px"></div><div class="skel" style="height:18px;width:88%"></div><div class="skel" style="height:13px;width:70%"></div><div class="skel" style="height:9px;width:20%"></div></div>').join('') +
     '</div>';
 
-  const results = await Promise.allSettled(FEEDS.map(f => fetchFeed(f)));
+  const [results, nwsAlerts] = await Promise.all([
+    Promise.allSettled(FEEDS.map(f => fetchFeed(f))),
+    fetchNWSAlerts()
+  ]);
   const rawArticles = results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
-  const sorted = rawArticles.sort((a, b) => b.date - a.date);
+  const combined = [...rawArticles, ...nwsAlerts];
+  const sorted = combined.sort((a, b) => b.date - a.date);
   allArticles = deduplicate(sorted);
 
   const okCount = Object.values(sourceStatus).filter(s => s === 'ok').length;
@@ -1543,11 +1547,14 @@ function renderAlertStrip() {
   ];
 
   const NWS_SOURCES = new Set(['NWS Austin / San Antonio', 'Comal County · Alerts']);
+  const NWS_DIRECT = new Set(['NWS · Hays County']);
 
   const cutoff = Date.now() - 8 * 3600 * 1000;
   const alerts = allArticles
     .filter(a => {
       if (!a.tags.includes('breaking')) return false;
+      // NWS · Hays County alerts use their own expires time — always pass if still active
+      if (NWS_DIRECT.has(a.source)) return true;
       if (!a.date || a.date.getTime() < cutoff) return false;
       const hay = (a.title + ' ' + (a.summary || '') + ' ' + (a.rawTitle || '')).toLowerCase();
       if (NWS_SOURCES.has(a.source)) {
@@ -1584,6 +1591,52 @@ function renderAlertStrip() {
   const contentWidth = inner.scrollWidth / 2;
   const duration = Math.max(20, Math.round(contentWidth / 80));
   inner.style.animationDuration = duration + 's';
+}
+
+
+// ─── NWS ALERTS (api.weather.gov) ────────────────────────────────────────────
+// Fetches active NWS alerts for Hays County (TXZ191) directly from the
+// api.weather.gov GeoJSON endpoint — no proxy needed, CORS-permissive.
+// Each alert is mapped into an article-shaped object and merged into allArticles.
+// Uses the alert's own 'expires' timestamp rather than the generic 8h cutoff.
+async function fetchNWSAlerts() {
+  try {
+    const r = await fetch('https://api.weather.gov/alerts/active?zone=TXZ191', {
+      headers: { 'User-Agent': 'WimberleyWatchtower/1.0 (wimberley-watchtower)' },
+      signal: AbortSignal.timeout(9000)
+    });
+    if (!r.ok) return [];
+    const data = await r.json();
+    const features = data.features || [];
+    const now = Date.now();
+    return features
+      .map(f => {
+        const p = f.properties;
+        const expires = p.expires ? new Date(p.expires) : null;
+        // Skip already-expired alerts
+        if (expires && expires.getTime() < now) return null;
+        const sent = p.sent ? new Date(p.sent) : new Date();
+        const headline = p.headline || p.event || 'NWS Alert';
+        const description = p.description
+          ? p.description.replace(/\s+/g, ' ').trim().slice(0, 180) + '\u2026'
+          : '';
+        return {
+          title: headline,
+          summary: description,
+          rawTitle: headline,
+          rawSummary: description,
+          link: 'https://www.weather.gov/ewx',
+          source: 'NWS \u00b7 Hays County',
+          lang: 'en',
+          tags: ['weather-disasters', 'breaking'],
+          date: sent,
+          nwsExpires: expires
+        };
+      })
+      .filter(Boolean);
+  } catch(e) {
+    return [];
+  }
 }
 
 // ─── WEATHER WIDGET ───────────────────────────────────────────────────────────
