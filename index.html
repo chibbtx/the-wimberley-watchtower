@@ -276,7 +276,7 @@
         <button class="filter-tab" onclick="filterBy('texas', this)">Texas</button>
         <button class="filter-tab" onclick="filterBy('national', this)">National</button>
         <button class="filter-tab" onclick="filterBy('finance', this)">Finance &amp; Economy</button>
-        <button class="filter-tab" onclick="filterBy('weather-disasters', this)">Weather &amp; Disasters</button>
+        <button class="filter-tab" onclick="filterBy('weather-disasters', this)">Weather &amp; Climate</button>
         <button class="filter-tab" onclick="filterBy('geopolitics', this)">Geopolitics</button>
         <button class="filter-tab" onclick="filterBy('civil-liberties-privacy', this)">Civil Liberties &amp; Privacy</button>
         <button class="filter-tab" onclick="filterBy('cyber-ai-tech', this)">Cyber, AI &amp; Tech</button>
@@ -558,7 +558,7 @@ const FEEDS = [
   // InciWeb — official USFS/NIFC incident information for active wildfires
   { name: 'InciWeb · Active Fires', lang: 'en', tags: ['weather-disasters','breaking'],
     url: 'https://inciweb.wildfire.gov/feeds/rss/incidents/', max: 8 },
-  { name: 'NIFC · National Fire News', lang: 'en', tags: ['weather-disasters','national'],
+  { name: 'NIFC · National Fire News', lang: 'en', tags: ['weather-disasters'],
     url: 'https://www.nifc.gov/nicc/news/rss.xml', max: 5 },
   { name: 'Texas Wildfire · Current', lang: 'en', tags: ['weather-disasters','texas','breaking'],
     url: 'https://news.google.com/rss/search?q=texas+wildfire+OR+%22grass+fire%22+%22hill+country%22+OR+%22hays+county%22+OR+%22blanco+county%22&hl=en-US&gl=US&ceid=US:en', max: 6 },
@@ -566,7 +566,7 @@ const FEEDS = [
   // ── WEATHER & DISASTERS — Drought ─────────────────────────────────────────────
   // US Drought Monitor — weekly update every Thursday; Hill Country is perpetually
   // in drought risk zone
-  { name: 'US Drought Monitor', lang: 'en', tags: ['weather-disasters','national'],
+  { name: 'US Drought Monitor', lang: 'en', tags: ['weather-disasters'],
     url: 'https://droughtmonitor.unl.edu/rss/', max: 5 },
   { name: 'Texas Drought Watch', lang: 'en', tags: ['weather-disasters','texas'],
     url: 'https://news.google.com/rss/search?q=texas+drought+%22hill+country%22+OR+%22edwards+aquifer%22+OR+%22highland+lakes%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
@@ -582,27 +582,27 @@ const FEEDS = [
   // ── WEATHER & DISASTERS — Air Quality ────────────────────────────────────────
   { name: 'AirNow · TX Alerts', lang: 'en', tags: ['weather-disasters','texas'],
     url: 'https://news.google.com/rss/search?q=texas+%22air+quality%22+%22unhealthy%22+OR+%22red+flag%22+OR+%22ozone+action%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
-  { name: 'EPA · Air & Radiation', lang: 'en', tags: ['weather-disasters','national'],
+  { name: 'EPA · Air & Radiation', lang: 'en', tags: ['weather-disasters'],
     url: 'https://www.epa.gov/rss/epa-news-releases-air-and-radiation.xml', max: 5 },
 
   // ── WEATHER & DISASTERS — National Hazards & FEMA ────────────────────────────
-  { name: 'NOAA News', lang: 'en', tags: ['weather-disasters','national','breaking'],
+  { name: 'NOAA News', lang: 'en', tags: ['weather-disasters','breaking'],
     url: 'https://www.noaanews.noaa.gov/rss.xml', max: 6 },
-  { name: 'FEMA News', lang: 'en', tags: ['weather-disasters','national'],
+  { name: 'FEMA News', lang: 'en', tags: ['weather-disasters'],
     url: 'https://www.fema.gov/feeds/fema_news.rss', max: 6 },
-  { name: 'USGS · Natural Hazards', lang: 'en', tags: ['weather-disasters','national'],
+  { name: 'USGS · Natural Hazards', lang: 'en', tags: ['weather-disasters'],
     url: 'https://www.usgs.gov/news/rss-news?topic_id[]=267', max: 5 },
-  { name: 'NWS · Storm Prediction Ctr', lang: 'en', tags: ['weather-disasters','national'],
+  { name: 'NWS · Storm Prediction Ctr', lang: 'en', tags: ['weather-disasters'],
     url: 'https://www.spc.noaa.gov/products/spcacrss.xml', max: 6 },
-  { name: 'Severe Weather · US', lang: 'en', tags: ['weather-disasters','national'],
+  { name: 'Severe Weather · US', lang: 'en', tags: ['weather-disasters'],
     url: 'https://news.google.com/rss/search?q=severe+weather+tornado+OR+%22ice+storm%22+OR+%22winter+storm%22+warning+issued&hl=en-US&gl=US&ceid=US:en', max: 6 },
 
   // ── WEATHER & DISASTERS — Climate & Environment ───────────────────────────────
   { name: 'Texas Hill Country Hazards', lang: 'en', tags: ['weather-disasters','hill-country','breaking'],
     url: 'https://news.google.com/rss/search?q=flood+OR+wildfire+texas+%22hill+country%22+OR+wimberley+OR+%22hays+county%22&hl=en-US&gl=US&ceid=US:en', max: 6 },
-  { name: 'Climate Central', lang: 'en', tags: ['weather-disasters','national'],
+  { name: 'Climate Central', lang: 'en', tags: ['weather-disasters'],
     url: 'https://www.climatecentral.org/feed', max: 5 },
-  { name: 'Inside Climate News', lang: 'en', tags: ['weather-disasters','national'],
+  { name: 'Inside Climate News', lang: 'en', tags: ['weather-disasters'],
     url: 'https://insideclimatenews.org/feed/', max: 5 },
 
   // ── NATIONAL — General News Wires & Public Media ──────────────────────────────
@@ -622,7 +622,7 @@ const FEEDS = [
   // ── NATIONAL — Investigative & Long-form ──────────────────────────────────────
   { name: 'ProPublica', lang: 'en', tags: ['national','civil-liberties-privacy'],
     url: 'https://feeds.propublica.org/propublica/main', max: 6 },
-  { name: 'The Intercept', lang: 'en', tags: ['national','civil-liberties-privacy','geopolitics'],
+  { name: 'The Intercept', lang: 'en', tags: ['civil-liberties-privacy','geopolitics'],
     url: 'https://theintercept.com/feed/?rss', max: 6 },
   { name: 'The Atlantic', lang: 'en', tags: ['national'],
     url: 'https://www.theatlantic.com/feed/channel/politics/', max: 6 },
@@ -672,7 +672,7 @@ const FEEDS = [
   { name: 'Wolf Street', lang: 'en', tags: ['finance'],
     url: 'https://wolfstreet.com/feed/', max: 5 },
   // ── FINANCE & ECONOMY — Trade, tariffs & Texas economy ───────────────────────
-  { name: 'Tariffs & Trade', lang: 'en', tags: ['finance','national'],
+  { name: 'Tariffs & Trade', lang: 'en', tags: ['finance'],
     url: 'https://news.google.com/rss/search?q=tariff+OR+trade+war+OR+"trade+policy"+US+economy&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'Texas Economy', lang: 'en', tags: ['finance','texas'],
     url: 'https://news.google.com/rss/search?q=texas+economy+OR+"texas+jobs"+OR+"texas+gdp"+OR+ERCOT+energy+cost&hl=en-US&gl=US&ceid=US:en', max: 5 },
@@ -747,11 +747,11 @@ const FEEDS = [
     url: 'https://news.google.com/rss/search?q=texas+immigration+deportation+ICE+rights&hl=en-US&gl=US&ceid=US:en', max: 6 },
 
   // ── CIVIL LIBERTIES & PRIVACY — Press Freedom ────────────────────────────────
-  { name: 'Committee to Protect Journalists', lang: 'en', tags: ['civil-liberties-privacy','national'],
+  { name: 'Committee to Protect Journalists', lang: 'en', tags: ['civil-liberties-privacy'],
     url: 'https://cpj.org/feed/', max: 5 },
   { name: 'First Amendment Watch', lang: 'en', tags: ['civil-liberties-privacy','national'],
     url: 'https://firstamendmentwatch.org/feed/', max: 5 },
-  { name: 'Reporters Without Borders', lang: 'en', tags: ['civil-liberties-privacy','national'],
+  { name: 'Reporters Without Borders', lang: 'en', tags: ['civil-liberties-privacy'],
     url: 'https://news.google.com/rss/search?q="Reporters+Without+Borders"+OR+RSF+press+freedom&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── CIVIL LIBERTIES & PRIVACY — Voting Rights ────────────────────────────────
@@ -775,13 +775,13 @@ const FEEDS = [
     url: 'https://news.google.com/rss/search?q=texas+police+misconduct+OR+"use+of+force"+OR+"police+accountability"&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── CIVIL LIBERTIES & PRIVACY — Digital Surveillance ─────────────────────────
-  { name: 'Privacy International', lang: 'en', tags: ['civil-liberties-privacy','national'],
+  { name: 'Privacy International', lang: 'en', tags: ['civil-liberties-privacy'],
     url: 'https://news.google.com/rss/search?q=site:privacyinternational.org&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'Surveillance · News', lang: 'en', tags: ['civil-liberties-privacy','national'],
     url: 'https://news.google.com/rss/search?q=government+surveillance+OR+"facial+recognition"+OR+"warrantless"+rights&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── CIVIL LIBERTIES & PRIVACY — International Human Rights ───────────────────
-  { name: 'Amnesty International', lang: 'en', tags: ['civil-liberties-privacy','national'],
+  { name: 'Amnesty International', lang: 'en', tags: ['civil-liberties-privacy'],
     url: 'https://www.amnesty.org/en/feed/', max: 5 },
   { name: 'Human Rights Watch', lang: 'en', tags: ['civil-liberties-privacy','national'],
     url: 'https://www.hrw.org/rss', max: 5 },
@@ -844,7 +844,7 @@ const FEEDS = [
     url: 'https://tools.cdc.gov/api/v2/resources/media/132608.rss', max: 6 },
   { name: 'CDC MMWR', lang: 'en', tags: ['public-health','national'],
     url: 'https://www.cdc.gov/mmwr/rss/rss.html', max: 5 },
-  { name: 'WHO News', lang: 'en', tags: ['public-health','national'],
+  { name: 'WHO News', lang: 'en', tags: ['public-health'],
     url: 'https://www.who.int/rss-feeds/news-english.xml', max: 5 },
   { name: 'NIH News', lang: 'en', tags: ['public-health','national'],
     url: 'https://news.google.com/rss/search?q=NIH+research+health+site:nih.gov&hl=en-US&gl=US&ceid=US:en', max: 5 },
@@ -1052,7 +1052,7 @@ const LOCAL_SOURCES = new Set([
   'Federal Reserve', 'Treasury Dept', 'MarketWatch · Economy',
   'WSJ · Economy', 'Bloomberg · Economics', 'Calculated Risk', 'Wolf Street',
   'Tariffs & Trade', 'Texas Economy', 'ERCOT News', 'TX Energy · Houston Chron',
-  // Weather & Disasters
+  // Weather & Climate
   'NWS Dallas / Fort Worth', 'NWS Corpus Christi',
   'NHC · Atlantic Tropics', 'NHC · Active Storms', 'Colorado State · Tropical',
   'USGS · Water Resources', 'Texas Flash Flood',
