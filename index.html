@@ -651,6 +651,10 @@ const FEEDS = [
   { name: 'Law360 · Breaking', lang: 'en', tags: ['national'],
     url: 'https://news.google.com/rss/search?q=supreme+court+ruling+OR+"federal+court"+ruling&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
+  // ── NATIONAL — International · US Lens ───────────────────────────────────────
+  { name: 'International · US Lens', lang: 'en', tags: ['national'],
+    url: 'https://news.google.com/rss/search?q=(site:bbc.com+OR+site:aljazeera.com+OR+site:reuters.com)+("united+states"+OR+"washington"+OR+"congress"+OR+"white+house"+OR+"american")&hl=en-US&gl=US&ceid=US:en', max: 8 },
+
   // ── FINANCE & ECONOMY — Federal institutions ──────────────────────────────────
   { name: 'Federal Reserve', lang: 'en', tags: ['finance'],
     url: 'https://www.federalreserve.gov/feeds/press_all.xml', max: 5 },
@@ -867,11 +871,11 @@ const FEEDS = [
     url: 'https://news.google.com/rss/search?q=texas+public+health+OR+outbreak+OR+disease+OR+"health+emergency"&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── GEOPOLITICS — Wires & Broad International ─────────────────────────────────
-  { name: 'Reuters World', lang: 'en', tags: ['geopolitics','national'],
+  { name: 'Reuters World', lang: 'en', tags: ['geopolitics'],
     url: 'https://feeds.reuters.com/reuters/worldNews', max: 8 },
-  { name: 'BBC World', lang: 'en', tags: ['geopolitics','national'],
+  { name: 'BBC World', lang: 'en', tags: ['geopolitics'],
     url: 'https://feeds.bbci.co.uk/news/world/rss.xml', max: 8 },
-  { name: 'Al Jazeera English', lang: 'en', tags: ['geopolitics','national'],
+  { name: 'Al Jazeera English', lang: 'en', tags: ['geopolitics'],
     url: 'https://www.aljazeera.com/xml/rss/all.xml', max: 8 },
   { name: 'AP Diplomacy', lang: 'en', tags: ['geopolitics'],
     url: 'https://feeds.apnews.com/rss/apf-intlnews', max: 6 },
@@ -881,7 +885,7 @@ const FEEDS = [
     url: 'https://www.france24.com/en/rss', max: 6 },
 
   // ── GEOPOLITICS — Analysis & Think Tanks ──────────────────────────────────────
-  { name: 'Foreign Policy', lang: 'en', tags: ['geopolitics','national'],
+  { name: 'Foreign Policy', lang: 'en', tags: ['geopolitics'],
     url: 'https://foreignpolicy.com/feed/', max: 6 },
   { name: 'Foreign Affairs', lang: 'en', tags: ['geopolitics'],
     url: 'https://www.foreignaffairs.com/rss.xml', max: 5 },
@@ -1062,7 +1066,7 @@ const LOCAL_SOURCES = new Set([
   'ProPublica', 'The Intercept', 'The Atlantic', 'Axios', 'Politico', 'The Hill', 'Roll Call',
   'NPR News', 'NPR Politics', 'AP Top News', 'AP Politics', 'Reuters US', 'PBS NewsHour',
   'White House Briefings', 'GAO Reports', 'Federal Register',
-  'SCOTUSblog', 'Law360 · Breaking',
+  'SCOTUSblog', 'Law360 · Breaking', 'International · US Lens',
   // Cyber, AI & Tech
   '404 Media', 'Wired · Security', 'Wired',
   'Krebs on Security', 'The Hacker News', 'Dark Reading', 'Bleeping Computer',
@@ -1192,12 +1196,6 @@ const BLOCK_KEYWORDS = [
   'boxing match','olympic games','olympics 2','world cup','premier league',
   'la liga','bundesliga','serie a','champions league','nba playoffs',
   'nba finals','mlb playoffs','world series','stanley cup',
-  'world baseball classic','homers to','spring training',
-  'combine for','win streak','state championship','tourney',
-  'sec tournament','tournament seed','no. 1 seed',
-  'tv listings','tv/radio listings',
-  'free agency','free agent','dallas cowboys',
-  'rushing yards','passing yards',
   // Entertainment & celebrity
   'taylor swift','beyoncé','beyonce','kanye','kardashian',
   'trailer released','official trailer','season finale','renewed for',
