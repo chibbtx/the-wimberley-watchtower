@@ -1522,7 +1522,7 @@ async function loadAllFeeds() {
     fetchBurnBan()
   ]);
   const rawArticles = results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
-  const combined = [...rawArticles, ...nwsAlerts, ...(burnBanArticle ? [burnBanArticle] : [])];
+  const combined = [...rawArticles, ...nwsAlerts, ...(burnBanArticle ? [burnBanArticle] : [makeBurnBanOffArticle()])];
   const sorted = combined.sort((a, b) => b.date - a.date);
   allArticles = deduplicate(sorted);
 
@@ -1689,31 +1689,61 @@ async function fetchNWSAlerts() {
   }
 }
 
-// ─── BURN BAN CHECK (Texas A&M Forest Service ArcGIS) ────────────────────────
-// Queries the TFS statewide burn ban FeatureServer for Hays County.
-// Caches result for 24 hours — re-checks on page load if stale.
-// If BurnBan === 'Yes', injects a synthetic article into allArticles so it
-// appears in the ticker and on the Wimberley/weather-disasters tabs.
+// ─── BURN BAN CHECK ───────────────────────────────────────────────────────────
+// Primary: scrapes haysinformed.com for the burn ban status image filename.
+//   - Active ban:  img src contains 'BURN%20BAN%20ON'  or 'BURN BAN ON'
+//   - Lifted ban:  img src contains 'BURN%20BAN%20LIFTED' or 'BURN BAN LIFTED'
+// Fallback: TFS ArcGIS FeatureServer (daily update, may lag county by hours).
+// Cache: 1 hour — balances freshness with proxy load.
+// Always returns an article (ON or OFF) so the card is permanently visible.
 let burnBanCache = null; // { status: 'Yes'|'No', checkedAt: timestamp }
 
 async function fetchBurnBan() {
-  const CACHE_MS = 24 * 60 * 60 * 1000; // 24 hours
+  const CACHE_MS = 60 * 60 * 1000; // 1 hour
   const now = Date.now();
   if (burnBanCache && (now - burnBanCache.checkedAt) < CACHE_MS) {
-    return burnBanCache.status === 'Yes' ? makeBurnBanArticle() : null;
+    return burnBanCache.status === 'Yes' ? makeBurnBanArticle() : makeBurnBanOffArticle();
   }
+
+  // ── Primary: haysinformed.com scrape ────────────────────────────────────────
+  try {
+    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.haysinformed.com/');
+    const r = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+    if (r.ok) {
+      const html = await r.text();
+      const lower = html.toLowerCase();
+      // Look for the burn ban status image filename
+      if (lower.includes('burn%20ban%20on') || lower.includes('burn ban on')) {
+        burnBanCache = { status: 'Yes', checkedAt: now };
+        return makeBurnBanArticle();
+      }
+      if (lower.includes('burn%20ban%20lifted') || lower.includes('burn ban lifted')) {
+        burnBanCache = { status: 'No', checkedAt: now };
+        return makeBurnBanOffArticle();
+      }
+      // Ambiguous result — fall through to TFS
+    }
+  } catch(e) {
+    // Network error — fall through to TFS
+  }
+
+  // ── Fallback: TFS ArcGIS FeatureServer ──────────────────────────────────────
   try {
     const url = "https://tfsgis.tfs.tamu.edu/arcgis/rest/services/BurnBan/BurnBan/MapServer/0/query" +
       "?where=County%3D'Hays'&outFields=County,BurnBan,StartDate&f=json";
     const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
-    if (!r.ok) return null;
+    if (!r.ok) throw new Error('TFS error');
     const data = await r.json();
     const feat = data.features && data.features[0];
     const status = feat ? (feat.attributes.BurnBan || 'No') : 'No';
     burnBanCache = { status, checkedAt: now };
-    return status === 'Yes' ? makeBurnBanArticle() : null;
+    return status === 'Yes' ? makeBurnBanArticle() : makeBurnBanOffArticle();
   } catch(e) {
-    return null;
+    // Both sources failed — return last cached value if available, else OFF
+    if (burnBanCache) {
+      return burnBanCache.status === 'Yes' ? makeBurnBanArticle() : makeBurnBanOffArticle();
+    }
+    return makeBurnBanOffArticle();
   }
 }
 
@@ -1728,7 +1758,24 @@ function makeBurnBanArticle() {
     lang: 'en',
     tags: ['wimberley', 'weather-disasters', 'breaking'],
     date: new Date(),
-    isBurnBan: true
+    isBurnBan: true,
+    burnBanStatus: 'on'
+  };
+}
+
+function makeBurnBanOffArticle() {
+  return {
+    title: 'Burn Ban: OFF',
+    summary: 'No active burn ban in Hays County.',
+    rawTitle: 'Burn Ban: OFF',
+    rawSummary: '',
+    link: 'https://www.haysinformed.com/',
+    source: 'Hays County Fire Marshal',
+    lang: 'en',
+    tags: ['wimberley', 'weather-disasters'],
+    date: new Date(),
+    isBurnBan: true,
+    burnBanStatus: 'off'
   };
 }
 
