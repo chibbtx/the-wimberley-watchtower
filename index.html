@@ -1586,8 +1586,8 @@ function renderAlertStrip() {
     .filter(a => {
       if (!a.tags.includes('breaking')) return false;
       const hay = (a.title + ' ' + (a.summary || '') + ' ' + (a.rawTitle || '') + ' ' + (a.rawSummary || '')).toLowerCase();
-      // NWS · Hays County alerts bypass the 8h cutoff but must mention hays or wimberley
-      if (NWS_DIRECT.has(a.source)) return hay.includes('hays') || hay.includes('wimberley');
+      // NWS · Hays County alerts get a free pass — already filtered to Hays/Wimberley at the API level
+      if (NWS_DIRECT.has(a.source)) return true;
       if (!a.date || a.date.getTime() < cutoff) return false;
       if (NWS_SOURCES.has(a.source)) {
         return hay.includes('hays') || hay.includes('wimberley');
