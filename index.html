@@ -1713,17 +1713,28 @@ async function fetchNWSAlerts() {
 
 // ─── BURN BAN CHECK (Texas A&M Forest Service ArcGIS) ────────────────────────
 // Queries the TFS statewide burn ban FeatureServer for Hays County.
-// Caches result for 24 hours — re-checks on page load if stale.
-// If BurnBan === 'Yes', injects a synthetic article into allArticles so it
+// Cache: 4 hours, persisted to localStorage so it survives page reloads.
+// A status change (ban issued or lifted) will show within one 4-hour window.
+// If BurnBan === 'Yes', injects a synthetic article tagged breaking so it
 // appears in the ticker and on the Wimberley/weather-disasters tabs.
-let burnBanCache = null; // { status: 'Yes'|'No', checkedAt: timestamp }
+const BURN_BAN_CACHE_KEY = 'ww_burnban_cache';
+const BURN_BAN_CACHE_MS = 4 * 60 * 60 * 1000; // 4 hours
 
 async function fetchBurnBan() {
-  const CACHE_MS = 24 * 60 * 60 * 1000; // 24 hours
   const now = Date.now();
-  if (burnBanCache && (now - burnBanCache.checkedAt) < CACHE_MS) {
-    return burnBanCache.status === 'Yes' ? makeBurnBanArticle() : null;
-  }
+
+  // Check localStorage first
+  try {
+    const stored = localStorage.getItem(BURN_BAN_CACHE_KEY);
+    if (stored) {
+      const cached = JSON.parse(stored);
+      if ((now - cached.checkedAt) < BURN_BAN_CACHE_MS) {
+        return cached.status === 'Yes' ? makeBurnBanArticle() : null;
+      }
+    }
+  } catch(e) { /* localStorage unavailable or corrupt — proceed to fetch */ }
+
+  // Cache stale or missing — fetch from TFS ArcGIS
   try {
     const url = "https://tfsgis.tfs.tamu.edu/arcgis/rest/services/BurnBan/BurnBan/MapServer/0/query" +
       "?where=County%3D'Hays'&outFields=County,BurnBan,StartDate&f=json";
@@ -1732,7 +1743,12 @@ async function fetchBurnBan() {
     const data = await r.json();
     const feat = data.features && data.features[0];
     const status = feat ? (feat.attributes.BurnBan || 'No') : 'No';
-    burnBanCache = { status, checkedAt: now };
+
+    // Persist to localStorage
+    try {
+      localStorage.setItem(BURN_BAN_CACHE_KEY, JSON.stringify({ status, checkedAt: now }));
+    } catch(e) { /* localStorage write failed — non-fatal */ }
+
     return status === 'Yes' ? makeBurnBanArticle() : null;
   } catch(e) {
     return null;
