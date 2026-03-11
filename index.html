@@ -6,6 +6,7 @@
 <title>The Wimberley Watchtower</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗼</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -36,7 +37,6 @@
   .spin { display: inline-block; animation: spin 1s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .filter-bar { background: var(--bg); padding: 0; position: sticky; top: 168px; z-index: 96; }
   .filter-bar-track { max-width: 1200px; margin: 0 auto; position: relative; display: flex; align-items: stretch; background: var(--surface); }
   .filter-inner { flex: 1; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
   .filter-inner::-webkit-scrollbar { display: none; }
@@ -234,7 +234,7 @@
       <a class="sub-btn" href="https://globe.adsbexchange.com/?lat=30.00&lon=-98.10&zoom=10" target="_blank" title="Live air traffic over Wimberley">
         ✈ In the Sky
       </a>
-      <a class="sub-btn" href="about.html" title="About the Wimberley Watchtower">About</a>
+      <a class="sub-btn" href="about.html" target="_blank" rel="noopener noreferrer" title="About the Wimberley Watchtower">About</a>
       <a class="sub-btn" href="comms.html" target="_blank" title="HAM Radio &amp; Emergency Comms Reference">
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
           <line x1="6.5" y1="12" x2="6.5" y2="6" stroke="currentColor" stroke-width="1.2"/>
@@ -474,8 +474,6 @@ const FEEDS = [
     url: 'https://www.nbcdfw.com/feed/', max: 3 },
   { name: 'WFAA Dallas', lang: 'en', tags: ['texas'],
     url: 'https://www.wfaa.com/feeds/syndication/rss/news', max: 3 },
-  { name: 'KSAT San Antonio · TX', lang: 'en', tags: ['texas'],
-    url: 'https://www.ksat.com/rss/news.rss', max: 3 },
   { name: 'KENS5 San Antonio', lang: 'en', tags: ['texas'],
     url: 'https://www.kens5.com/feeds/syndication/rss/news', max: 3 },
 
@@ -527,9 +525,7 @@ const FEEDS = [
 
   // ── WEATHER & DISASTERS — NWS Alerts (NOAA CAP/ATOM API) ─────────────────────
   // Using alerts.weather.gov ATOM feeds by county FIPS — more proxy-friendly
-  // Hays County (TXC091) — Wimberley's home county, EWX office
-  { name: 'NWS Austin / San Antonio', lang: 'en', tags: ['weather-disasters','breaking'],
-    url: 'https://alerts.weather.gov/cap/wwaatmget.php?x=TXC091&y=0', max: 8 },
+  // Hays County (TXC091) covered by NWS · Hays County Alerts in the Wimberley section above.
   // Dallas County (TXC113) — FWD office; North TX storms track south
   { name: 'NWS Dallas / Fort Worth', lang: 'en', tags: ['weather-disasters','texas','breaking'],
     url: 'https://alerts.weather.gov/cap/wwaatmget.php?x=TXC113&y=0', max: 6 },
@@ -551,8 +547,6 @@ const FEEDS = [
   // flash flood risk in Wimberley (2015 Memorial Day flood)
   { name: 'USGS · Water Resources', lang: 'en', tags: ['weather-disasters','breaking'],
     url: 'https://www.usgs.gov/news/rss-news?topic_id[]=278', max: 6 },
-  { name: 'Blanco River Watch', lang: 'en', tags: ['weather-disasters','breaking'],
-    url: 'https://news.google.com/rss/search?q=%22blanco+river%22+OR+%22wimberley+flood%22+flood+gauge&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'Texas Flash Flood', lang: 'en', tags: ['weather-disasters','texas','breaking'],
     url: 'https://news.google.com/rss/search?q=texas+%22flash+flood%22+warning+OR+watch+OR+emergency&hl=en-US&gl=US&ceid=US:en', max: 6 },
 
@@ -600,8 +594,6 @@ const FEEDS = [
     url: 'https://news.google.com/rss/search?q=severe+weather+tornado+OR+%22ice+storm%22+OR+%22winter+storm%22+warning+issued&hl=en-US&gl=US&ceid=US:en', max: 6 },
 
   // ── WEATHER & DISASTERS — Climate & Environment ───────────────────────────────
-  { name: 'Texas Hill Country Hazards', lang: 'en', tags: ['weather-disasters','hill-country','breaking'],
-    url: 'https://news.google.com/rss/search?q=flood+OR+wildfire+texas+%22hill+country%22+OR+wimberley+OR+%22hays+county%22&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'Climate Central', lang: 'en', tags: ['weather-disasters'],
     url: 'https://www.climatecentral.org/feed', max: 5 },
   { name: 'Inside Climate News', lang: 'en', tags: ['weather-disasters'],
@@ -706,8 +698,6 @@ const FEEDS = [
   // ── CYBER & DATA — Data Privacy & Surveillance ────────────────────────────────
   { name: 'IAPP Privacy News', lang: 'en', tags: ['cyber-ai-tech','civil-liberties-privacy'],
     url: 'https://iapp.org/news/rss/', max: 5 },
-  { name: 'Electronic Frontier Foundation', lang: 'en', tags: ['cyber-ai-tech','civil-liberties-privacy'],
-    url: 'https://www.eff.org/rss/updates.xml', max: 5 },
   // ── CYBER & DATA — Threat Intelligence & Vulnerabilities ─────────────────────
   { name: 'US-CERT Alerts', lang: 'en', tags: ['cyber-ai-tech','national','breaking'],
     url: 'https://www.cisa.gov/uscert/ncas/alerts.xml', max: 6 },
@@ -729,8 +719,6 @@ const FEEDS = [
     url: 'https://ij.org/feed/', max: 5 },
 
   // ── CIVIL LIBERTIES & PRIVACY — Law & Courts ──────────────────────────────────
-  { name: 'SCOTUSblog', lang: 'en', tags: ['civil-liberties-privacy','national'],
-    url: 'https://www.scotusblog.com/feed/', max: 6 },
   { name: 'Lawfare', lang: 'en', tags: ['civil-liberties-privacy','national'],
     url: 'https://news.google.com/rss/search?q=site:lawfaremedia.org&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'Just Security', lang: 'en', tags: ['civil-liberties-privacy','national'],
@@ -899,8 +887,6 @@ const FEEDS = [
     url: 'https://www.rand.org/pubs/rss/rss_commentary.xml', max: 5 },
   { name: 'Crisis Group', lang: 'en', tags: ['geopolitics'],
     url: 'https://www.crisisgroup.org/rss', max: 6 },
-  { name: 'Bellingcat', lang: 'en', tags: ['geopolitics','civil-liberties-privacy'],
-    url: 'https://www.bellingcat.com/feed/', max: 6 },
 
   // ── GEOPOLITICS — Defense & Military ─────────────────────────────────────────
   { name: 'Defense One', lang: 'en', tags: ['geopolitics'],
@@ -1036,14 +1022,14 @@ const LOCAL_SOURCES = new Set([
   'City of Buda · Alerts', 'City of Buda · News', 'City of Buda · Agendas',
   'City of Kyle · News', 'City of Blanco · News', 'City of San Marcos',
   'Hays County', 'LCRA News', 'Hill Country Alliance',
-  'NWS · Hays County Alerts', 'NWS Austin / San Antonio', 'Texas Hill Country Hazards',
+  'NWS · Hays County Alerts', 'NWS · Hays County', 'Texas Hill Country Hazards',
   // Texas
   'Texas Tribune', 'Texas Tribune · Politics', 'Texas Tribune · Environment',
   'Texas Tribune · Border', 'Texas Observer', 'Texas Public Radio',
   'Texas Standard', 'Texas Monthly',
   'Dallas Morning News', 'Houston Chronicle', 'San Antonio Express-News',
   'Fort Worth Star-Telegram',
-  'KHOU Houston', 'NBC DFW', 'WFAA Dallas', 'KSAT San Antonio · TX', 'KENS5 San Antonio',
+  'KHOU Houston', 'NBC DFW', 'WFAA Dallas', 'KENS5 San Antonio',
   'TX Legislature · Passed Bills', "TX Governor's Office", 'TX Comptroller',
   'TDEM · Emergency Mgmt', 'TX Attorney General',
   'The Monitor (RGV)', 'Border Report', 'Laredo Morning Times',
@@ -1273,7 +1259,7 @@ async function translate(text, fromLang = 'es') {
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let allArticles = [];
 let sourceStatus = {};
-let currentFilter = 'breaking';
+let currentFilter = 'wimberley';
 let lastLoadTime = 0;
 let currentTimeHours = 168;
 
@@ -1393,6 +1379,14 @@ async function fetchFeed(feed) {
   }
 }
 
+// ─── SECURITY ─────────────────────────────────────────────────────────────────
+// Escapes untrusted RSS content before insertion into innerHTML.
+// All feed-derived fields (title, summary, source, link) must pass through this.
+function escapeHTML(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
 // ─── RENDER ───────────────────────────────────────────────────────────────────
 function timeAgo(date) {
   const diff = (Date.now() - date.getTime()) / 1000;
@@ -1426,13 +1420,13 @@ function renderCards(articles) {
     const langLabel = a.lang === 'es' ? 'ES→EN' : 'EN';
     card.innerHTML =
       '<div class="card-meta">' +
-        '<span class="card-source">' + a.source + '</span>' +
-        '<span class="card-lang">' + langLabel + '</span>' +
+        '<span class="card-source">' + escapeHTML(a.source) + '</span>' +
+        '<span class="card-lang">' + escapeHTML(langLabel) + '</span>' +
       '</div>' +
-      '<div class="card-title">' + a.title + '</div>' +
-      (a.summary ? '<div class="card-summary">' + a.summary + '</div>' : '') +
+      '<div class="card-title">' + escapeHTML(a.title) + '</div>' +
+      (a.summary ? '<div class="card-summary">' + escapeHTML(a.summary) + '</div>' : '') +
       '<div class="card-footer">' +
-        '<span class="card-time">' + ago + '</span>' +
+        '<span class="card-time">' + escapeHTML(ago) + '</span>' +
         '<span class="card-arrow">&#x2192;</span>' +
       '</div>';
     grid.appendChild(card);
@@ -1578,7 +1572,7 @@ function renderAlertStrip() {
     'burn ban'
   ];
 
-  const NWS_SOURCES = new Set(['NWS Austin / San Antonio', 'Comal County · Alerts']);
+  const NWS_SOURCES = new Set(['Comal County · Alerts']);
   const NWS_DIRECT = new Set(['NWS · Hays County']);
 
   const cutoff = Date.now() - 8 * 3600 * 1000;
@@ -1614,7 +1608,7 @@ function renderAlertStrip() {
   // the first exits the left — no pop, no gap.
   if (alerts.length === 1 && alerts[0].isBurnBan) {
     const a = alerts[0];
-    const chipHtml = '<a class="burn-ban-chip" href="' + a.link + '" target="_blank" rel="noopener noreferrer">' +
+    const chipHtml = '<a class="burn-ban-chip" href="' + escapeHTML(a.link) + '" target="_blank" rel="noopener noreferrer">' +
       '<span class="burn-ban-chip-label">Burn Ban ON</span></a>';
 
     // Measure chip width
@@ -1638,15 +1632,15 @@ function renderAlertStrip() {
   // ── Normal alerts (or burn ban mixed with others) ─────────────────────────────
   const buildItems = () => alerts.map(a => {
     if (a.isBurnBan) {
-      return '<a class="burn-ban-chip" href="' + a.link + '" target="_blank" rel="noopener noreferrer">' +
+      return '<a class="burn-ban-chip" href="' + escapeHTML(a.link) + '" target="_blank" rel="noopener noreferrer">' +
         '<span class="burn-ban-chip-label">Burn Ban ON</span>' +
         '</a><span class="alert-sep">·</span>';
     }
     const ago = timeAgo(a.date);
-    return '<a class="alert-item" href="' + a.link + '" target="_blank" rel="noopener noreferrer">' +
-      '<span class="alert-item-source">' + a.source + '</span>' +
-      '<span class="alert-item-title">' + a.title + '</span>' +
-      '<span class="alert-item-time">' + ago + '</span>' +
+    return '<a class="alert-item" href="' + escapeHTML(a.link) + '" target="_blank" rel="noopener noreferrer">' +
+      '<span class="alert-item-source">' + escapeHTML(a.source) + '</span>' +
+      '<span class="alert-item-title">' + escapeHTML(a.title) + '</span>' +
+      '<span class="alert-item-time">' + escapeHTML(ago) + '</span>' +
       '</a><span class="alert-sep">·</span>';
   }).join('');
 
