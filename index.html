@@ -1666,27 +1666,26 @@ function renderAlertStrip() {
 
 
 // ─── NWS ALERTS (api.weather.gov) ────────────────────────────────────────────
-// Fetches active NWS alerts for Hays County (TXZ191) directly from the
-// api.weather.gov GeoJSON endpoint — no proxy needed, CORS-permissive.
-// Each alert is mapped into an article-shaped object and merged into allArticles.
+// Fetches all active NWS alerts for Texas from the api.weather.gov GeoJSON
+// endpoint — CORS-permissive, no proxy needed. Filters to Hays/Wimberley.
+// ?area=TX is the only query that reliably returns watch-level products;
+// zone and county endpoints miss SPC watch boxes.
 // Uses the alert's own 'expires' timestamp rather than the generic 8h cutoff.
 async function fetchNWSAlerts() {
   try {
-    const fetchOpts = {
-      headers: { 'User-Agent': 'WimberleyWatchtower/1.0 (wimberley-watchtower)' },
+    const r = await fetch('https://api.weather.gov/alerts/active?area=TX', {
       signal: AbortSignal.timeout(9000)
-    };
-    const [rZone, rCounty] = await Promise.all([
-      fetch('https://api.weather.gov/alerts/active?zone=TXZ191', fetchOpts).catch(() => null),
-      fetch('https://api.weather.gov/alerts/active?county=TXC091', fetchOpts).catch(() => null)
-    ]);
-    const [dZone, dCounty] = await Promise.all([
-      rZone && rZone.ok ? rZone.json() : Promise.resolve({ features: [] }),
-      rCounty && rCounty.ok ? rCounty.json() : Promise.resolve({ features: [] })
-    ]);
-    const seen = new Set();
-    const features = [...(dZone.features || []), ...(dCounty.features || [])]
-      .filter(f => { if (seen.has(f.id)) return false; seen.add(f.id); return true; });
+    });
+    if (!r.ok) return [];
+    const data = await r.json();
+    const features = (data.features || []).filter(f => {
+      const area = (f.properties?.areaDesc || '').toLowerCase();
+      const desc = (f.properties?.description || '').toLowerCase();
+      const headline = (f.properties?.headline || '').toLowerCase();
+      return area.includes('hays') || area.includes('wimberley') ||
+             desc.includes('hays') || desc.includes('wimberley') ||
+             headline.includes('hays') || headline.includes('wimberley');
+    });
     const now = Date.now();
     return features
       .map(f => {
