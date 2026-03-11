@@ -1281,23 +1281,44 @@ let currentTimeHours = 168;
 function parseRSSXml(xml) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(xml, 'text/xml');
+
+  // RSS feed
   const items = [...doc.querySelectorAll('item')];
-  if (!items.length) throw new Error('No items');
-  return items.map(item => {
-    let link = '';
-    const linkEl = item.querySelector('link');
-    if (linkEl) {
-      link = linkEl.textContent || linkEl.getAttribute('href') || '';
-      if (!link && linkEl.nextSibling) link = linkEl.nextSibling.textContent || '';
-    }
-    if (!link) link = item.querySelector('guid')?.textContent || '#';
-    return {
-      title: item.querySelector('title')?.textContent || '',
-      description: item.querySelector('description')?.textContent || '',
-      link: link.trim(),
-      pubDate: item.querySelector('pubDate')?.textContent || '',
-    };
-  });
+  if (items.length) {
+    return items.map(item => {
+      let link = '';
+      const linkEl = item.querySelector('link');
+      if (linkEl) {
+        link = linkEl.textContent || linkEl.getAttribute('href') || '';
+        if (!link && linkEl.nextSibling) link = linkEl.nextSibling.textContent || '';
+      }
+      if (!link) link = item.querySelector('guid')?.textContent || '#';
+      return {
+        title: item.querySelector('title')?.textContent || '',
+        description: item.querySelector('description')?.textContent || '',
+        link: link.trim(),
+        pubDate: item.querySelector('pubDate')?.textContent || '',
+      };
+    });
+  }
+
+  // ATOM feed (e.g. NWS CAP alerts)
+  const entries = [...doc.querySelectorAll('entry')];
+  if (entries.length) {
+    return entries.map(entry => {
+      const linkEl = entry.querySelector('link');
+      const link = linkEl ? (linkEl.getAttribute('href') || linkEl.textContent || '') : '#';
+      const summary = entry.querySelector('summary')?.textContent || entry.querySelector('content')?.textContent || '';
+      return {
+        title: entry.querySelector('title')?.textContent || '',
+        description: summary,
+        link: link.trim(),
+        pubDate: entry.querySelector('published')?.textContent || entry.querySelector('updated')?.textContent || '',
+      };
+    });
+  }
+
+  throw new Error('No items or entries found');
 }
 
 async function tryRss2Json(url) {
