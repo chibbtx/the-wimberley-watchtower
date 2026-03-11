@@ -1564,10 +1564,10 @@ function renderAlertStrip() {
   const alerts = allArticles
     .filter(a => {
       if (!a.tags.includes('breaking')) return false;
-      // NWS · Hays County alerts use their own expires time — always pass if still active
-      if (NWS_DIRECT.has(a.source)) return true;
+      const hay = (a.title + ' ' + (a.summary || '') + ' ' + (a.rawTitle || '') + ' ' + (a.rawSummary || '')).toLowerCase();
+      // NWS · Hays County alerts bypass the 8h cutoff but must mention hays or wimberley
+      if (NWS_DIRECT.has(a.source)) return hay.includes('hays') || hay.includes('wimberley');
       if (!a.date || a.date.getTime() < cutoff) return false;
-      const hay = (a.title + ' ' + (a.summary || '') + ' ' + (a.rawTitle || '')).toLowerCase();
       if (NWS_SOURCES.has(a.source)) {
         return hay.includes('hays') || hay.includes('wimberley');
       }
@@ -1651,13 +1651,21 @@ function renderAlertStrip() {
 // Uses the alert's own 'expires' timestamp rather than the generic 8h cutoff.
 async function fetchNWSAlerts() {
   try {
-    const r = await fetch('https://api.weather.gov/alerts/active?zone=TXZ191', {
+    const fetchOpts = {
       headers: { 'User-Agent': 'WimberleyWatchtower/1.0 (wimberley-watchtower)' },
       signal: AbortSignal.timeout(9000)
-    });
-    if (!r.ok) return [];
-    const data = await r.json();
-    const features = data.features || [];
+    };
+    const [rZone, rCounty] = await Promise.all([
+      fetch('https://api.weather.gov/alerts/active?zone=TXZ191', fetchOpts).catch(() => null),
+      fetch('https://api.weather.gov/alerts/active?county=TXC091', fetchOpts).catch(() => null)
+    ]);
+    const [dZone, dCounty] = await Promise.all([
+      rZone && rZone.ok ? rZone.json() : Promise.resolve({ features: [] }),
+      rCounty && rCounty.ok ? rCounty.json() : Promise.resolve({ features: [] })
+    ]);
+    const seen = new Set();
+    const features = [...(dZone.features || []), ...(dCounty.features || [])]
+      .filter(f => { if (seen.has(f.id)) return false; seen.add(f.id); return true; });
     const now = Date.now();
     return features
       .map(f => {
