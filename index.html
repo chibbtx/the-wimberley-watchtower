@@ -329,7 +329,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-11.04 — fix KUT Austin feed URL (.rss extension)
+// VERSION: 2026-03-12.00 — round-robin source interleaving for National, Geopolitics, Finance & Economy, Cyber AI & Tech
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -1347,6 +1347,39 @@ function escapeHTML(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
+// ─── ROUND-ROBIN INTERLEAVE ───────────────────────────────────────────────────
+// For high-velocity tabs, distribute cards by source so no outlet dominates a run.
+// Groups articles by source, sorts each group newest-first, then interleaves:
+// take article[0] from each source, then article[1], etc. Exhausted sources drop out.
+const INTERLEAVE_TABS = new Set(['national', 'geopolitics', 'finance-economy', 'cyber-ai-tech']);
+
+function interleaveBySource(articles) {
+  // Build a map: sourceName → [articles sorted newest-first]
+  const buckets = new Map();
+  for (const a of articles) {
+    if (!buckets.has(a.source)) buckets.set(a.source, []);
+    buckets.get(a.source).push(a);
+  }
+  // Each bucket is already ordered newest-first because allArticles is sorted that way,
+  // but sort explicitly to be safe.
+  for (const arr of buckets.values()) {
+    arr.sort((a, b) => b.date - a.date);
+  }
+  // Round-robin: pull one card per source per pass until all buckets empty
+  const queues = [...buckets.values()];
+  const result = [];
+  let i = 0;
+  while (result.length < articles.length) {
+    let advanced = false;
+    for (const q of queues) {
+      if (i < q.length) { result.push(q[i]); advanced = true; }
+    }
+    if (!advanced) break;
+    i++;
+  }
+  return result;
+}
+
 // ─── RENDER ───────────────────────────────────────────────────────────────────
 function timeAgo(date) {
   const diff = (Date.now() - date.getTime()) / 1000;
@@ -1439,6 +1472,11 @@ function applyDisplayFilters() {
   };
   if (TAB_STORY_CAPS[currentFilter]) {
     filtered = filtered.slice(0, TAB_STORY_CAPS[currentFilter]);
+  }
+
+  // Round-robin interleaving for high-velocity tabs
+  if (INTERLEAVE_TABS.has(currentFilter)) {
+    filtered = interleaveBySource(filtered);
   }
 
   renderCards(filtered);
