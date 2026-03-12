@@ -329,7 +329,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-11.01 — demote rss2json to last in proxy fallback chain
+// VERSION: 2026-03-11.02 — add Cloudflare Worker as primary CORS proxy
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -1260,6 +1260,13 @@ function parseRSSXml(xml) {
   throw new Error('No items or entries found');
 }
 
+async function tryWorker(url) {
+  const r = await fetch('https://watchtower-proxy.kmkoeh.workers.dev/?url=' + encodeURIComponent(url), { signal: AbortSignal.timeout(9000) });
+  if (!r.ok) throw new Error('worker: status ' + r.status);
+  const xml = await r.text();
+  return parseRSSXml(xml);
+}
+
 async function tryRss2Json(url) {
   const r = await fetch('https://api.rss2json.com/v1/api.json?count=8&rss_url=' + encodeURIComponent(url), { signal: AbortSignal.timeout(9000) });
   const d = await r.json();
@@ -1281,7 +1288,7 @@ async function tryCorsProxy(url) {
 }
 
 async function fetchFeedItems(url) {
-  for (const fn of [tryAllOrigins, tryCorsProxy, tryRss2Json]) {
+  for (const fn of [tryWorker, tryAllOrigins, tryCorsProxy, tryRss2Json]) {
     try {
       const items = await fn(url);
       if (items && items.length) return items;
