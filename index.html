@@ -78,10 +78,14 @@
   .alert-item-time { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: #7a4a2a; flex-shrink: 0; }
   .alert-sep { color: #5a2a0a; padding: 0 4px; font-size: 0.7rem; }
   .alert-strip-empty { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: #5a3a2a; padding: 0 16px; height: 32px; display: inline-flex; align-items: center; }
-  .burn-ban-chip { display: inline-flex; align-items: center; padding: 0 20px; height: 32px; text-decoration: none; flex-shrink: 0; }
-  .burn-ban-chip:hover { background: rgba(255,80,0,0.1); }
-  .burn-ban-chip-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #ff6600; }
-  .burn-ban-dots { color: #5a2a0a; letter-spacing: 0.4em; font-size: 0.55rem; }
+  /* Hays Informed status card — burn ban ON/OFF pinned top-left in Wimberley feed */
+  .card.card-hays-status { border-left: 3px solid #ff6600; order: -9999; }
+  .card.card-hays-status .card-source { color: #ff6600; }
+  .card.card-hays-status.ban-off { border-left-color: var(--accent2); }
+  .card.card-hays-status.ban-off .card-source { color: var(--accent2); }
+  /* Hays Informed notice cards — public health / emergency notices */
+  .card.card-hays-notice { border-left: 3px solid var(--accent); order: -9998; }
+  .card.card-hays-notice .card-source { color: var(--accent); }
 
   /* SUB-BAR */
   .sub-bar { background: var(--bg); }
@@ -131,6 +135,7 @@
   .story-count { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-dim); }
 
   .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .news-grid .card { order: 0; }
   .card { background: var(--surface); padding: 20px; transition: background 0.15s; display: flex; flex-direction: column; gap: 10px; cursor: pointer; text-decoration: none; color: inherit; }
   .card:hover { background: var(--surface2); }
   .card-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -365,7 +370,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-12.03 — sub-bar reorder, rename Weather→Radar, add compass rose + radar icons
+// VERSION: 2026-03-12.04 — burn ban replaced with haysinformed.com status card + notice cards
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -1441,11 +1446,14 @@ function renderCards(articles) {
 
   articles.forEach(a => {
     const card = document.createElement('a');
-    card.className = 'card';
+    let cls = 'card';
+    if (a.isBurnBanStatus) cls += a.burnBanOn ? ' card-hays-status' : ' card-hays-status ban-off';
+    if (a.isHaysNotice) cls += ' card-hays-notice';
+    card.className = cls;
     card.href = a.link;
     card.target = '_blank';
     card.rel = 'noopener noreferrer';
-    const ago = timeAgo(a.date);
+    const ago = (a.isBurnBanStatus || a.isHaysNotice) ? '' : timeAgo(a.date);
     card.innerHTML =
       '<div class="card-meta">' +
         '<span class="card-source">' + escapeHTML(a.source) + '</span>' +
@@ -1453,7 +1461,7 @@ function renderCards(articles) {
       '<div class="card-title">' + escapeHTML(a.title) + '</div>' +
       (a.summary ? '<div class="card-summary">' + escapeHTML(a.summary) + '</div>' : '') +
       '<div class="card-footer">' +
-        '<span class="card-time">' + escapeHTML(ago) + '</span>' +
+        '<span class="card-time">' + escapeHTML(a.statusDate || ago) + '</span>' +
         '<span class="card-arrow">&#x2192;</span>' +
       '</div>';
     grid.appendChild(card);
@@ -1490,7 +1498,7 @@ function applyDisplayFilters() {
   const effectiveHours = currentTimeHours;
   if (effectiveHours > 0) {
     const cutoff = Date.now() - effectiveHours * 3600 * 1000;
-    filtered = filtered.filter(a => a.date && a.date.getTime() >= cutoff);
+    filtered = filtered.filter(a => (a.isBurnBanStatus || a.isHaysNotice) || (a.date && a.date.getTime() >= cutoff));
   }
 
   if (query) {
@@ -1571,13 +1579,13 @@ async function loadAllFeeds() {
     Array(6).fill('<div class="skeleton-card"><div class="skel" style="height:10px;width:30%;margin-bottom:4px"></div><div class="skel" style="height:18px;width:88%"></div><div class="skel" style="height:13px;width:70%"></div><div class="skel" style="height:9px;width:20%"></div></div>').join('') +
     '</div>';
 
-  const [results, nwsAlerts, burnBanArticle] = await Promise.all([
+  const [results, nwsAlerts, haysInformedCards] = await Promise.all([
     Promise.allSettled(FEEDS.map(f => fetchFeed(f))),
     fetchNWSAlerts(),
-    fetchBurnBan()
+    fetchHaysInformed()
   ]);
   const rawArticles = results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
-  const combined = [...rawArticles, ...nwsAlerts, ...(burnBanArticle ? [burnBanArticle] : [])];
+  const combined = [...rawArticles, ...nwsAlerts, ...haysInformedCards];
   const sorted = combined.sort((a, b) => b.date - a.date);
   allArticles = deduplicate(sorted);
 
@@ -1608,8 +1616,7 @@ function renderAlertStrip() {
     'flash flood warning','flash flood watch','flood warning','flood watch',
     'tornado warning','tornado watch','severe thunderstorm',
     'winter storm warning','fire weather watch','red flag warning',
-    'drought','wildfire','wildfire warning','evacuation order','evacuation warning',
-    'burn ban'
+    'drought','wildfire','wildfire warning','evacuation order','evacuation warning'
   ];
 
   const NWS_SOURCES = new Set(['Comal County · Alerts']);
@@ -1642,40 +1649,8 @@ function renderAlertStrip() {
   const track = document.getElementById('alertStripTrack');
   const trackWidth = track ? track.offsetWidth : 800;
 
-  // ── Solo burn ban: exact-width spacer so one unit = one track width ──────────
-  // Measures the chip precisely, fills the remainder with a fixed-width dot spacer.
-  // The seamless double means the second copy enters the right edge the instant
-  // the first exits the left — no pop, no gap.
-  if (alerts.length === 1 && alerts[0].isBurnBan) {
-    const a = alerts[0];
-    const chipHtml = '<a class="burn-ban-chip" href="' + escapeHTML(a.link) + '" target="_blank" rel="noopener noreferrer">' +
-      '<span class="burn-ban-chip-label">Burn Ban ON</span></a>';
-
-    // Measure chip width
-    inner.innerHTML = chipHtml;
-    const chipW = inner.scrollWidth;
-    inner.innerHTML = '';
-
-    const gapW = trackWidth - chipW;
-    const spacer = '<span class="burn-ban-dots" style="display:inline-block;width:' + gapW + 'px;overflow:hidden;">' +
-      '· · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·' +
-      '</span>';
-
-    const unit = chipHtml + spacer;
-    inner.innerHTML = unit + unit;
-    inner.style.animation = '';
-    const duration = Math.max(14, Math.round(trackWidth / 80));
-    inner.style.animationDuration = duration + 's';
-    return;
-  }
-
-  // ── Normal alerts (or burn ban mixed with others) ─────────────────────────────
+  // ── Normal alerts ─────────────────────────────────────────────────────────────
   const buildItems = () => alerts.map(a => {
-    if (a.isBurnBan) {
-      return '<a class="burn-ban-chip" href="' + escapeHTML(a.link) + '" target="_blank" rel="noopener noreferrer">' +
-        '<span class="burn-ban-chip-label">Burn Ban ON</span>' +
-        '</a><span class="alert-sep">·</span>';
-    }
     const ago = timeAgo(a.date);
     return '<a class="alert-item" href="' + escapeHTML(a.link) + '" target="_blank" rel="noopener noreferrer">' +
       '<span class="alert-item-source">' + escapeHTML(a.source) + '</span>' +
@@ -1751,63 +1726,139 @@ async function fetchNWSAlerts() {
   }
 }
 
-// ─── BURN BAN CHECK (Texas A&M Forest Service ArcGIS) ────────────────────────
-// Queries the TFS statewide burn ban FeatureServer for Hays County.
-// Cache: 4 hours, persisted to localStorage so it survives page reloads.
-// A status change (ban issued or lifted) will show within one 4-hour window.
-// If BurnBan === 'Yes', injects a synthetic article tagged breaking so it
-// appears in the ticker and on the Wimberley/weather-disasters tabs.
-const BURN_BAN_CACHE_KEY = 'ww_burnban_cache';
-const BURN_BAN_CACHE_MS = 4 * 60 * 60 * 1000; // 4 hours
+// ─── HAYS INFORMED FETCH ──────────────────────────────────────────────────────
+// Fetches haysinformed.com homepage once per 4 hours and extracts:
+//   1. Burn ban status card — always shown in Wimberley feed, ON or OFF + date
+//   2. Public health / emergency notice cards — always shown in Wimberley feed
+// Source of truth: Hays County OES manually updates this page.
+// Proxied through the Cloudflare Worker (same as RSS feeds) to avoid CORS.
+const HAYS_INFORMED_CACHE_KEY = 'ww_haysinformed_cache';
+const HAYS_INFORMED_CACHE_MS = 4 * 60 * 60 * 1000; // 4 hours
 
-async function fetchBurnBan() {
+async function fetchHaysInformed() {
   const now = Date.now();
 
-  // Check localStorage first
+  // Check cache first
   try {
-    const stored = localStorage.getItem(BURN_BAN_CACHE_KEY);
+    const stored = localStorage.getItem(HAYS_INFORMED_CACHE_KEY);
     if (stored) {
       const cached = JSON.parse(stored);
-      if ((now - cached.checkedAt) < BURN_BAN_CACHE_MS) {
-        return cached.status === 'Yes' ? makeBurnBanArticle() : null;
+      if ((now - cached.checkedAt) < HAYS_INFORMED_CACHE_MS) {
+        return cached.cards || [];
       }
     }
-  } catch(e) { /* localStorage unavailable or corrupt — proceed to fetch */ }
+  } catch(e) { /* proceed to fetch */ }
 
-  // Cache stale or missing — fetch from TFS ArcGIS
   try {
-    const url = "https://tfsgis.tfs.tamu.edu/arcgis/rest/services/BurnBan/BurnBan/MapServer/0/query" +
-      "?where=County%3D'Hays'&outFields=County,BurnBan,StartDate&f=json";
-    const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
-    if (!r.ok) return null;
-    const data = await r.json();
-    const feat = data.features && data.features[0];
-    const status = feat ? (feat.attributes.BurnBan || 'No') : 'No';
+    const targetUrl = 'https://www.haysinformed.com/';
+    const proxyUrl = 'https://watchtower-proxy.kmkoeh.workers.dev/?url=' + encodeURIComponent(targetUrl);
+    const r = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
+    if (!r.ok) throw new Error('fetch failed');
+    const html = await r.text();
 
-    // Persist to localStorage
+    const cards = [];
+
+    // ── 1. Burn ban status ────────────────────────────────────────────────────
+    // Look for burn ban ON or LIFTED text on the page
+    const lc = html.toLowerCase();
+    let burnBanOn = false;
+    let statusDate = '';
+    let statusSummary = '';
+
+    if (lc.includes('burn ban lifted') || lc.includes('lifted the burn ban')) {
+      burnBanOn = false;
+      // Try to extract the date from surrounding text
+      const liftMatch = html.match(/lifted the Burn Ban as of ([A-Za-z]+ \d+,?\s*\d{4})/i)
+        || html.match(/Burn Ban Lifted[^<]*?(\w+ \d+,?\s*\d{4})/i);
+      if (liftMatch) statusDate = 'Lifted ' + liftMatch[1].trim();
+
+      // Check for reinstatement note
+      const reinstateMatch = html.match(/reinstated?(?:\s+on)?\s+([A-Za-z]+ \d+,?\s*\d{4})/i);
+      statusSummary = reinstateMatch
+        ? 'Burn ban lifted. Reinstated ' + reinstateMatch[1].trim() + '.'
+        : 'Hays County burn ban is not currently in effect.';
+    } else if (lc.includes('burn ban in effect') || lc.includes('burn ban is in effect') || lc.includes('burn ban on')) {
+      burnBanOn = true;
+      const onMatch = html.match(/burn ban[^<]*?(?:in effect|on)[^<]*?(?:as of|since)?\s*([A-Za-z]+ \d+,?\s*\d{4})/i);
+      if (onMatch) statusDate = 'In effect ' + onMatch[1].trim();
+      statusSummary = 'Hays County burn ban is currently in effect. Visit haysinformed.com for details.';
+    } else {
+      // Fallback: no clear signal — show unknown
+      burnBanOn = false;
+      statusDate = 'Status unknown';
+      statusSummary = 'Visit haysinformed.com for current burn ban status.';
+    }
+
+    cards.push({
+      title: burnBanOn ? 'Burn Ban: ON' : 'Burn Ban: OFF',
+      summary: statusSummary,
+      rawTitle: burnBanOn ? 'Burn Ban: ON' : 'Burn Ban: OFF',
+      rawSummary: statusSummary,
+      link: 'https://www.haysinformed.com/',
+      source: 'Hays County Fire Marshal',
+      lang: 'en',
+      tags: ['wimberley', 'weather-disasters'],
+      date: new Date(now - 1), // just before now so it sorts behind truly live content
+      statusDate: statusDate,
+      isBurnBanStatus: true,
+      burnBanOn: burnBanOn
+    });
+
+    // ── 2. Public health / emergency notices ──────────────────────────────────
+    // Parse h2/h3/h4/h5 headings followed by text — skip burn ban and generic UI headings
+    const SKIP_PATTERNS = [
+      /burn ban/i, /know what to do/i, /understand the difference/i,
+      /protect your home/i, /assistance.{0,10}advisories/i,
+      /hays county businesses/i, /istat/i, /current emergency information/i,
+      /preparedness/i, /sign up/i, /emergency alert/i
+    ];
+
+    // Extract headings with their following paragraph text
+    const headingRegex = /<h[2-5][^>]*>([\s\S]*?)<\/h[2-5]>/gi;
+    let match;
+    while ((match = headingRegex.exec(html)) !== null) {
+      const raw = match[1].replace(/<[^>]+>/g, '').trim();
+      if (!raw || raw.length < 10) continue;
+      if (SKIP_PATTERNS.some(p => p.test(raw))) continue;
+
+      // Only surface notices that look like dated/specific announcements
+      // Must contain a year, a month name, or key health/emergency words
+      const isRelevant = /20\d\d|january|february|march|april|may|june|july|august|september|october|november|december|rabies|outbreak|health|notice|warning|alert|emergency|advisory/i.test(raw);
+      if (!isRelevant) continue;
+
+      // Grab the text following this heading (up to 300 chars, strip tags)
+      const afterHeading = html.slice(match.index + match[0].length, match.index + match[0].length + 800);
+      const summaryMatch = afterHeading.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
+      let summary = '';
+      if (summaryMatch) {
+        summary = summaryMatch[1].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 220);
+        if (summary.length === 220) summary += '…';
+      }
+
+      cards.push({
+        title: raw,
+        summary: summary,
+        rawTitle: raw,
+        rawSummary: summary,
+        link: 'https://www.haysinformed.com/',
+        source: 'Hays County OES',
+        lang: 'en',
+        tags: ['wimberley', 'public-health'],
+        date: new Date(now - 2),
+        statusDate: 'Active notice',
+        isHaysNotice: true
+      });
+    }
+
+    // Persist to cache
     try {
-      localStorage.setItem(BURN_BAN_CACHE_KEY, JSON.stringify({ status, checkedAt: now }));
-    } catch(e) { /* localStorage write failed — non-fatal */ }
+      localStorage.setItem(HAYS_INFORMED_CACHE_KEY, JSON.stringify({ checkedAt: now, cards }));
+    } catch(e) { /* non-fatal */ }
 
-    return status === 'Yes' ? makeBurnBanArticle() : null;
+    return cards;
   } catch(e) {
-    return null;
+    return [];
   }
-}
-
-function makeBurnBanArticle() {
-  return {
-    title: 'Burn Ban: ON',
-    summary: 'Hays County burn ban is currently in effect.',
-    rawTitle: 'Burn Ban: ON',
-    rawSummary: '',
-    link: 'https://www.haysinformed.com/',
-    source: 'Hays County Fire Marshal',
-    lang: 'en',
-    tags: ['wimberley', 'weather-disasters', 'breaking'],
-    date: new Date(),
-    isBurnBan: true
-  };
 }
 
 // ─── WEATHER WIDGET ───────────────────────────────────────────────────────────
