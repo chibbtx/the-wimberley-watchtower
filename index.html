@@ -135,7 +135,7 @@
   .card:hover { background: var(--surface2); }
   .card-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .card-source { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent2); }
-  .card-lang { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: var(--text-dim); letter-spacing: 0.05em; }
+
   .card-title { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; line-height: 1.35; color: var(--text); }
   .card-summary { font-size: 0.82rem; line-height: 1.6; color: var(--text-muted); font-weight: 300; }
   .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
@@ -330,7 +330,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-12.01 — loading overlay: add muted subtitle "this may take a few seconds"
+// VERSION: 2026-03-12.02 — remove EN/ES language markers from cards
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -1411,11 +1411,9 @@ function renderCards(articles) {
     card.target = '_blank';
     card.rel = 'noopener noreferrer';
     const ago = timeAgo(a.date);
-    const langLabel = a.lang === 'es' ? 'ES→EN' : 'EN';
     card.innerHTML =
       '<div class="card-meta">' +
         '<span class="card-source">' + escapeHTML(a.source) + '</span>' +
-        '<span class="card-lang">' + escapeHTML(langLabel) + '</span>' +
       '</div>' +
       '<div class="card-title">' + escapeHTML(a.title) + '</div>' +
       (a.summary ? '<div class="card-summary">' + escapeHTML(a.summary) + '</div>' : '') +
