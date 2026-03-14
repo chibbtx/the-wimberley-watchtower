@@ -171,9 +171,10 @@
   @media (max-width: 600px) {
     .header-inner { height: 56px; }
     .sticky-stack { top: 56px; }
-    .logo { flex-direction: column; align-items: flex-start; gap: 1px; }
+    .logo { flex-direction: row; align-items: center; gap: 10px; }
     .logo-main { font-size: 1.2rem; }
     .logo-sub { font-size: 0.52rem; letter-spacing: 0.1em; }
+    .header-right { display: none; }
     main { padding: 16px 0; }
     .news-grid, .skeleton-grid { grid-template-columns: 1fr; }
     .toolbar-inner { padding: 8px 16px; }
@@ -317,7 +318,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-14.00 — raven logo, light/dark favicons, apple touch icon
+// VERSION: 2026-03-14.01 — fix mobile header layout, hide refresh on mobile
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
