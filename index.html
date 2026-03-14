@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Wimberley Watchtower</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗼</text></svg>">
+<link rel="icon" href="favicon_dark_64.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon_light_64.png" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="raven_master_512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
@@ -26,7 +28,7 @@
 
   header { background: var(--bg); padding: 0; position: sticky; top: 0; z-index: 100; }
   .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; padding: 0 24px; background: var(--surface); border: 1px solid var(--border); border-bottom: none; }
-  .logo { display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; cursor: pointer; min-width: 0; }
+  .logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; cursor: pointer; min-width: 0; }
   .logo-main { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.5rem; letter-spacing: -0.02em; color: var(--text); white-space: nowrap; }
   .logo-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase; white-space: nowrap; }
   .header-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
@@ -190,6 +192,7 @@
 <header>
   <div class="header-inner">
     <div class="logo" onclick="filterBy('wimberley', document.querySelector('[onclick*=wimberley]')); document.getElementById('searchInput').value=''; setTimeFilter(168, document.querySelector('.time-btn[data-hours=\'168\']'));">
+      <img src="social_avatar_800.png" alt="Wimberley Watchtower" style="height:44px;width:auto;border-radius:4px;flex-shrink:0;display:block;">
       <div class="logo-main">
         <span style="color:var(--text)">The </span><span style="color:var(--accent)">Wimberley </span><span style="color:var(--accent2)">Watchtower</span>
       </div>
@@ -314,7 +317,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-13.01 — force text presentation on ℹ
+// VERSION: 2026-03-14.00 — raven logo, light/dark favicons, apple touch icon
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
