@@ -17,7 +17,7 @@
     --surface2: #1f1f1f;
     --border: #2a2a2a;
     --accent: #0bb8da;
-    --accent2: #1ad157;
+    --accent2: #7A9E6A;
     --text: #e8e4dc;
     --text-muted: #a09890;
     --text-dim: #6a6560;
@@ -89,7 +89,7 @@
   .sub-bar-inner::-webkit-scrollbar { display: none; }
   .sub-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em; padding: 5px 11px; border-radius: 2px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
   .sub-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .sub-btn-iss:hover { border-color: var(--accent2) !important; color: var(--accent2) !important; }
+  .sub-btn-iss:hover { border-color: var(--accent) !important; color: var(--accent) !important; }
   .sub-bar-weather { display: flex; align-items: center; gap: 5px; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); flex-shrink: 0; padding-right: 10px; border-right: 1px solid var(--border); margin-right: 4px; }
   .sub-bar-weather .wx-temp { color: var(--text); font-size: 0.72rem; font-weight: 500; }
   .sub-bar-weather .wx-icon { color: var(--accent2); flex-shrink: 0; }
@@ -150,8 +150,8 @@
 
   /* LOADING OVERLAY — fixed to viewport center, works on any screen size */
   .loading-overlay { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 14px; background: rgba(14,14,14,0.88); backdrop-filter: blur(4px); border: 1px solid var(--border); padding: 28px 40px; z-index: 200; pointer-events: none; border-radius: 4px; }
-  .loading-overlay-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); animation: pulse 1s ease-in-out infinite; }
-  .loading-overlay-text { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
+  .loading-overlay-dot { width: 10px; height: 10px; border-radius: 50%; background: #7FA2C9; box-shadow: 0 0 10px #7FA2C9; animation: pulse 1s ease-in-out infinite; }
+  .loading-overlay-text { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase; color: #7FA2C9; white-space: nowrap; }
   .loading-overlay-sub { font-family: 'IBM Plex Sans', sans-serif; font-size: 0.72rem; color: var(--text-muted); padding-top: 10px; white-space: nowrap; }
 
   .empty-state { text-align: center; padding: 80px 24px; color: var(--text-muted); }
@@ -198,7 +198,7 @@
       <img src="social_avatar_800.png" alt="Wimberley Watchtower" style="height:44px;width:auto;border-radius:4px;flex-shrink:0;display:block;">
       <div class="logo-text">
         <div class="logo-main">
-          <span style="color:var(--text)">The </span><span style="color:var(--accent)">Wimberley </span><span style="color:var(--accent2)">Watchtower</span>
+          <span style="color:var(--text-muted)">The </span><span style="color:#7FA2C9">Wimberley </span><span style="color:#7A9E6A">Watchtower</span>
         </div>
         <div class="logo-sub">Situational Awareness Dashboard</div>
       </div>
@@ -322,7 +322,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-14.02 — wrap logo text, fix mobile tagline stacking
+// VERSION: 2026-03-14.03 — naturalistic palette, sky blue + sage green, muted "The"
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
