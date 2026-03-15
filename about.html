@@ -3,37 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About — Wimberley Watchtower</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗼</text></svg>">
+<title>About — The Wimberley Watchtower</title>
+<link rel="icon" href="favicon_dark_64.png" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon_light_64.png" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="raven_master_512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0e0e0e; --surface: #161616; --surface2: #1f1f1f; --border: #2a2a2a;
-    --accent: #0bb8da; --accent2: #1ad157;
-    --text: #e8e4dc; --text-muted: #a09890; --text-dim: #6a6560;
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --surface2: #1f1f1f;
+    --border: #2a2a2a;
+    --accent: #0bb8da;
+    --accent2: #7A9E6A;
+    --text: #e8e4dc;
+    --text-muted: #a09890;
+    --text-dim: #6a6560;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; min-height: 100vh; }
 
+  /* ── HEADER — lifted from index.html ─────────────────────────────────────── */
   header { background: var(--bg); padding: 0; position: sticky; top: 0; z-index: 100; }
   .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; padding: 0 24px; background: var(--surface); border: 1px solid var(--border); border-bottom: none; }
-  .logo { display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; text-decoration: none; }
-  .logo-main { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.5rem; letter-spacing: -0.02em; }
-  .w1 { color: var(--text); } .w2 { color: var(--accent); } .w3 { color: var(--accent2); }
+  .logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; text-decoration: none; min-width: 0; }
+  .logo-main { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.5rem; letter-spacing: -0.02em; color: var(--text); white-space: nowrap; }
   .logo-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase; white-space: nowrap; }
-  .back-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; padding: 6px 14px; border-radius: 2px; text-decoration: none; transition: all 0.15s; white-space: nowrap; }
-  .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .logo-text { display: flex; flex-direction: column; gap: 3px; }
 
-  /* Border column — outer full-width, inner constrained */
-  .page-border { background: var(--bg); }
-  .page-border-inner { max-width: 1200px; margin: 0 auto; border-left: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .back-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; padding: 6px 14px; border-radius: 2px; text-decoration: none; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
+  .back-btn:hover { border-color: var(--accent2); color: var(--accent2); }
 
-  main { max-width: 1200px; margin: 0 auto; padding: 56px 24px 80px; border-left: 1px solid var(--border); border-right: 1px solid var(--border); min-height: calc(100vh - 64px); }
+  /* ── SUBHEADER BAR — border closer ───────────────────────────────────────── */
+  .subheader { background: var(--bg); }
+  .subheader-inner { max-width: 1200px; margin: 0 auto; height: 4px; background: var(--surface); border-left: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 
-  .about-grid { display: grid; grid-template-columns: 1fr 340px; gap: 64px; align-items: start; }
+  /* ── MAIN CONTENT ─────────────────────────────────────────────────────────── */
+  main { max-width: 1200px; margin: 0 auto; padding: 56px 24px 80px; border-left: 1px solid var(--border); border-right: 1px solid var(--border); min-height: calc(100vh - 68px); }
 
-  .about-content { }
+  .about-grid { display: grid; grid-template-columns: 1fr 320px; gap: 64px; align-items: start; }
 
   .section-block { margin-bottom: 52px; }
   .section-block:last-child { margin-bottom: 0; }
@@ -46,37 +56,26 @@
   .body-text p { margin-bottom: 14px; }
   .body-text p:last-child { margin-bottom: 0; }
 
-  /* Sidebar */
-  .about-sidebar { }
-
+  /* ── SIDEBAR ──────────────────────────────────────────────────────────────── */
   .sidebar-card { background: var(--surface); border: 1px solid var(--border); padding: 22px; margin-bottom: 16px; }
   .sidebar-card:last-child { margin-bottom: 0; }
 
-  .sidebar-card-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; }
-
-  .stat-row { display: flex; justify-content: space-between; align-items: baseline; padding: 7px 0; border-bottom: 1px solid #1c1c1c; font-size: 0.82rem; }
-  .stat-row:last-child { border-bottom: none; }
-  .stat-label { color: var(--text-muted); }
-  .stat-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--text); }
-  .stat-val.accent { color: var(--accent); }
-  .stat-val.green { color: var(--accent2); }
-
-  /* Coming Soon card */
-  .sentinel-card { background: var(--surface); border: 1px solid var(--border); padding: 22px; }
   .sentinel-card-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent2); margin-bottom: 10px; }
   .sentinel-card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.3; }
   .sentinel-card-body { font-size: 0.81rem; line-height: 1.65; color: var(--text-muted); font-weight: 300; }
   .sentinel-badge { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.57rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent2); border: 1px solid var(--accent2); padding: 2px 7px; border-radius: 2px; margin-top: 14px; opacity: 0.7; }
 
+  /* ── FOOTER ───────────────────────────────────────────────────────────────── */
   .page-footer { margin-top: 60px; padding-top: 14px; border-top: 1px solid var(--border); font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-dim); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 
+  /* ── RESPONSIVE ───────────────────────────────────────────────────────────── */
   @media (max-width: 860px) {
     .about-grid { grid-template-columns: 1fr; gap: 48px; }
-    .about-sidebar { position: static; }
-    .sentinel-card { order: -1; }
+    .sidebar-card { order: -1; }
   }
   @media (max-width: 600px) {
-    .logo-sub { display: none; }
+    .header-inner { height: 56px; }
+    .logo-sub { font-size: 0.52rem; letter-spacing: 0.1em; }
     main { padding: 32px 14px 60px; }
     .section-title { font-size: 1.3rem; }
   }
@@ -87,12 +86,21 @@
 <header>
   <div class="header-inner">
     <a class="logo" href="index.html">
-      <div class="logo-main"><span class="w1">Wimberley </span><span class="w2">Watch</span><span class="w3">tower</span></div>
-      <div class="logo-sub">About</div>
+      <img src="social_avatar_800.png" alt="Wimberley Watchtower" style="height:44px;width:auto;border-radius:4px;flex-shrink:0;display:block;">
+      <div class="logo-text">
+        <div class="logo-main">
+          <span style="color:var(--text-muted)">The </span><span style="color:#7FA2C9">Wimberley </span><span style="color:#7A9E6A">Watchtower</span>
+        </div>
+        <div class="logo-sub">About</div>
+      </div>
     </a>
     <a class="back-btn" href="index.html">← Dashboard</a>
   </div>
 </header>
+
+<div class="subheader">
+  <div class="subheader-inner"></div>
+</div>
 
 <main>
   <div class="about-grid">
@@ -112,7 +120,7 @@
         <div class="body-text">
           <p>Headlines are pulled from a mix of direct publisher feeds (RSS) and Google News queries across eleven topic tabs. Feeds refresh automatically every 30 minutes while the page is open.</p>
           <p>Headlines and advisories come from third-party sources and aggregators and may not be real-time. Filtering is an ongoing effort; we tune each tab to stay relevant, but imperfect matches slip through. We're always dialing it in.</p>
-          <p>The In the Sky link tracks live air traffic overhead, including aerial firefighting assets during wildfire events.</p>
+          <p>The In the Sky link tracks live air traffic overhead, including aerial firefighting assets during wildfire events. The Radar link opens a live regional weather radar centered on Wimberley. The Traffic link shows current road conditions in the area.</p>
           <p>This site was built and is maintained with AI assistance, with extensive input and creative control. The headlines and information on this page come from government agencies, journalists, and established news outlets, not AI.</p>
         </div>
       </div>
@@ -128,10 +136,10 @@
 
     <div class="about-sidebar">
 
-      <div class="sentinel-card">
+      <div class="sidebar-card">
         <div class="sentinel-card-eyebrow">Coming Soon</div>
         <div class="sentinel-card-title">The Wimberley Sentinel</div>
-        <div class="sentinel-card-body">A companion resource for emergency preparedness in the Wimberley Valley: flooding, wildfires, grid-down events, and more. Built with local knowledge, in plain language, for the people who live here. It replaces the Radio &amp; Comms and ISS links in the navigation above.</div>
+        <div class="sentinel-card-body">A companion resource for emergency preparedness in the Wimberley Valley: flooding, wildfires, grid-down events, and more. Built with local knowledge, in plain language, for the people who live here. When complete, the Sentinel will replace the Radio and ISS links in the navigation above.</div>
         <div class="sentinel-badge">In Development</div>
       </div>
 
