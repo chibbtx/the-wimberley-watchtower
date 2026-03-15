@@ -187,7 +187,7 @@
 
 <header>
   <div class="header-inner">
-    <div class="logo" onclick="filterBy('wimberley', document.querySelector('[onclick*=wimberley]')); document.getElementById('searchInput').value=''; setTimeFilter(168, document.querySelector('.time-btn[data-hours=\'168\']'));">
+    <div class="logo" onclick="filterBy('wimberley', document.querySelector('[onclick*=wimberley]')); document.getElementById('searchInput').value=''; setTimeFilter(24, document.querySelector('.time-btn[data-hours=\'24\']'));">
       <img src="social_avatar_800.png" alt="Wimberley Watchtower" style="height:44px;width:auto;border-radius:4px;flex-shrink:0;display:block;">
       <div class="logo-text">
         <div class="logo-main">
@@ -279,9 +279,9 @@
       <div class="time-filter-group">
         <button class="time-btn" data-hours="1" onclick="setTimeFilter(1, this)">1h</button>
         <button class="time-btn" data-hours="8" onclick="setTimeFilter(8, this)">8h</button>
-        <button class="time-btn" data-hours="24" onclick="setTimeFilter(24, this)">24h</button>
+        <button class="time-btn active" data-hours="24" onclick="setTimeFilter(24, this)">24h</button>
         <button class="time-btn" data-hours="72" onclick="setTimeFilter(72, this)">3d</button>
-        <button class="time-btn active" data-hours="168" onclick="setTimeFilter(168, this)">7d</button>
+        <button class="time-btn" data-hours="168" onclick="setTimeFilter(168, this)">7d</button>
       </div>
     </div>
   </div>
@@ -310,7 +310,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-14.06 — source tag audit: consolidate multi-tags, remove Dallas Morning News
+// VERSION: 2026-03-14.07 — Border Report tag texas→national; default time filter 7d→24h; scroll-to-top on tab switch
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -456,7 +456,7 @@ const FEEDS = [
     url: 'https://news.google.com/rss/search?q=site:texastribune.org+immigration+OR+border+OR+deportation&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'The Monitor (RGV)', lang: 'en', tags: ['texas'],
     url: 'https://www.themonitor.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc', max: 6 },
-  { name: 'Border Report', lang: 'en', tags: ['texas'],
+  { name: 'Border Report', lang: 'en', tags: ['national'],
     url: 'https://www.borderreport.com/feed/', max: 6 },
   // ── TEXAS — Agriculture & Rural ───────────────────────────────────────────────
   { name: 'Texas Farm Bureau', lang: 'en', tags: ['texas'],
@@ -1193,7 +1193,7 @@ let allArticles = [];
 let sourceStatus = {};
 let currentFilter = 'wimberley';
 let lastLoadTime = 0;
-let currentTimeHours = 168;
+let currentTimeHours = 24;
 
 // ─── PROXY HELPERS ────────────────────────────────────────────────────────────
 function parseRSSXml(xml) {
@@ -1470,6 +1470,7 @@ function filterBy(tag, el) {
     const btn8 = document.querySelector('.time-btn[data-hours="8"]');
     if (btn8) btn8.classList.add('active');
   }
+  window.scrollTo(0, 0);
   applyDisplayFilters();
 }
 
