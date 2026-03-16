@@ -313,7 +313,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-15.03 — Move TPWD feed from Hill Country to Texas tab
+// VERSION: 2026-03-16.00 — Phased loading with concurrency queue + Worker caching
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -952,6 +952,25 @@ const FEEDS = [
 
 ];
 
+// ─── PHASE ASSIGNMENT ─────────────────────────────────────────────────────────
+// Feeds load in 3 priority phases to protect the Worker from request bursts
+// and surface the most locally relevant content first.
+// Phase 1: Wimberley + Hill Country — full-page overlay until complete
+// Phase 2: Texas, National, Finance, Weather & Disasters — background, tab overlay if clicked early
+// Phase 3: Geopolitics, Civil Liberties, Cyber/AI, Public Health, En Español — background
+const PHASE1_TAGS = new Set(['wimberley', 'hill-country']);
+const PHASE2_TAGS = new Set(['texas', 'national', 'finance', 'weather-disasters']);
+
+FEEDS.forEach(f => {
+  if (f.tags.some(t => PHASE1_TAGS.has(t))) {
+    f.phase = 1;
+  } else if (f.tags.some(t => PHASE2_TAGS.has(t))) {
+    f.phase = 2;
+  } else {
+    f.phase = 3;
+  }
+});
+
 // ─── RELEVANCE FILTER ─────────────────────────────────────────────────────────
 // Sources in LOCAL_SOURCES pass without keyword filtering — they're inherently
 // on-topic for the Wimberley threat intelligence scope.
@@ -1475,6 +1494,13 @@ function applyDisplayFilters() {
 }
 
 // ─── FILTER ───────────────────────────────────────────────────────────────────
+// Maps tab tag values to the phase that covers them
+const TAB_PHASE = {
+  'wimberley': 1, 'hill-country': 1,
+  'texas': 2, 'national': 2, 'finance': 2, 'weather-disasters': 2,
+  'geopolitics': 3, 'civil-liberties-privacy': 3, 'cyber-ai-tech': 3, 'public-health': 3, 'espanol': 3
+};
+
 function filterBy(tag, el) {
   currentFilter = tag;
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
@@ -1486,6 +1512,23 @@ function filterBy(tag, el) {
     if (btn8) btn8.classList.add('active');
   }
   window.scrollTo(0, 0);
+
+  // If this tab's phase hasn't finished loading yet, show the fetching overlay
+  // in the news container so the user knows content is on its way
+  const tabPhase = TAB_PHASE[tag];
+  if (tabPhase && !phaseComplete[tabPhase]) {
+    const existingTabOverlay = document.getElementById('loadingOverlay');
+    if (!existingTabOverlay) {
+      const ov = document.createElement('div');
+      ov.id = 'loadingOverlay';
+      ov.className = 'loading-overlay';
+      ov.innerHTML = '<div class="loading-overlay-dot"></div><div class="loading-overlay-text">Fetching feeds…</div><div class="loading-overlay-sub">this may take a few seconds</div>';
+      document.body.appendChild(ov);
+    }
+  } else {
+    document.getElementById('loadingOverlay')?.remove();
+  }
+
   applyDisplayFilters();
 }
 
@@ -1507,6 +1550,32 @@ function updateTabArrows() {
 }
 
 // ─── MAIN LOAD ────────────────────────────────────────────────────────────────
+// ─── PRIORITY QUEUE ───────────────────────────────────────────────────────────
+// Runs an array of async tasks with a concurrency cap of `limit`.
+// Returns results in the same order as the input array (like Promise.allSettled).
+async function runQueue(tasks, limit = 8) {
+  const results = new Array(tasks.length);
+  let index = 0;
+
+  async function worker() {
+    while (index < tasks.length) {
+      const i = index++;
+      try {
+        results[i] = { status: 'fulfilled', value: await tasks[i]() };
+      } catch (e) {
+        results[i] = { status: 'rejected', reason: e };
+      }
+    }
+  }
+
+  const workers = Array.from({ length: Math.min(limit, tasks.length) }, worker);
+  await Promise.all(workers);
+  return results;
+}
+
+// Track which phases have completed so tab clicks know whether to show overlay
+const phaseComplete = { 1: false, 2: false, 3: false };
+
 async function loadAllFeeds() {
   const btn = document.getElementById('refreshBtn');
   const icon = document.getElementById('refreshIcon');
@@ -1514,8 +1583,11 @@ async function loadAllFeeds() {
   if (btn) btn.classList.add('loading');
   if (icon) { icon.className = 'spin'; icon.textContent = '↻'; }
   sourceStatus = {};
+  phaseComplete[1] = false;
+  phaseComplete[2] = false;
+  phaseComplete[3] = false;
 
-  // Show loading overlay — appended to body so innerHTML resets can't wipe it
+  // Show full-page loading overlay for Phase 1
   const existingOverlay = document.getElementById('loadingOverlay');
   if (existingOverlay) existingOverlay.remove();
   const ov = document.createElement('div');
@@ -1529,29 +1601,58 @@ async function loadAllFeeds() {
     Array(6).fill('<div class="skeleton-card"><div class="skel" style="height:10px;width:30%;margin-bottom:4px"></div><div class="skel" style="height:18px;width:88%"></div><div class="skel" style="height:13px;width:70%"></div><div class="skel" style="height:9px;width:20%"></div></div>').join('') +
     '</div>';
 
-  const [results, nwsAlerts, haysInformedCards] = await Promise.all([
-    Promise.allSettled(FEEDS.map(f => fetchFeed(f))),
+  const phase1Feeds = FEEDS.filter(f => f.phase === 1);
+  const phase2Feeds = FEEDS.filter(f => f.phase === 2);
+  const phase3Feeds = FEEDS.filter(f => f.phase === 3);
+
+  // ── PHASE 1: Wimberley + Hill Country + NWS/HaysInformed (highest priority) ──
+  const [phase1Results, nwsAlerts, haysInformedCards] = await Promise.all([
+    runQueue(phase1Feeds.map(f => () => fetchFeed(f)), 8),
     fetchNWSAlerts(),
     fetchHaysInformed()
   ]);
-  const rawArticles = results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
-  const combined = [...rawArticles, ...nwsAlerts, ...haysInformedCards];
-  const sorted = combined.sort((a, b) => b.date - a.date);
-  allArticles = deduplicate(sorted);
 
-  const okCount = Object.values(sourceStatus).filter(s => s === 'ok').length;
+  const phase1Articles = phase1Results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
+  allArticles = deduplicate([...phase1Articles, ...nwsAlerts, ...haysInformedCards].sort((a, b) => b.date - a.date));
+  phaseComplete[1] = true;
 
-  // Remove overlay
+  // Drop the full-page overlay — Phase 1 is ready
   document.getElementById('loadingOverlay')?.remove();
-
   if (btn) btn.classList.remove('loading');
   if (icon) { icon.className = ''; icon.textContent = '↻'; }
-
 
   renderSourcePills();
   renderAlertStrip();
   applyDisplayFilters();
   lastLoadTime = Date.now();
+
+  // ── PHASE 2: Texas, National, Finance, Weather (background) ──────────────────
+  const phase2Results = await runQueue(phase2Feeds.map(f => () => fetchFeed(f)), 8);
+  const phase2Articles = phase2Results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
+  allArticles = deduplicate([...allArticles, ...phase2Articles].sort((a, b) => b.date - a.date));
+  phaseComplete[2] = true;
+
+  // Remove tab overlay if user is currently on a Phase 2 tab
+  const p2Phase = TAB_PHASE[currentFilter];
+  if (p2Phase === 2) document.getElementById('loadingOverlay')?.remove();
+
+  renderSourcePills();
+  renderAlertStrip();
+  applyDisplayFilters();
+
+  // ── PHASE 3: Geopolitics, Civil Liberties, Cyber/AI, Public Health, Español ──
+  const phase3Results = await runQueue(phase3Feeds.map(f => () => fetchFeed(f)), 8);
+  const phase3Articles = phase3Results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
+  allArticles = deduplicate([...allArticles, ...phase3Articles].sort((a, b) => b.date - a.date));
+  phaseComplete[3] = true;
+
+  // Remove tab overlay if user is currently on a Phase 3 tab
+  const p3Phase = TAB_PHASE[currentFilter];
+  if (p3Phase === 3) document.getElementById('loadingOverlay')?.remove();
+
+  renderSourcePills();
+  renderAlertStrip();
+  applyDisplayFilters();
 }
 
 // ─── ALERT STRIP ──────────────────────────────────────────────────────────────
