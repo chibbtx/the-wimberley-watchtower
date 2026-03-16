@@ -313,7 +313,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-15.01 — Fix Finance tab interleave (finance-economy → finance)
+// VERSION: 2026-03-15.02 — Add 5 feeds: Blue Hole/Jacob's Well, Cypress Creek, Old Baldy, Wimberley Library, TPWD
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -372,6 +372,16 @@ const FEEDS = [
   { name: 'Hays County DA', lang: 'en', tags: ['wimberley'],
     url: 'https://news.google.com/rss/search?q=%22Hays+County%22+%22District+Attorney%22&hl=en-US&gl=US&ceid=US:en', max: 4 },
 
+  // ── WIMBERLEY — Parks & community ────────────────────────────────────────────
+  { name: 'Blue Hole & Jacob\'s Well', lang: 'en', tags: ['wimberley'],
+    url: 'https://news.google.com/rss/search?q=%28%22Blue+Hole%22+OR+%22Jacob%27s+Well%22%29+%28%22Wimberley%22+OR+%22Hays+County%22%29&hl=en-US&gl=US&ceid=US:en', max: 5 },
+  { name: 'Cypress Creek', lang: 'en', tags: ['wimberley'],
+    url: 'https://news.google.com/rss/search?q=%22Cypress+Creek%22+%28%22Wimberley%22+OR+%22Hays+County%22+OR+%22Blanco+County%22%29&hl=en-US&gl=US&ceid=US:en', max: 5 },
+  { name: 'Old Baldy', lang: 'en', tags: ['wimberley'],
+    url: 'https://news.google.com/rss/search?q=%22Old+Baldy%22+%28%22Wimberley%22+OR+%22Hays+County%22%29&hl=en-US&gl=US&ceid=US:en', max: 5 },
+  { name: 'Wimberley Library', lang: 'en', tags: ['wimberley'],
+    url: 'https://news.google.com/rss/search?q=%22Wimberley%22+%28%22library%22+OR+%22Wimberley+Village+Library%22%29&hl=en-US&gl=US&ceid=US:en', max: 5 },
+
   // ── HILL COUNTRY — Regional papers & TV ──────────────────────────────────────
   { name: 'Hays Free Press · Hays County', lang: 'en', tags: ['hill-country'],
     url: 'https://www.haysfreepress.com/rss/articles/en/17/hays-county', max: 6 },
@@ -411,6 +421,8 @@ const FEEDS = [
     url: 'https://www.lcra.org/category/news/feed/', max: 6 },
   { name: 'Hill Country Alliance', lang: 'en', tags: ['hill-country'],
     url: 'https://hillcountryalliance.org/feed/', max: 4 },
+  { name: 'TX Parks & Wildlife', lang: 'en', tags: ['hill-country'],
+    url: 'https://tpwd.texas.gov/feeds/newsreleases/rss.xml', max: 5 },
 
   // ── HILL COUNTRY — Weather (local-specific) ───────────────────────────────────
   { name: 'Texas Hill Country Hazards', lang: 'en', tags: ['hill-country', 'weather-disasters', 'breaking'],
