@@ -313,7 +313,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-30.00 — Tighten advisory strip to three-tier emergency logic; remove KVUE
+// VERSION: 2026-03-30.01 — Interleave Texas tab; reduce TPWD max to 3; Snopes to civil-liberties only
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -476,7 +476,7 @@ const FEEDS = [
   { name: 'AgriLife Today', lang: 'en', tags: ['texas'],
     url: 'https://agrilifetoday.tamu.edu/feed/', max: 5 },
   { name: 'TX Parks & Wildlife', lang: 'en', tags: ['texas'],
-    url: 'https://tpwd.texas.gov/feeds/newsreleases/rss.xml', max: 5 },
+    url: 'https://tpwd.texas.gov/feeds/newsreleases/rss.xml', max: 3 },
   { name: 'Texas Agriculture Daily', lang: 'en', tags: ['texas'],
     url: 'https://news.google.com/rss/search?q=texas+agriculture+drought+farming+ranching&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
@@ -745,7 +745,7 @@ const FEEDS = [
     url: 'https://www.politifact.com/rss/all/', max: 6 },
   { name: 'FactCheck.org', lang: 'en', tags: ['national', 'civil-liberties-privacy'],
     url: 'https://www.factcheck.org/feed/', max: 5 },
-  { name: 'Snopes', lang: 'en', tags: ['national', 'civil-liberties-privacy'],
+  { name: 'Snopes', lang: 'en', tags: ['civil-liberties-privacy'],
     url: 'https://www.snopes.com/feed/', max: 5 },
   // ── Platform & AI-driven disinfo ──────────────────────────────────────────────
   { name: 'DFRLab (Atlantic Council)', lang: 'en', tags: ['civil-liberties-privacy'],
@@ -1363,7 +1363,7 @@ function escapeHTML(str) {
 // For high-velocity tabs, distribute cards by source so no outlet dominates a run.
 // Groups articles by source, sorts each group newest-first, then interleaves:
 // take article[0] from each source, then article[1], etc. Exhausted sources drop out.
-const INTERLEAVE_TABS = new Set(['national', 'geopolitics', 'finance', 'cyber-ai-tech']);
+const INTERLEAVE_TABS = new Set(['national', 'geopolitics', 'finance', 'cyber-ai-tech', 'texas']);
 
 function interleaveBySource(articles) {
   // Build a map: sourceName → [articles sorted newest-first]
