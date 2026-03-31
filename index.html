@@ -314,7 +314,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-30.03 — Suppress sub-bar button focus/active highlight on mobile
+// VERSION: 2026-03-31.00 — Moon phase SVG icons at night with phase name tooltip
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -1941,9 +1941,69 @@ async function fetchHaysInformed() {
 }
 
 // ─── WEATHER WIDGET ───────────────────────────────────────────────────────────
+// ─── MOON PHASE ───────────────────────────────────────────────────────────────
+// Returns 0–7 phase index and name based on date math (no API needed).
+// Phase index: 0=New, 1=Waxing Crescent, 2=First Quarter, 3=Waxing Gibbous,
+//              4=Full, 5=Waning Gibbous, 6=Last Quarter, 7=Waning Crescent
+function getMoonPhase(date) {
+  // Known new moon: Jan 6, 2000 18:14 UTC
+  const knownNew = new Date('2000-01-06T18:14:00Z');
+  const LUNAR_CYCLE = 29.530588853; // days
+  const elapsed = (date - knownNew) / (1000 * 60 * 60 * 24);
+  const phase = ((elapsed % LUNAR_CYCLE) + LUNAR_CYCLE) % LUNAR_CYCLE;
+  const fraction = phase / LUNAR_CYCLE; // 0–1
+  const names = ['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous','Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];
+  const index = Math.round(fraction * 8) % 8;
+  return { index, name: names[index], fraction };
+}
+
+// Moon phase SVG paths — 14x14px, same minimal stroke style as sun icon
+// All use a circle outline + shaded/lit hemisphere approach
+function moonPhaseSvg(index) {
+  // Shared circle outline
+  const outline = '<circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1" fill="none"/>';
+  switch(index) {
+    case 0: // New Moon — dark filled circle
+      return '<circle cx="7" cy="7" r="5.5" fill="currentColor" opacity="0.15"/>' + outline;
+    case 1: // Waxing Crescent — thin right sliver lit
+      return outline + '<path d="M7 1.5 A5.5 5.5 0 0 1 7 12.5 A3 5.5 0 0 0 7 1.5Z" fill="currentColor"/>';
+    case 2: // First Quarter — right half lit
+      return outline + '<path d="M7 1.5 A5.5 5.5 0 0 1 7 12.5 L7 1.5Z" fill="currentColor"/>';
+    case 3: // Waxing Gibbous — mostly lit, left dark sliver
+      return '<circle cx="7" cy="7" r="5.5" fill="currentColor"/>' + outline + '<path d="M7 1.5 A5.5 5.5 0 0 0 7 12.5 A2.5 5.5 0 0 1 7 1.5Z" fill="none" stroke="none"/><path d="M7 1.5 A2.5 5.5 0 0 0 7 12.5" fill="var(--bg)" stroke="none"/><path d="M7 1.5 Q3 4 3 7 Q3 10 7 12.5" fill="var(--bg)"/>' + outline;
+    case 4: // Full Moon — fully lit
+      return '<circle cx="7" cy="7" r="5.5" fill="currentColor"/>' + outline;
+    case 5: // Waning Gibbous — mostly lit, right dark sliver
+      return '<circle cx="7" cy="7" r="5.5" fill="currentColor"/>' + outline + '<path d="M7 1.5 Q11 4 11 7 Q11 10 7 12.5" fill="var(--bg)"/>' + outline;
+    case 6: // Last Quarter — left half lit
+      return outline + '<path d="M7 1.5 A5.5 5.5 0 0 0 7 12.5 L7 1.5Z" fill="currentColor"/>';
+    case 7: // Waning Crescent — thin left sliver lit
+      return outline + '<path d="M7 1.5 A5.5 5.5 0 0 0 7 12.5 A3 5.5 0 0 1 7 1.5Z" fill="currentColor"/>';
+    default: return outline;
+  }
+}
+
 // WMO weather code → SVG icon paths (Wimberley, TX — accent2 green tint)
-function wxSvgPath(code) {
-  // Sun
+function wxSvgPath(code, isDay) {
+  // ── Nighttime icons ────────────────────────────────────────────────────────
+  if (!isDay) {
+    const { index, name } = getMoonPhase(new Date());
+    // Store phase name for tooltip update
+    wxSvgPath._moonName = name;
+    // Clear night — moon phase
+    if (code === 0) return moonPhaseSvg(index);
+    // Partly cloudy night — moon + cloud
+    if (code <= 2) {
+      const moon = moonPhaseSvg(index).replace(/<circle cx="7" cy="7"/g, '<circle cx="5" cy="5"').replace(/cx="7" cy="7" r="5\.5"/g, 'cx="5" cy="5" r="3.8"').replace(/cx="7"/g, 'cx="5"').replace(/cy="7"/g, 'cy="5"');
+      return '<g transform="scale(0.65) translate(0,0)">' + moonPhaseSvg(index) + '</g>' +
+        '<path d="M3 11.5 Q1.5 11.5 1.5 10 Q1.5 8.5 3 8.2 Q3.5 6.5 5.5 6.5 Q7.5 6.5 8 8 Q9.5 8 10 10 Q10 11.5 8.5 11.5Z" fill="currentColor"/>';
+    }
+    // All other night codes fall through to shared icons below
+    wxSvgPath._moonName = null;
+  }
+
+  // ── Daytime (and shared night) icons ──────────────────────────────────────
+  // Sun (clear day)
   if (code === 0) return '<circle cx="7" cy="7" r="2.8" fill="currentColor"/><line x1="7" y1="1" x2="7" y2="2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="7" y1="11.5" x2="7" y2="13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="1" y1="7" x2="2.5" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11.5" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="2.8" y1="2.8" x2="3.8" y2="3.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="10.2" y1="10.2" x2="11.2" y2="11.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11.2" y1="2.8" x2="10.2" y2="3.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="3.8" y1="10.2" x2="2.8" y2="11.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>';
   // Partly cloudy
   if (code <= 2) return '<circle cx="5.5" cy="7.5" r="2" fill="currentColor" opacity="0.5"/><circle cx="4" cy="6" r="2.5" fill="currentColor" opacity="0.6"/><path d="M2 8.5 Q1 8.5 1 7.5 Q1 6 2.5 6 Q2.8 4 5 4 Q7 4 7.5 6 Q9 6 9 7.5 Q9 8.5 8 8.5Z" fill="currentColor"/><circle cx="9" cy="5" r="2" fill="currentColor" opacity="0.7"/><line x1="9" y1="1.5" x2="9" y2="2.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="11.5" y1="5" x2="12.5" y2="5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="11" y1="3" x2="11.8" y2="2.2" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>';
@@ -1961,14 +2021,27 @@ function wxSvgPath(code) {
 
 async function fetchWeather() {
   try {
-    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=30.00&longitude=-98.10&current=temperature_2m,weathercode&temperature_unit=fahrenheit&timezone=America%2FChicago', { signal: AbortSignal.timeout(6000) });
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=30.00&longitude=-98.10&current=temperature_2m,weathercode,is_day&temperature_unit=fahrenheit&timezone=America%2FChicago', { signal: AbortSignal.timeout(6000) });
     const d = await r.json();
     const temp = Math.round(d.current.temperature_2m);
     const code = d.current.weathercode;
+    const isDay = d.current.is_day === 1;
     const tempEl = document.getElementById('wxTemp');
     const svgEl = document.getElementById('wxSvg');
+    const widget = document.getElementById('wxWidget');
     if (tempEl) tempEl.textContent = temp + '°';
-    if (svgEl) svgEl.innerHTML = wxSvgPath(code);
+    if (svgEl) {
+      wxSvgPath._moonName = null;
+      svgEl.innerHTML = wxSvgPath(code, isDay);
+      // Update tooltip with moon phase name at night
+      if (widget) {
+        if (!isDay && wxSvgPath._moonName) {
+          widget.title = wxSvgPath._moonName + ' · Wimberley, TX';
+        } else {
+          widget.title = 'Current conditions · Wimberley, TX';
+        }
+      }
+    }
   } catch(e) {
     // silently fail — widget stays at —°
   }
