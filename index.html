@@ -313,7 +313,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-16.00 — Phased loading with concurrency queue + Worker caching
+// VERSION: 2026-03-30.00 — Tighten advisory strip to three-tier emergency logic; remove KVUE
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -397,8 +397,7 @@ const FEEDS = [
     url: 'https://www.kxan.com/feed/', max: 3 },
   { name: 'KUT Austin', lang: 'en', tags: ['hill-country'],
     url: 'https://www.kut.org/kut-rss-feed-all-content.rss', max: 6 },
-  { name: 'KVUE Austin', lang: 'en', tags: ['hill-country'],
-    url: 'https://www.kvue.com/feeds/syndication/rss/news', max: 3 },
+
 
   // ── HILL COUNTRY — Neighboring cities ────────────────────────────────────────
   { name: 'City of Buda · Alerts', lang: 'en', tags: ['hill-country', 'weather-disasters', 'breaking'],
@@ -986,7 +985,7 @@ const LOCAL_SOURCES = new Set([
   'Hays Free Press · Hays County', 'SM Corridor News',
   'Community Impact · Hays County', 'Community Impact · Dripping Springs',
   'Hill Country News', 'San Marcos Record', 'Herald-Zeitung',
-  'KXAN Austin', 'KUT Austin', 'KVUE Austin',
+  'KXAN Austin', 'KUT Austin',
   'City of Buda · Alerts', 'City of Buda · News', 'City of Buda · Agendas',
   'City of Kyle · News', 'City of Blanco · News', 'City of San Marcos',
   'Hays County', 'LCRA News', 'Hill Country Alliance',
@@ -1657,16 +1656,36 @@ async function loadAllFeeds() {
 
 // ─── ALERT STRIP ──────────────────────────────────────────────────────────────
 function renderAlertStrip() {
-  const ADVISORY_KEYWORDS = [
-    'wimberley','hays county','hays co','blanco river','cypress creek',
-    'hill country','comal county','san marcos','kyle','buda','dripping springs',
-    'wimberley valley','woodcreek','lcra','gbra','eaa','aquifer',
-    "jacob's well",'jacobs well',"devil's backbone",'devils backbone',
-    'texas hill country','central texas',
+  // Tier 1 — pass regardless of geography: genuine public safety emergencies
+  const EMERGENCY_TERMS = [
     'flash flood warning','flash flood watch','flood warning','flood watch',
-    'tornado warning','tornado watch','severe thunderstorm',
-    'winter storm warning','fire weather watch','red flag warning',
-    'drought','wildfire','wildfire warning','evacuation order','evacuation warning'
+    'tornado warning','tornado watch','severe thunderstorm warning','severe thunderstorm watch',
+    'winter storm warning','winter storm watch','ice storm warning',
+    'fire weather watch','red flag warning',
+    'wildfire','wildfire warning','wildfire emergency',
+    'evacuation order','evacuation warning','mandatory evacuation',
+    'active shooter','shelter in place',
+    'amber alert','silver alert','missing person',
+    'hazmat','hazardous materials','chemical spill','gas leak',
+    'boil water notice','boil water advisory',
+    'public health emergency','disease outbreak','health emergency',
+    'earthquake warning','earthquake alert',
+    'dam failure','dam breach','levee failure'
+  ];
+
+  // Tier 2 — only pass when a local geo term is also present
+  const GEO_GATED_TERMS = [
+    'shooting','lockdown','road closure','bridge closure',
+    'water outage','power outage','utility outage',
+    'accident','crash','collision','fire','structure fire'
+  ];
+
+  // Local geo terms used to gate tier 2
+  const GEO_TERMS = [
+    'wimberley','hays county','hays co','blanco river','cypress creek',
+    'wimberley valley','woodcreek','jacob\'s well','jacobs well',
+    'devil\'s backbone','devils backbone','kyle','buda','dripping springs',
+    'san marcos','comal county','lcra','gbra'
   ];
 
   const NWS_SOURCES = new Set(['Comal County · Alerts']);
@@ -1683,7 +1702,12 @@ function renderAlertStrip() {
       if (NWS_SOURCES.has(a.source)) {
         return hay.includes('hays') || hay.includes('wimberley');
       }
-      return ADVISORY_KEYWORDS.some(kw => hay.includes(kw));
+      // Tier 1: emergency term alone is sufficient
+      if (EMERGENCY_TERMS.some(kw => hay.includes(kw))) return true;
+      // Tier 2: geo-gated term requires a local geo match
+      const hasGeoGated = GEO_GATED_TERMS.some(kw => hay.includes(kw));
+      const hasGeo = GEO_TERMS.some(kw => hay.includes(kw));
+      return hasGeoGated && hasGeo;
     })
     .slice(0, 20);
 
