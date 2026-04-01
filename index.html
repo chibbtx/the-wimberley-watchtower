@@ -314,7 +314,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-31.05 — Add illumination percentage to moon phase tooltip
+// VERSION: 2026-03-31.06 — Moon phase tooltip shown at night regardless of weather code
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -2035,8 +2035,9 @@ async function fetchWeather() {
       wxSvgPath._moonName = null;
       svgEl.innerHTML = wxSvgPath(code, isDay);
       if (widget) {
-        if (!isDay && wxSvgPath._moonName) {
-          widget.title = wxSvgPath._moonName + ' · Wimberley, TX';
+        if (!isDay) {
+          const { name, illum } = getMoonPhase(new Date());
+          widget.title = name + ' · ' + illum + '% · Wimberley, TX';
         } else {
           widget.title = 'Current conditions · Wimberley, TX';
         }
