@@ -88,7 +88,7 @@
   .sub-bar-weather { display: flex; align-items: center; gap: 5px; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); flex-shrink: 0; padding-right: 10px; border-right: 1px solid var(--border); margin-right: 4px; position: relative; cursor: default; }
   .sub-bar-weather .wx-temp { color: var(--text); font-size: 0.72rem; font-weight: 500; }
   .sub-bar-weather .wx-icon { color: var(--accent2); flex-shrink: 0; }
-  .wx-tooltip { position: absolute; bottom: calc(100% + 6px); right: 0; background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; white-space: nowrap; padding: 4px 8px; border-radius: 2px; pointer-events: none; opacity: 0; transition: opacity 0.15s; z-index: 200; }
+  .wx-tooltip { position: absolute; top: calc(100% + 6px); right: 0; background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; white-space: nowrap; padding: 4px 8px; border-radius: 2px; pointer-events: none; opacity: 0; transition: opacity 0.15s; z-index: 200; }
   .sub-bar-weather:hover .wx-tooltip { opacity: 1; }
 
   /* FILTER BAR */
@@ -317,7 +317,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-31.01 — CSS tooltip on weather widget replacing title attribute
+// VERSION: 2026-03-31.02 — Flip weather tooltip to drop down below sub-bar
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
