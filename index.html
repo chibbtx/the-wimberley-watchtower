@@ -314,7 +314,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-31.04 — Fix moon phase index to use Math.floor
+// VERSION: 2026-03-31.05 — Add illumination percentage to moon phase tooltip
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -1954,7 +1954,8 @@ function getMoonPhase(date) {
   const fraction = phase / LUNAR_CYCLE; // 0–1
   const names = ['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous','Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];
   const index = Math.floor(fraction * 8) % 8;
-  return { index, name: names[index], fraction };
+  const illum = Math.round((1 - Math.cos(fraction * 2 * Math.PI)) / 2 * 100);
+  return { index, name: names[index], fraction, illum };
 }
 
 // Moon phase SVG paths — 14x14px, same minimal stroke style as sun icon
@@ -1987,9 +1988,9 @@ function moonPhaseSvg(index) {
 function wxSvgPath(code, isDay) {
   // ── Nighttime icons ────────────────────────────────────────────────────────
   if (!isDay) {
-    const { index, name } = getMoonPhase(new Date());
-    // Store phase name for tooltip update
-    wxSvgPath._moonName = name;
+    const { index, name, illum } = getMoonPhase(new Date());
+    // Store phase name + illumination for tooltip update
+    wxSvgPath._moonName = name + ' · ' + illum + '%';
     // Clear night — moon phase
     if (code === 0) return moonPhaseSvg(index);
     // Partly cloudy night — moon + cloud
