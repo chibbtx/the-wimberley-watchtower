@@ -314,7 +314,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-31.03 — Revert to title attribute for weather tooltip
+// VERSION: 2026-03-31.04 — Fix moon phase index to use Math.floor
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -1953,7 +1953,7 @@ function getMoonPhase(date) {
   const phase = ((elapsed % LUNAR_CYCLE) + LUNAR_CYCLE) % LUNAR_CYCLE;
   const fraction = phase / LUNAR_CYCLE; // 0–1
   const names = ['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous','Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];
-  const index = Math.round(fraction * 8) % 8;
+  const index = Math.floor(fraction * 8) % 8;
   return { index, name: names[index], fraction };
 }
 
