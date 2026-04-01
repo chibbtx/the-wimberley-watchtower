@@ -85,9 +85,11 @@
   .sub-btn:hover { border-color: #7FA2C9; color: #7FA2C9; }
   .sub-btn:focus, .sub-btn:focus-visible, .sub-btn:active { outline: none; border-color: var(--border); color: var(--text-muted); background: none; }
   .sub-btn-iss:hover { border-color: #7FA2C9 !important; color: #7FA2C9 !important; }
-  .sub-bar-weather { display: flex; align-items: center; gap: 5px; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); flex-shrink: 0; padding-right: 10px; border-right: 1px solid var(--border); margin-right: 4px; }
+  .sub-bar-weather { display: flex; align-items: center; gap: 5px; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); flex-shrink: 0; padding-right: 10px; border-right: 1px solid var(--border); margin-right: 4px; position: relative; cursor: default; }
   .sub-bar-weather .wx-temp { color: var(--text); font-size: 0.72rem; font-weight: 500; }
   .sub-bar-weather .wx-icon { color: var(--accent2); flex-shrink: 0; }
+  .wx-tooltip { position: absolute; bottom: calc(100% + 6px); right: 0; background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; white-space: nowrap; padding: 4px 8px; border-radius: 2px; pointer-events: none; opacity: 0; transition: opacity 0.15s; z-index: 200; }
+  .sub-bar-weather:hover .wx-tooltip { opacity: 1; }
 
   /* FILTER BAR */
   .filter-bar { background: var(--bg); transform: translateZ(0); }
@@ -243,13 +245,14 @@
       <a class="sub-btn sub-btn-iss" href="https://www.heavens-above.com/PassSummary.aspx?satid=25544&lat=30.00&lng=-98.10&loc=Wimberley&alt=300&tz=CST" target="_blank" title="ISS pass times for Wimberley">
         ✦ ISS
       </a>
-      <div class="sub-bar-weather" id="wxWidget" title="Current conditions in Wimberley, TX" style="margin-left:auto;">
+      <div class="sub-bar-weather" id="wxWidget" style="margin-left:auto;">
         <span class="wx-icon" id="wxIcon">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" id="wxSvg">
             <circle cx="7" cy="7" r="3" fill="currentColor" opacity="0.3"/>
           </svg>
         </span>
         <span class="wx-temp" id="wxTemp">—°</span>
+        <span class="wx-tooltip" id="wxTooltip">Current conditions · Wimberley, TX</span>
       </div>
     </div>
   </div>
@@ -314,7 +317,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-31.00 — Moon phase SVG icons at night with phase name tooltip
+// VERSION: 2026-03-31.01 — CSS tooltip on weather widget replacing title attribute
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -2028,17 +2031,16 @@ async function fetchWeather() {
     const isDay = d.current.is_day === 1;
     const tempEl = document.getElementById('wxTemp');
     const svgEl = document.getElementById('wxSvg');
-    const widget = document.getElementById('wxWidget');
+    const tooltipEl = document.getElementById('wxTooltip');
     if (tempEl) tempEl.textContent = temp + '°';
     if (svgEl) {
       wxSvgPath._moonName = null;
       svgEl.innerHTML = wxSvgPath(code, isDay);
-      // Update tooltip with moon phase name at night
-      if (widget) {
+      if (tooltipEl) {
         if (!isDay && wxSvgPath._moonName) {
-          widget.title = wxSvgPath._moonName + ' · Wimberley, TX';
+          tooltipEl.textContent = wxSvgPath._moonName + ' · Wimberley, TX';
         } else {
-          widget.title = 'Current conditions · Wimberley, TX';
+          tooltipEl.textContent = 'Current conditions · Wimberley, TX';
         }
       }
     }
