@@ -314,7 +314,7 @@
 </main>
 
 <script>
-// VERSION: 2026-03-31.06 — Moon phase tooltip shown at night regardless of weather code
+// VERSION: 2026-04-02.00 — Logo click scrolls filter bar to show active Wimberley tab
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -1505,6 +1505,7 @@ function filterBy(tag, el) {
   currentFilter = tag;
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
   if (el) el.classList.add('active');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
   // Breaking tab: visually highlight the 8h button to signal the auto-filter
   if (tag === 'breaking') {
     document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
