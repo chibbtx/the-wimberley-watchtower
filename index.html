@@ -188,7 +188,7 @@
 
 <header>
   <div class="header-inner">
-    <div class="logo" onclick="filterBy('wimberley', document.querySelector('[onclick*=wimberley]')); document.getElementById('searchInput').value=''; setTimeFilter(24, document.querySelector('.time-btn[data-hours=\'24\']'));">
+    <div class="logo" onclick="filterBy('wimberley', document.querySelector('.filter-tab[onclick*=wimberley]')); document.getElementById('searchInput').value=''; setTimeFilter(24, document.querySelector('.time-btn[data-hours=\'24\']'));">
       <img src="social_avatar_800.png" alt="Wimberley Watchtower" style="height:44px;width:auto;border-radius:4px;flex-shrink:0;display:block;">
       <div class="logo-text">
         <div class="logo-main">
@@ -314,7 +314,7 @@
 </main>
 
 <script>
-// VERSION: 2026-04-02.00 — Logo click scrolls filter bar to show active Wimberley tab
+// VERSION: 2026-04-02.01 — Fix logo click selector to correctly target Wimberley filter tab
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
