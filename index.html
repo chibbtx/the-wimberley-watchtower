@@ -314,7 +314,7 @@
 </main>
 
 <script>
-// VERSION: 2026-04-02.01 — Fix logo click selector to correctly target Wimberley filter tab
+// VERSION: 2026-04-14.00 — Geo-gate all Local Advisories hazard terms
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -1658,31 +1658,35 @@ async function loadAllFeeds() {
 
 // ─── ALERT STRIP ──────────────────────────────────────────────────────────────
 function renderAlertStrip() {
-  // Tier 1 — pass regardless of geography: genuine public safety emergencies
-  const EMERGENCY_TERMS = [
+  // All hazard terms require a local geo match to prevent false positives from
+  // distant incidents and narrative news coverage
+  const GEO_GATED_TERMS = [
+    // Severe weather
     'flash flood warning','flash flood watch','flood warning','flood watch',
     'tornado warning','tornado watch','severe thunderstorm warning','severe thunderstorm watch',
     'winter storm warning','winter storm watch','ice storm warning',
     'fire weather watch','red flag warning',
+    // Fire & evacuation
     'wildfire','wildfire warning','wildfire emergency',
     'evacuation order','evacuation warning','mandatory evacuation',
+    // Public safety
     'active shooter','shelter in place',
     'amber alert','silver alert','missing person',
+    // Hazmat & infrastructure
     'hazmat','hazardous materials','chemical spill','gas leak',
     'boil water notice','boil water advisory',
+    'dam failure','dam breach','levee failure',
+    // Health
     'public health emergency','disease outbreak','health emergency',
+    // Seismic
     'earthquake warning','earthquake alert',
-    'dam failure','dam breach','levee failure'
-  ];
-
-  // Tier 2 — only pass when a local geo term is also present
-  const GEO_GATED_TERMS = [
+    // Local incidents
     'shooting','lockdown','road closure','bridge closure',
     'water outage','power outage','utility outage',
     'accident','crash','collision','fire','structure fire'
   ];
 
-  // Local geo terms used to gate tier 2
+  // Local geo terms used for filtering
   const GEO_TERMS = [
     'wimberley','hays county','hays co','blanco river','cypress creek',
     'wimberley valley','woodcreek','jacob\'s well','jacobs well',
@@ -1704,9 +1708,7 @@ function renderAlertStrip() {
       if (NWS_SOURCES.has(a.source)) {
         return hay.includes('hays') || hay.includes('wimberley');
       }
-      // Tier 1: emergency term alone is sufficient
-      if (EMERGENCY_TERMS.some(kw => hay.includes(kw))) return true;
-      // Tier 2: geo-gated term requires a local geo match
+      // All hazard terms require a local geo match
       const hasGeoGated = GEO_GATED_TERMS.some(kw => hay.includes(kw));
       const hasGeo = GEO_TERMS.some(kw => hay.includes(kw));
       return hasGeoGated && hasGeo;
