@@ -314,7 +314,7 @@
 </main>
 
 <script>
-// VERSION: 2026-04-14.00 — Geo-gate all Local Advisories hazard terms
+// VERSION: 2026-04-16.00 — Decode HTML entities in feed titles and descriptions
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -1316,8 +1316,8 @@ async function fetchFeed(feed) {
     const items = await fetchFeedItems(feed.url);
     const needsTranslation = feed.lang && feed.lang !== 'en';
     const articles = await Promise.all(items.slice(0, feed.max || 8).map(async item => {
-      const rawTitle = (item.title || '').trim();
-      let rawSummary = (item.description || '').replace(/<[^>]+>/g, '').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim();
+      const rawTitle = decodeEntities((item.title || '').trim());
+      let rawSummary = decodeEntities(item.description || '').replace(/<[^>]+>/g, '').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim();
       if (rawSummary.length > 180) rawSummary = rawSummary.slice(0, 180) + '…';
 
       let title = rawTitle;
@@ -1353,6 +1353,15 @@ async function fetchFeed(feed) {
 }
 
 // ─── SECURITY ─────────────────────────────────────────────────────────────────
+// Decodes HTML entities (both named and numeric) from raw feed text.
+// Runs before escapeHTML so entities like &amp; and &#x5b; resolve to real characters.
+function decodeEntities(str) {
+  if (!str) return '';
+  const txt = document.createElement('textarea');
+  txt.innerHTML = str;
+  return txt.value;
+}
+
 // Escapes untrusted RSS content before insertion into innerHTML.
 // All feed-derived fields (title, summary, source, link) must pass through this.
 function escapeHTML(str) {
