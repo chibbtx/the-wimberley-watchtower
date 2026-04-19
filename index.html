@@ -69,7 +69,7 @@
   .alert-strip-inner:hover { animation-play-state: paused; }
   @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
   .alert-item { display: inline-flex; align-items: center; gap: 10px; padding: 0 20px; height: 32px; cursor: pointer; transition: background 0.15s; text-decoration: none; }
-  .alert-item:hover { background: rgba(255,102,0,0.08); }
+  @media (hover: hover) { .alert-item:hover { background: rgba(255,102,0,0.08); } }
   .alert-item-source { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: #ff6600; letter-spacing: 0.08em; text-transform: uppercase; flex-shrink: 0; }
   .alert-item-title { font-size: 0.78rem; color: #e8c4a0; font-weight: 400; }
   .alert-item-time { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: #7a4a2a; flex-shrink: 0; }
@@ -82,9 +82,8 @@
   .sub-bar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px; overflow-x: auto; scrollbar-width: none; background: var(--surface2); border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
   .sub-bar-inner::-webkit-scrollbar { display: none; }
   .sub-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em; padding: 5px 11px; border-radius: 2px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
-  .sub-btn:hover { border-color: #7FA2C9; color: #7FA2C9; }
+  @media (hover: hover) { .sub-btn:hover { border-color: #7FA2C9; color: #7FA2C9; } }
   .sub-btn:focus, .sub-btn:focus-visible, .sub-btn:active { outline: none; border-color: var(--border); color: var(--text-muted); background: none; }
-  .sub-btn-iss:hover { border-color: #7FA2C9 !important; color: #7FA2C9 !important; }
   .sub-bar-weather { display: flex; align-items: center; gap: 5px; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); flex-shrink: 0; padding-right: 10px; border-right: 1px solid var(--border); margin-right: 4px; }
   .sub-bar-weather .wx-temp { color: var(--text); font-size: 0.72rem; font-weight: 500; }
   .sub-bar-weather .wx-icon { color: var(--accent2); flex-shrink: 0; }
@@ -95,12 +94,12 @@
   .filter-inner { flex: 1; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
   .filter-inner::-webkit-scrollbar { display: none; }
   .tab-arrow { display: none; align-items: center; justify-content: center; background: var(--surface); border: none; color: var(--text-muted); font-size: 1rem; padding: 0 10px; cursor: pointer; transition: color 0.15s, background 0.15s; flex-shrink: 0; z-index: 2; }
-  .tab-arrow:hover { color: var(--text); background: var(--surface2); }
+  @media (hover: hover) { .tab-arrow:hover { color: var(--text); background: var(--surface2); } }
   .tab-arrow.visible { display: flex; }
   .tab-arrow-left { border-right: 1px solid var(--border); }
   .tab-arrow-right { border-left: 1px solid var(--border); }
   .filter-tab { padding: 12px 20px; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; background: none; border-top: none; border-left: none; border-right: none; font-family: 'IBM Plex Sans', sans-serif; }
-  .filter-tab:hover { color: var(--text); }
+  @media (hover: hover) { .filter-tab:hover { color: var(--text); } }
   .filter-tab.active { color: var(--accent2); border-bottom-color: var(--accent2); }
 
   /* TOOLBAR */
@@ -113,7 +112,7 @@
   .search-input::placeholder { color: var(--text-dim); }
   .time-filter-group { display: flex; gap: 2px; }
   .time-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: 0.05em; padding: 5px 10px; cursor: pointer; transition: all 0.15s; border-radius: 2px; white-space: nowrap; }
-  .time-btn:hover { color: var(--text); border-color: var(--text-muted); }
+  @media (hover: hover) { .time-btn:hover { color: var(--text); border-color: var(--text-muted); } }
   .time-btn.active { background: var(--accent2); border-color: var(--accent2); color: #0e0e0e; font-weight: 500; }
 
   main { max-width: 1200px; margin: 0 auto; padding: 28px 0; }
@@ -314,7 +313,7 @@
 </main>
 
 <script>
-// VERSION: 2026-04-16.00 — Decode HTML entities in feed titles and descriptions
+// VERSION: 2026-04-19.00 — Gate hover styles behind @media (hover: hover) to fix sticky hover on mobile sub-bar; delete redundant .sub-btn-iss hover rule
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
