@@ -313,7 +313,7 @@
 </main>
 
 <script>
-// VERSION: 2026-04-19.00 — Gate hover styles behind @media (hover: hover) to fix sticky hover on mobile sub-bar; delete redundant .sub-btn-iss hover rule
+// VERSION: 2026-05-02.00 — Prune news-shaped terms from advisory ticker keyword list (shooting, accident, crash, collision, fire, structure fire)
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -1688,10 +1688,9 @@ function renderAlertStrip() {
     'public health emergency','disease outbreak','health emergency',
     // Seismic
     'earthquake warning','earthquake alert',
-    // Local incidents
-    'shooting','lockdown','road closure','bridge closure',
-    'water outage','power outage','utility outage',
-    'accident','crash','collision','fire','structure fire'
+    // Local incidents (active conditions only — past-tense news terms removed)
+    'lockdown','road closure','bridge closure',
+    'water outage','power outage','utility outage'
   ];
 
   // Local geo terms used for filtering
