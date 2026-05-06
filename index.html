@@ -313,7 +313,7 @@
 </main>
 
 <script>
-// VERSION: 2026-05-02.01 — Swap Ventusky radar link for NWS KEWX (radar.weather.gov)
+// VERSION: 2026-05-06.00 — Switch SPC RSS to combined feed (spcrss.xml) — adds watches, MDs, fire weather to Weather & Climate
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -541,7 +541,7 @@ const FEEDS = [
   { name: 'USGS · Natural Hazards', lang: 'en', tags: ['weather-disasters'],
     url: 'https://news.google.com/rss/search?q=USGS+"natural+hazards"+OR+earthquake+OR+landslide&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'NWS · Storm Prediction Ctr', lang: 'en', tags: ['weather-disasters'],
-    url: 'https://www.spc.noaa.gov/products/spcacrss.xml', max: 6 },
+    url: 'https://www.spc.noaa.gov/products/spcrss.xml', max: 6 },
   { name: 'Severe Weather · US', lang: 'en', tags: ['weather-disasters'],
     url: 'https://news.google.com/rss/search?q=severe+weather+tornado+OR+%22ice+storm%22+OR+%22winter+storm%22+warning+issued&hl=en-US&gl=US&ceid=US:en', max: 6 },
 
