@@ -313,14 +313,17 @@
 </main>
 
 <script>
-// VERSION: 2026-05-06.00 — Switch SPC RSS to combined feed (spcrss.xml) — adds watches, MDs, fire weather to Weather & Climate
+// VERSION: 2026-09-13.00 — Add The Wimberley View feed (BLOX RSS, free pass) + local relevance keywords
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
 // ─────────────────────────────────────────────────────────────────────────────
 // NOTES:
 // • CISA RSS feeds discontinued May 2025. Replaced: THN, Dark Reading, Bleeping Computer.
-// • Wimberley View has no public RSS. Using Hays Free Press Wimberley feed.
+// • Wimberley View migrated to BLOX/TownNews CMS — RSS now available via the
+//   /search/ endpoint. Note: the c=news parameter does NOT scope by section;
+//   the feed returns news, community, business and calendar items together.
+//   Hays Free Press Wimberley retained alongside it — different paper, not a dupe.
 // • Hays County has no native RSS. Using Google News search fallback.
 // • Wimberley ISD uses Blackboard CMS — no RSS. Google News fallback.
 // • Wimberley Fire (ESD #4) uses Wix — no RSS. Google News fallback.
@@ -351,6 +354,8 @@ const FEEDS = [
     url: 'https://www.woodcreektx.gov/RSSFeed.aspx?ModID=1&CID=All-newsflash.xml', max: 5 },
 
   // ── WIMBERLEY — Hyperlocal press & county beats ───────────────────────────────
+  { name: 'The Wimberley View', lang: 'en', tags: ['wimberley'],
+    url: 'https://www.wimberleyview.com/search/?f=rss&t=article&c=news&l=30&s=start_time&sd=desc', max: 25 },
   { name: 'Hays Free Press · Wimberley', lang: 'en', tags: ['wimberley'],
     url: 'https://www.haysfreepress.com/rss/articles/en/22/wimberley', max: 8 },
   { name: 'Wimberley ISD', lang: 'en', tags: ['wimberley'],
@@ -978,6 +983,7 @@ const LOCAL_SOURCES = new Set([
   'Wimberley · Alerts', 'Wimberley · News', 'Wimberley · City Council',
   'Wimberley · Planning & Zoning', 'Wimberley · Blog',
   'Woodcreek · Alerts', 'Woodcreek · News',
+  'The Wimberley View',
   'Hays Free Press · Wimberley', 'Wimberley ISD', 'Wimberley Fire & Burn Ban',
   'GBRA News', 'Edwards Aquifer Authority', 'Watershed Association', 'Blanco River Watch',
   'Hays County Sheriff', 'Hays County DA', 'Hays County Fire Marshal',
@@ -1071,6 +1077,11 @@ const RELEVANCE_KEYWORDS = [
   // Local geography
   'texas','wimberley','hays county','hill country','blanco river','san marcos',
   'new braunfels','austin','san antonio','kyle','buda','dripping springs',
+  // Local landmarks & waterways — many local stories never name the town
+  'cypress creek','jacob\'s well','jacobs well','blue hole','woodcreek',
+  'devil\'s backbone','devils backbone','old baldy','wimberley valley',
+  'canyon lake','driftwood','guadalupe river','edwards aquifer','trinity aquifer',
+  'ranch road 12','rr 12','fm 3237','wimberley square',
   // Texas threat domains
   'ice','immigration','deportation','border','abbott','paxton','greg abbott',
   'hurricane','tornado','flood','flash flood','wildfire','drought','fema',
