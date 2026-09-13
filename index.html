@@ -105,7 +105,9 @@
   /* TOOLBAR */
   .toolbar { background: var(--bg); }
   .toolbar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 24px; background: var(--surface); border-left: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-  .search-wrap { position: relative; flex: 1; min-width: 180px; }
+  .search-wrap { position: relative; flex: 1; min-width: 180px; max-width: 360px; }
+  .lang-link { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; background: none; border: 1px solid var(--accent2); color: var(--accent2); font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: 0.05em; padding: 5px 12px; border-radius: 2px; text-decoration: none; white-space: nowrap; flex-shrink: 0; transition: all 0.15s; }
+  @media (hover: hover) { .lang-link:hover { background: var(--accent2); color: #0e0e0e; } }
   .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 0.85rem; pointer-events: none; }
   .search-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 0.8rem; padding: 7px 10px 7px 30px; border-radius: 2px; outline: none; transition: border-color 0.2s; }
   .search-input:focus { border-color: var(--accent2); }
@@ -187,7 +189,7 @@
 
 <header>
   <div class="header-inner">
-    <div class="logo" onclick="filterBy('wimberley', document.querySelector('.filter-tab[onclick*=wimberley]')); document.getElementById('searchInput').value=''; setTimeFilter(24, document.querySelector('.time-btn[data-hours=\'24\']'));">
+    <div class="logo" onclick="filterBy('wimberley', document.querySelector('.filter-tab[onclick*=wimberley]')); document.getElementById('searchInput').value=''; setTimeFilter(168, document.querySelector('.time-btn[data-hours=\'168\']'));">
       <img src="social_avatar_800.png" alt="Wimberley Watchtower" style="height:44px;width:auto;border-radius:4px;flex-shrink:0;display:block;">
       <div class="logo-text">
         <div class="logo-main">
@@ -280,12 +282,12 @@
         <input class="search-input" id="searchInput" type="text" placeholder="Search..." oninput="applyDisplayFilters()">
       </div>
       <div class="time-filter-group">
-        <button class="time-btn" data-hours="1" onclick="setTimeFilter(1, this)">1h</button>
         <button class="time-btn" data-hours="8" onclick="setTimeFilter(8, this)">8h</button>
-        <button class="time-btn active" data-hours="24" onclick="setTimeFilter(24, this)">24h</button>
-        <button class="time-btn" data-hours="72" onclick="setTimeFilter(72, this)">3d</button>
-        <button class="time-btn" data-hours="168" onclick="setTimeFilter(168, this)">7d</button>
+        <button class="time-btn" data-hours="24" onclick="setTimeFilter(24, this)">24h</button>
+        <button class="time-btn active" data-hours="168" onclick="setTimeFilter(168, this)">7d</button>
+        <button class="time-btn" data-hours="336" onclick="setTimeFilter(336, this)">14d</button>
       </div>
+      <a class="lang-link" href="https://translate.google.com/translate?sl=en&amp;tl=es&amp;u=https://wimberley.watch" target="_blank" rel="noopener" aria-label="Ver esta página en español">🌐 ESPAÑOL</a>
     </div>
   </div>
 
@@ -313,7 +315,7 @@
 </main>
 
 <script>
-// VERSION: 2026-09-13.00 — Add The Wimberley View feed (BLOX RSS, free pass) + local relevance keywords
+// VERSION: 2026-09-13.01 — Toolbar: cap search width, time filters 8h/24h/7d/14d, default 7d, add Español translate link
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Personal Threat Intelligence Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -1237,7 +1239,7 @@ let allArticles = [];
 let sourceStatus = {};
 let currentFilter = 'wimberley';
 let lastLoadTime = 0;
-let currentTimeHours = 24;
+let currentTimeHours = 168;
 
 // ─── PROXY HELPERS ────────────────────────────────────────────────────────────
 function parseRSSXml(xml) {
