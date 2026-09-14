@@ -308,7 +308,7 @@
 </main>
 
 <script>
-// VERSION: 2026-09-13.07 — Exempt status cards from dedupe (burn ban card was being discarded as a dupe of burn ban headlines)
+// VERSION: 2026-09-13.09 — Drop dead Blanco + Comptroller feeds; View sized for 14d (l=50, max=40); pin burn ban card to first position
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Wimberley Valley Situational Awareness Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -349,7 +349,7 @@ const FEEDS = [
 
   // ── WIMBERLEY — Hyperlocal press & county beats ───────────────────────────────
   { name: 'The Wimberley View', lang: 'en', tags: ['wimberley'],
-    url: 'https://www.wimberleyview.com/search/?f=rss&t=article&c=news&l=30&s=start_time&sd=desc', max: 25 },
+    url: 'https://www.wimberleyview.com/search/?f=rss&t=article&c=news&l=50&s=start_time&sd=desc', max: 40 },
   { name: 'Hays Free Press · Wimberley', lang: 'en', tags: ['wimberley'],
     url: 'https://www.haysfreepress.com/rss/articles/en/22/wimberley', max: 8 },
   { name: 'Wimberley ISD', lang: 'en', tags: ['wimberley'],
@@ -406,8 +406,6 @@ const FEEDS = [
     url: 'https://news.google.com/rss/search?q=%22City%20of%20Buda%22%20Texas%20%28agenda%20OR%20%22city%20council%22%20OR%20%22council%20meeting%22%29&hl=en-US&gl=US&ceid=US%3Aen', max: 4 },
   { name: 'City of Kyle · News', lang: 'en', tags: ['hill-country'],
     url: 'https://kyletxnews.com/feed/', max: 5 },
-  { name: 'City of Blanco · News', lang: 'en', tags: ['hill-country'],
-    url: 'https://www.cityofblancotx.gov/RSSFeed.aspx?ModID=1&CID=All-newsflash.xml', max: 4 },
   { name: 'City of San Marcos', lang: 'en', tags: ['hill-country'],
     url: 'https://www.sanmarcostx.gov/RSSFeed.aspx?ModID=1&CID=All-0', max: 5 },
   { name: 'Hays County', lang: 'en', tags: ['hill-country'],
@@ -454,8 +452,6 @@ const FEEDS = [
     url: 'https://capitol.texas.gov/MyTLO/RSS/RSS.aspx?Type=todaysbillspassed', max: 8 },
   { name: 'TX Governor\'s Office', lang: 'en', tags: ['texas'],
     url: 'https://news.google.com/rss/search?q="governor+abbott"+OR+"texas+governor"+site:gov.texas.gov&hl=en-US&gl=US&ceid=US:en', max: 6 },
-  { name: 'TX Comptroller', lang: 'en', tags: ['texas'],
-    url: 'https://comptroller.texas.gov/about/rss.php', max: 5 },
   { name: 'TDEM · Emergency Mgmt', lang: 'en', tags: ['texas', 'weather-hazards', 'breaking'],
     url: 'https://news.google.com/rss/search?q=%28%22Texas%20Division%20of%20Emergency%20Management%22%20OR%20TDEM%29%20%28disaster%20OR%20declaration%20OR%20response%20OR%20alert%29&hl=en-US&gl=US&ceid=US%3Aen', max: 6 },
   { name: 'TX Attorney General', lang: 'en', tags: ['texas'],
@@ -1002,6 +998,10 @@ function applyDisplayFilters() {
   if (INTERLEAVE_TABS.has(currentFilter)) {
     filtered = interleaveBySource(filtered);
   }
+
+  // Pin the burn ban status card to the first position. Array sort is stable,
+  // so every other article keeps its existing order.
+  filtered.sort((a, b) => (b.isBurnBanStatus ? 1 : 0) - (a.isBurnBanStatus ? 1 : 0));
 
   renderCards(filtered);
 }
