@@ -308,7 +308,7 @@
 </main>
 
 <script>
-// VERSION: 2026-09-13.05 — Point proxy at proxy.wimberley.watch custom domain (enables Worker edge cache)
+// VERSION: 2026-09-13.06 — Hays Informed: never cache or serve an empty result (burn ban card no longer suppressed by a bad fetch)
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Wimberley Valley Situational Awareness Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -1316,8 +1316,9 @@ async function fetchHaysInformed() {
     const stored = localStorage.getItem(HAYS_INFORMED_CACHE_KEY);
     if (stored) {
       const cached = JSON.parse(stored);
-      if ((now - cached.checkedAt) < HAYS_INFORMED_CACHE_MS) {
-        return cached.cards || [];
+      if ((now - cached.checkedAt) < HAYS_INFORMED_CACHE_MS
+          && Array.isArray(cached.cards) && cached.cards.length > 0) {
+        return cached.cards;
       }
     }
   } catch(e) { /* proceed to fetch */ }
@@ -1427,9 +1428,12 @@ async function fetchHaysInformed() {
       });
     }
 
-    // Persist to cache
+    // Persist to cache — only when we actually produced cards, so a bad
+    // response never suppresses the burn ban card for the full TTL
     try {
-      localStorage.setItem(HAYS_INFORMED_CACHE_KEY, JSON.stringify({ checkedAt: now, cards }));
+      if (cards.length > 0) {
+        localStorage.setItem(HAYS_INFORMED_CACHE_KEY, JSON.stringify({ checkedAt: now, cards }));
+      }
     } catch(e) { /* non-fatal */ }
 
     return cards;
