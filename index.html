@@ -308,7 +308,7 @@
 </main>
 
 <script>
-// VERSION: 2026-09-13.04 — Rewrite 29 Google News queries: parenthesised OR groups + tighter geographic scope
+// VERSION: 2026-09-13.05 — Point proxy at proxy.wimberley.watch custom domain (enables Worker edge cache)
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Wimberley Valley Situational Awareness Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -773,7 +773,7 @@ function parseRSSXml(xml) {
 }
 
 async function tryWorker(url) {
-  const r = await fetch('https://watchtower-proxy.kmkoeh.workers.dev/?url=' + encodeURIComponent(url), { signal: AbortSignal.timeout(9000) });
+  const r = await fetch('https://proxy.wimberley.watch/?url=' + encodeURIComponent(url), { signal: AbortSignal.timeout(9000) });
   if (!r.ok) throw new Error('worker: status ' + r.status);
   const xml = await r.text();
   return parseRSSXml(xml);
@@ -1324,7 +1324,7 @@ async function fetchHaysInformed() {
 
   try {
     const targetUrl = 'https://www.haysinformed.com/';
-    const proxyUrl = 'https://watchtower-proxy.kmkoeh.workers.dev/?url=' + encodeURIComponent(targetUrl);
+    const proxyUrl = 'https://proxy.wimberley.watch/?url=' + encodeURIComponent(targetUrl);
     const r = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
     if (!r.ok) throw new Error('fetch failed');
     const html = await r.text();
