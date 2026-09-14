@@ -308,7 +308,7 @@
 </main>
 
 <script>
-// VERSION: 2026-09-13.03 — Prune Weather & Hazards to local/Hill Country/Texas scope (34 -> 22 feeds)
+// VERSION: 2026-09-13.04 — Rewrite 29 Google News queries: parenthesised OR groups + tighter geographic scope
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Wimberley Valley Situational Awareness Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -331,19 +331,19 @@
 const FEEDS = [
   // ── WIMBERLEY — City of Wimberley (CivicEngage granular feeds) ───────────────
   { name: 'Wimberley · Alerts', lang: 'en', tags: ['wimberley', 'weather-hazards', 'breaking'],
-    url: 'https://news.google.com/rss/search?q="City+of+Wimberley"+alerts+OR+emergency+OR+notice&hl=en-US&gl=US&ceid=US:en', max: 6 },
+    url: 'https://news.google.com/rss/search?q=%22City%20of%20Wimberley%22%20%28alert%20OR%20emergency%20OR%20notice%20OR%20closure%29&hl=en-US&gl=US&ceid=US%3Aen', max: 6 },
   { name: 'Wimberley · News', lang: 'en', tags: ['wimberley'],
-    url: 'https://news.google.com/rss/search?q="City+of+Wimberley"+OR+"Wimberley+city"+news+announcement&hl=en-US&gl=US&ceid=US:en', max: 6 },
+    url: 'https://news.google.com/rss/search?q=%28%22City%20of%20Wimberley%22%20OR%20%22Wimberley%2C%20Texas%22%29%20%28news%20OR%20announcement%20OR%20update%29&hl=en-US&gl=US&ceid=US%3Aen', max: 6 },
   { name: 'Wimberley · City Council', lang: 'en', tags: ['wimberley'],
-    url: 'https://news.google.com/rss/search?q="Wimberley"+"city+council"+OR+"city+manager"&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=Wimberley%20Texas%20%28%22city%20council%22%20OR%20%22city%20manager%22%20OR%20%22council%20meeting%22%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
   { name: 'Wimberley · Planning & Zoning', lang: 'en', tags: ['wimberley'],
-    url: 'https://news.google.com/rss/search?q=%22Wimberley%22+%22planning%22+OR+%22zoning%22+%22Hays+County%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=Wimberley%20%22Hays%20County%22%20%28planning%20OR%20zoning%20OR%20%22development%20permit%22%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
   { name: 'Wimberley · Blog', lang: 'en', tags: ['wimberley'],
-    url: 'https://news.google.com/rss/search?q=%22Wimberley%22+%22city%22+announcement+OR+event+OR+update&hl=en-US&gl=US&ceid=US:en', max: 4 },
+    url: 'https://news.google.com/rss/search?q=%22City%20of%20Wimberley%22%20%28announcement%20OR%20event%20OR%20update%29&hl=en-US&gl=US&ceid=US%3Aen', max: 4 },
 
   // ── WIMBERLEY — Woodcreek (adjacent city, CivicEngage) ───────────────────────
   { name: 'Woodcreek · Alerts', lang: 'en', tags: ['wimberley', 'weather-hazards', 'breaking'],
-    url: 'https://news.google.com/rss/search?q="Woodcreek"+texas+OR+"city+of+Woodcreek"&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=%28%22City%20of%20Woodcreek%22%20OR%20%22Woodcreek%2C%20Texas%22%29%20%28alert%20OR%20emergency%20OR%20notice%20OR%20council%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
   { name: 'Woodcreek · News', lang: 'en', tags: ['wimberley'],
     url: 'https://www.woodcreektx.gov/RSSFeed.aspx?ModID=1&CID=All-newsflash.xml', max: 5 },
 
@@ -353,21 +353,21 @@ const FEEDS = [
   { name: 'Hays Free Press · Wimberley', lang: 'en', tags: ['wimberley'],
     url: 'https://www.haysfreepress.com/rss/articles/en/22/wimberley', max: 8 },
   { name: 'Wimberley ISD', lang: 'en', tags: ['wimberley'],
-    url: 'https://news.google.com/rss/search?q=%22Wimberley+ISD%22+OR+%22Wimberley+Independent+School%22&hl=en-US&gl=US&ceid=US:en', max: 4 },
+    url: 'https://news.google.com/rss/search?q=%28%22Wimberley%20ISD%22%20OR%20%22Wimberley%20Independent%20School%20District%22%29&hl=en-US&gl=US&ceid=US%3Aen', max: 4 },
   { name: 'Wimberley Fire & Burn Ban', lang: 'en', tags: ['wimberley', 'weather-hazards', 'breaking'],
-    url: 'https://news.google.com/rss/search?q=%22Wimberley+fire%22+OR+%22burn+ban%22+%22Hays+County%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=%28%22Hays%20County%22%20OR%20Wimberley%29%20%28%22burn%20ban%22%20OR%20%22fire%20department%22%20OR%20%22fire%20danger%22%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
 
   // ── WIMBERLEY — Water & environment (Wimberley-specific) ──────────────────────
   { name: 'GBRA News', lang: 'en', tags: ['wimberley', 'weather-hazards', 'breaking'],
-    url: 'https://news.google.com/rss/search?q="GBRA"+OR+"Guadalupe-Blanco+River+Authority"&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=%28%22Guadalupe-Blanco%20River%20Authority%22%20OR%20GBRA%29%20%28river%20OR%20reservoir%20OR%20water%20OR%20flood%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
   { name: 'Edwards Aquifer Authority', lang: 'en', tags: ['wimberley', 'weather-hazards'],
-    url: 'https://news.google.com/rss/search?q="Edwards+Aquifer"+OR+"Edwards+Aquifer+Authority"&hl=en-US&gl=US&ceid=US:en', max: 4 },
+    url: 'https://news.google.com/rss/search?q=%22Edwards%20Aquifer%22%20%28authority%20OR%20%22stage%201%22%20OR%20%22stage%202%22%20OR%20drought%20OR%20level%29&hl=en-US&gl=US&ceid=US%3Aen', max: 4 },
   { name: 'Watershed Association', lang: 'en', tags: ['wimberley'],
     url: 'https://watershedassociation.org/feed/', max: 4 },
   { name: 'Blanco River Watch', lang: 'en', tags: ['wimberley', 'weather-hazards', 'breaking'],
-    url: 'https://news.google.com/rss/search?q=%22blanco+river%22+OR+%22wimberley+flood%22+flood+gauge&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=%22Blanco%20River%22%20%28flood%20OR%20gauge%20OR%20%22river%20level%22%20OR%20stage%20OR%20rising%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
   { name: 'Hays County Sheriff', lang: 'en', tags: ['wimberley'],
-    url: 'https://news.google.com/rss/search?q=%22Hays+County+Sheriff%22+OR+%22Hays+County+Constable%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=%28%22Hays%20County%20Sheriff%22%20OR%20%22Hays%20County%20Constable%22%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
   { name: 'Hays County DA', lang: 'en', tags: ['wimberley'],
     url: 'https://news.google.com/rss/search?q=%22Hays+County%22+%22District+Attorney%22&hl=en-US&gl=US&ceid=US:en', max: 4 },
 
@@ -399,11 +399,11 @@ const FEEDS = [
 
   // ── HILL COUNTRY — Neighboring cities ────────────────────────────────────────
   { name: 'City of Buda · Alerts', lang: 'en', tags: ['hill-country', 'weather-hazards', 'breaking'],
-    url: 'https://news.google.com/rss/search?q="City+of+Buda"+texas+alert+OR+emergency&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=%22City%20of%20Buda%22%20Texas%20%28alert%20OR%20emergency%20OR%20notice%20OR%20closure%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
   { name: 'City of Buda · News', lang: 'en', tags: ['hill-country'],
     url: 'https://budatx.gov/RSSFeed.aspx?ModID=1&CID=All-newsflash.xml', max: 5 },
   { name: 'City of Buda · Agendas', lang: 'en', tags: ['hill-country'],
-    url: 'https://news.google.com/rss/search?q="City+of+Buda"+texas+agenda+OR+council&hl=en-US&gl=US&ceid=US:en', max: 4 },
+    url: 'https://news.google.com/rss/search?q=%22City%20of%20Buda%22%20Texas%20%28agenda%20OR%20%22city%20council%22%20OR%20%22council%20meeting%22%29&hl=en-US&gl=US&ceid=US%3Aen', max: 4 },
   { name: 'City of Kyle · News', lang: 'en', tags: ['hill-country'],
     url: 'https://kyletxnews.com/feed/', max: 5 },
   { name: 'City of Blanco · News', lang: 'en', tags: ['hill-country'],
@@ -421,15 +421,15 @@ const FEEDS = [
 
   // ── HILL COUNTRY — Weather (local-specific) ───────────────────────────────────
   { name: 'Texas Hill Country Hazards', lang: 'en', tags: ['hill-country', 'weather-hazards', 'breaking'],
-    url: 'https://news.google.com/rss/search?q=flood+OR+wildfire+texas+%22hill+country%22+OR+wimberley+OR+%22hays+county%22&hl=en-US&gl=US&ceid=US:en', max: 6 },
+    url: 'https://news.google.com/rss/search?q=%28%22Hill%20Country%22%20OR%20%22Hays%20County%22%20OR%20Wimberley%29%20Texas%20%28flood%20OR%20wildfire%20OR%20%22burn%20ban%22%20OR%20evacuation%29&hl=en-US&gl=US&ceid=US%3Aen', max: 6 },
 
   // ── TEXAS — Statewide Journalism & Public Media ───────────────────────────────
   { name: 'Texas Tribune', lang: 'en', tags: ['texas'],
     url: 'https://feeds.texastribune.org/feeds/main/', max: 12 },
   { name: 'Texas Tribune · Politics', lang: 'en', tags: ['texas'],
-    url: 'https://news.google.com/rss/search?q=site:texastribune.org+texas+legislature+OR+governor+OR+election&hl=en-US&gl=US&ceid=US:en', max: 8 },
+    url: 'https://news.google.com/rss/search?q=site%3Atexastribune.org%20%28legislature%20OR%20governor%20OR%20election%20OR%20Abbott%20OR%20Paxton%29&hl=en-US&gl=US&ceid=US%3Aen', max: 8 },
   { name: 'Texas Tribune · Environment', lang: 'en', tags: ['weather-hazards'],
-    url: 'https://news.google.com/rss/search?q=site:texastribune.org+environment+OR+drought+OR+flood+OR+wildfire&hl=en-US&gl=US&ceid=US:en', max: 6 },
+    url: 'https://news.google.com/rss/search?q=site%3Atexastribune.org%20%28environment%20OR%20drought%20OR%20flood%20OR%20wildfire%20OR%20water%29&hl=en-US&gl=US&ceid=US%3Aen', max: 6 },
   { name: 'Texas Observer', lang: 'en', tags: ['texas'],
     url: 'https://www.texasobserver.org/feed/', max: 6 },
   { name: 'Texas Public Radio', lang: 'en', tags: ['texas'],
@@ -457,13 +457,13 @@ const FEEDS = [
   { name: 'TX Comptroller', lang: 'en', tags: ['texas'],
     url: 'https://comptroller.texas.gov/about/rss.php', max: 5 },
   { name: 'TDEM · Emergency Mgmt', lang: 'en', tags: ['texas', 'weather-hazards', 'breaking'],
-    url: 'https://news.google.com/rss/search?q="texas+division+of+emergency+management"+OR+"TDEM"&hl=en-US&gl=US&ceid=US:en', max: 6 },
+    url: 'https://news.google.com/rss/search?q=%28%22Texas%20Division%20of%20Emergency%20Management%22%20OR%20TDEM%29%20%28disaster%20OR%20declaration%20OR%20response%20OR%20alert%29&hl=en-US&gl=US&ceid=US%3Aen', max: 6 },
   { name: 'TX Attorney General', lang: 'en', tags: ['texas'],
     url: 'https://news.google.com/rss/search?q="texas+attorney+general"+paxton&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── TEXAS — Border, Immigration & Rio Grande Valley ───────────────────────────
   { name: 'Texas Tribune · Border', lang: 'en', tags: ['texas'],
-    url: 'https://news.google.com/rss/search?q=site:texastribune.org+immigration+OR+border+OR+deportation&hl=en-US&gl=US&ceid=US:en', max: 6 },
+    url: 'https://news.google.com/rss/search?q=site%3Atexastribune.org%20%28immigration%20OR%20border%20OR%20deportation%29&hl=en-US&gl=US&ceid=US%3Aen', max: 6 },
   { name: 'The Monitor (RGV)', lang: 'en', tags: ['texas'],
     url: 'https://www.themonitor.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc', max: 6 },
   { name: 'Texas Farm Bureau', lang: 'en', tags: ['texas'],
@@ -490,28 +490,28 @@ const FEEDS = [
   { name: 'NHC · Atlantic Tropics', lang: 'en', tags: ['weather-hazards'],
     url: 'https://www.nhc.noaa.gov/index-at.xml', max: 5 },
   { name: 'Texas Flash Flood', lang: 'en', tags: ['texas', 'weather-hazards', 'breaking'],
-    url: 'https://news.google.com/rss/search?q=texas+%22flash+flood%22+warning+OR+watch+OR+emergency&hl=en-US&gl=US&ceid=US:en', max: 6 },
+    url: 'https://news.google.com/rss/search?q=Texas%20%22flash%20flood%22%20%28warning%20OR%20watch%20OR%20emergency%20OR%20rescue%29&hl=en-US&gl=US&ceid=US%3Aen', max: 6 },
 
   // ── WEATHER & DISASTERS — Wildfire ────────────────────────────────────────────
   // InciWeb — official USFS/NIFC incident information for active wildfires
   { name: 'Texas Wildfire · Current', lang: 'en', tags: ['texas', 'weather-hazards', 'breaking'],
-    url: 'https://news.google.com/rss/search?q=texas+wildfire+OR+%22grass+fire%22+%22hill+country%22+OR+%22hays+county%22+OR+%22blanco+county%22&hl=en-US&gl=US&ceid=US:en', max: 6 },
+    url: 'https://news.google.com/rss/search?q=Texas%20%28wildfire%20OR%20%22grass%20fire%22%29%20%28%22Hill%20Country%22%20OR%20%22Hays%20County%22%20OR%20%22Blanco%20County%22%20OR%20%22Comal%20County%22%29&hl=en-US&gl=US&ceid=US%3Aen', max: 6 },
 
   // ── WEATHER & DISASTERS — Drought ─────────────────────────────────────────────
   // US Drought Monitor — weekly update every Thursday; Hill Country is perpetually
   // in drought risk zone
   { name: 'Texas Drought Watch', lang: 'en', tags: ['weather-hazards'],
-    url: 'https://news.google.com/rss/search?q=texas+drought+%22hill+country%22+OR+%22edwards+aquifer%22+OR+%22highland+lakes%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=Texas%20drought%20%28%22Hill%20Country%22%20OR%20%22Edwards%20Aquifer%22%20OR%20%22Highland%20Lakes%22%20OR%20%22Hays%20County%22%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
 
   // ── WEATHER & DISASTERS — Earthquakes ─────────────────────────────────────────
   // USGS Earthquake Hazards — M2.5+ earthquakes, includes induced seismicity
   // from West Texas oilfield injection wells (felt in Hill Country)
   { name: 'USGS Earthquakes · TX', lang: 'en', tags: ['texas', 'weather-hazards'],
-    url: 'https://news.google.com/rss/search?q=earthquake+texas+OR+%22induced+seismicity%22+permian&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=Texas%20%28earthquake%20OR%20%22induced%20seismicity%22%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
 
   // ── WEATHER & DISASTERS — Air Quality ────────────────────────────────────────
   { name: 'AirNow · TX Alerts', lang: 'en', tags: ['texas', 'weather-hazards'],
-    url: 'https://news.google.com/rss/search?q=texas+%22air+quality%22+%22unhealthy%22+OR+%22red+flag%22+OR+%22ozone+action%22&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=Texas%20%22air%20quality%22%20%28unhealthy%20OR%20alert%20OR%20advisory%20OR%20%22ozone%20action%22%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
   // ── WEATHER & DISASTERS — National Hazards & FEMA ────────────────────────────
   { name: 'NWS · Storm Prediction Ctr', lang: 'en', tags: ['weather-hazards'],
     url: 'https://www.spc.noaa.gov/products/spcrss.xml', max: 6 },
@@ -522,25 +522,25 @@ const FEEDS = [
 
   // ── CIVIL LIBERTIES & PRIVACY — Press Freedom ────────────────────────────────
   { name: 'Police Accountability · TX', lang: 'en', tags: ['texas'],
-    url: 'https://news.google.com/rss/search?q=texas+police+misconduct+OR+"use+of+force"+OR+"police+accountability"&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=Texas%20police%20%28misconduct%20OR%20%22use%20of%20force%22%20OR%20accountability%20OR%20indicted%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
 
   // ── CIVIL LIBERTIES & PRIVACY — Digital Surveillance ─────────────────────────
   { name: 'DSHS · Texas Health', lang: 'en', tags: ['weather-hazards'],
-    url: 'https://news.google.com/rss/search?q=texas+"department+of+state+health+services"+OR+DSHS+outbreak+OR+advisory&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=Texas%20%28%22Department%20of%20State%20Health%20Services%22%20OR%20DSHS%29%20%28outbreak%20OR%20advisory%20OR%20alert%20OR%20recall%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
   { name: 'Health · Texas', lang: 'en', tags: ['weather-hazards'],
-    url: 'https://news.google.com/rss/search?q=texas+public+health+OR+outbreak+OR+disease+OR+"health+emergency"&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=Texas%20%22public%20health%22%20%28outbreak%20OR%20disease%20OR%20%22health%20emergency%22%20OR%20advisory%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
 
   // ── GEOPOLITICS — Wires & Broad International ─────────────────────────────────
   { name: 'My Canyon Lake', lang: 'en', tags: ['hill-country'],
     url: 'https://news.google.com/rss/search?q=%22Canyon+Lake%22+texas+comal+community&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'Comal County · Alerts', lang: 'en', tags: ['hill-country', 'weather-hazards', 'breaking'],
-    url: 'https://news.google.com/rss/search?q="Comal+County"+texas+alert+OR+emergency&hl=en-US&gl=US&ceid=US:en', max: 5 },
+    url: 'https://news.google.com/rss/search?q=%22Comal%20County%22%20Texas%20%28alert%20OR%20emergency%20OR%20flood%20OR%20notice%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
   { name: 'Comal County · News', lang: 'en', tags: ['hill-country'],
     url: 'https://news.google.com/rss/search?q=%22Comal+County%22+texas+news&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'Canyon Lake · News', lang: 'en', tags: ['hill-country'],
     url: 'https://news.google.com/rss/search?q=%22Canyon+Lake%22+texas+comal&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'City of Blanco · News', lang: 'en', tags: ['hill-country'],
-    url: 'https://news.google.com/rss/search?q=%22City+of+Blanco%22+OR+%22Blanco+Texas%22+city+county&hl=en-US&gl=US&ceid=US:en', max: 4 },
+    url: 'https://news.google.com/rss/search?q=%28%22City%20of%20Blanco%22%20OR%20%22Blanco%2C%20Texas%22%29%20%28council%20OR%20county%20OR%20city%29&hl=en-US&gl=US&ceid=US%3Aen', max: 4 },
 ];
 
 // ─── PHASE ASSIGNMENT ─────────────────────────────────────────────────────────
