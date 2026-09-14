@@ -308,7 +308,7 @@
 </main>
 
 <script>
-// VERSION: 2026-09-13.06 — Hays Informed: never cache or serve an empty result (burn ban card no longer suppressed by a bad fetch)
+// VERSION: 2026-09-13.07 — Exempt status cards from dedupe (burn ban card was being discarded as a dupe of burn ban headlines)
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Wimberley Valley Situational Awareness Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -684,6 +684,11 @@ function deduplicate(articles) {
   const fingerprints = [];
 
   for (const article of articles) {
+    // Status cards are state indicators, not articles. Their titles are short
+    // ("Burn Ban: ON") and collide with real headlines about the same subject,
+    // so they are never deduped and never register a fingerprint.
+    if (article.isBurnBanStatus || article.isHaysNotice) { kept.push(article); continue; }
+
     const fp = titleFingerprint(article.title);
     const fpWords = new Set(fp.split(' ').filter(w => w.length > 2));
     if (!fpWords.size) { kept.push(article); continue; }
