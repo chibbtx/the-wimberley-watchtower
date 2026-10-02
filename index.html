@@ -89,7 +89,7 @@
   .sub-bar-weather .wx-icon { color: var(--accent2); flex-shrink: 0; }
 
   /* FILTER BAR */
-  .filter-bar { background: var(--bg); transform: translateZ(0); }
+  .filter-bar { background: var(--bg); }
   .filter-bar-track { max-width: 1200px; margin: 0 auto; position: relative; display: flex; align-items: stretch; background: var(--surface); border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
   .filter-inner { flex: 1; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
   .filter-inner::-webkit-scrollbar { display: none; }
@@ -308,7 +308,7 @@
 </main>
 
 <script>
-// VERSION: 2026-10-01.01 — Accept empty feeds (gray pill, no proxy fallback); add Hays County Alert Center feeds (Emergency Services, Sheriff) with ticker free pass, 8h window; add Hays County News & Updates
+// VERSION: 2026-10-01.02 — Remove translateZ(0) from .filter-bar (test fix for iOS overscroll blackout of sticky-stack bars)
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Wimberley Valley Situational Awareness Dashboard
 // GitHub repo: the-wimberley-watchtower
