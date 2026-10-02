@@ -308,7 +308,7 @@
 </main>
 
 <script>
-// VERSION: 2026-10-01.00 — Remove breaking tag from 11 Google News relay feeds; Local Advisories now issuer-only (NWS, LCRA)
+// VERSION: 2026-10-01.01 — Accept empty feeds (gray pill, no proxy fallback); add Hays County Alert Center feeds (Emergency Services, Sheriff) with ticker free pass, 8h window; add Hays County News & Updates
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Wimberley Valley Situational Awareness Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -410,6 +410,8 @@ const FEEDS = [
     url: 'https://www.sanmarcostx.gov/RSSFeed.aspx?ModID=1&CID=All-0', max: 5 },
   { name: 'Hays County', lang: 'en', tags: ['hill-country'],
     url: 'https://news.google.com/rss/search?q=%22Hays+County%22+texas&hl=en-US&gl=US&ceid=US:en', max: 6 },
+  { name: 'Hays County · News & Updates', lang: 'en', tags: ['hill-country'],
+    url: 'https://www.hayscountytx.gov/RSSFeed.aspx?ModID=1&CID=News-Updates-1', max: 8 },
 
   // ── HILL COUNTRY — Water & land authorities ───────────────────────────────────
   { name: 'LCRA News', lang: 'en', tags: ['hill-country', 'weather-hazards', 'breaking'],
@@ -480,6 +482,13 @@ const FEEDS = [
     url: 'https://news.google.com/rss/search?q=site:thetexasnewsroom.org&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'ProPublica Texas', lang: 'en', tags: ['texas'],
     url: 'https://news.google.com/rss/search?q=texas+site:propublica.org&hl=en-US&gl=US&ceid=US:en', max: 5 },
+
+  // ── WEATHER & DISASTERS — Hays County official alerts ─────────────────────────
+  // CivicPlus Alert Center: empty when nothing is active. Ticker free pass, 8h window applies.
+  { name: 'Hays County · Emergency Services', lang: 'en', tags: ['weather-hazards', 'breaking'],
+    url: 'https://www.hayscountytx.gov/RSSFeed.aspx?ModID=63&CID=Emergency-Services-5', max: 8 },
+  { name: 'Hays County · Sheriff Alerts', lang: 'en', tags: ['weather-hazards', 'breaking'],
+    url: 'https://www.hayscountytx.gov/RSSFeed.aspx?ModID=63&CID=Sherriffs-Office-Alert-4', max: 8 },
 
   // ── WEATHER & DISASTERS — Hurricanes & Tropical ───────────────────────────────
   // NHC Atlantic — Gulf of Mexico landfalls are a direct Central TX flood driver
@@ -572,7 +581,8 @@ const LOCAL_SOURCES = new Set([
   'Texas Tribune · Politics', 'Texas Tribune · Environment', 'Texas Tribune · Border',
   'Texas Observer', 'Texas Public Radio', 'Texas Standard', 'Texas Monthly',
   'Houston Chronicle', 'KHOU Houston', 'NBC DFW', 'WFAA Dallas', 'KENS5 San Antonio',
-  'TX Legislature · Passed Bills'
+  'TX Legislature · Passed Bills', 'Hays County · Emergency Services', 'Hays County · Sheriff Alerts',
+  'Hays County · News & Updates'
 ]);
 
 // Foreign Policy and Reuters World are broad — filter by keyword
@@ -770,6 +780,11 @@ function parseRSSXml(xml) {
     });
   }
 
+  // Valid feed with zero items: return empty rather than treating it as a failure
+  if (!doc.querySelector('parsererror') && (doc.querySelector('rss > channel') || doc.querySelector('feed'))) {
+    return [];
+  }
+
   throw new Error('No items or entries found');
 }
 
@@ -804,7 +819,7 @@ async function fetchFeedItems(url) {
   for (const fn of [tryWorker, tryAllOrigins, tryCorsProxy, tryRss2Json]) {
     try {
       const items = await fn(url);
-      if (items && items.length) return items;
+      if (Array.isArray(items)) return items;
     } catch (e) {}
   }
   throw new Error('All proxies failed for: ' + url);
@@ -844,7 +859,7 @@ async function fetchFeed(feed) {
         date: item.pubDate ? new Date(item.pubDate) : new Date(),
       };
     }));
-    sourceStatus[feed.name] = 'ok';
+    sourceStatus[feed.name] = items.length ? 'ok' : 'empty';
     return articles.filter(a => a.title && isRelevant(a) && !isBlocked(a));
   } catch (e) {
     sourceStatus[feed.name] = 'error';
@@ -1196,6 +1211,8 @@ function renderAlertStrip() {
 
   const NWS_SOURCES = new Set(['Comal County · Alerts']);
   const NWS_DIRECT = new Set(['NWS · Hays County']);
+  // Official county alert feeds: skip the keyword/geo gate but keep the 8h window
+  const COUNTY_ALERTS = new Set(['Hays County · Emergency Services', 'Hays County · Sheriff Alerts']);
 
   const cutoff = Date.now() - 8 * 3600 * 1000;
   const alerts = allArticles
@@ -1205,6 +1222,7 @@ function renderAlertStrip() {
       // NWS · Hays County alerts get a free pass — already filtered to Hays/Wimberley at the API level
       if (NWS_DIRECT.has(a.source)) return true;
       if (!a.date || a.date.getTime() < cutoff) return false;
+      if (COUNTY_ALERTS.has(a.source)) return true;
       if (NWS_SOURCES.has(a.source)) {
         return hay.includes('hays') || hay.includes('wimberley');
       }
