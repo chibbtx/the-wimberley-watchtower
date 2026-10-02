@@ -24,6 +24,7 @@
     --green: #2ecc71;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { overscroll-behavior-y: none; }
   body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; min-height: 100vh; }
 
   header { background: var(--bg); padding: 0; position: sticky; top: 0; z-index: 100; }
@@ -308,7 +309,7 @@
 </main>
 
 <script>
-// VERSION: 2026-10-01.02 — Remove translateZ(0) from .filter-bar (test fix for iOS overscroll blackout of sticky-stack bars)
+// VERSION: 2026-10-01.03 — Add html { overscroll-behavior-y: none } (test fix for iOS rubber-band drift and blackout of sticky-stack bars)
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Wimberley Valley Situational Awareness Dashboard
 // GitHub repo: the-wimberley-watchtower
