@@ -24,7 +24,7 @@
     --green: #2ecc71;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { overscroll-behavior-y: none; }
+  html.near-bottom { overscroll-behavior-y: none; }
   body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; min-height: 100vh; }
 
   header { background: var(--bg); padding: 0; position: sticky; top: 0; z-index: 100; }
@@ -309,7 +309,7 @@
 </main>
 
 <script>
-// VERSION: 2026-10-01.03 — Add html { overscroll-behavior-y: none } (test fix for iOS rubber-band drift and blackout of sticky-stack bars)
+// VERSION: 2026-10-01.04 — Scope overscroll-behavior-y: none to within one screen of page bottom (restore top bounce and pull-to-refresh)
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Wimberley Valley Situational Awareness Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -1606,6 +1606,19 @@ window.addEventListener('load', () => {
   }
 });
 window.addEventListener('resize', updateTabArrows);
+
+// ─── OVERSCROLL GUARD ─────────────────────────────────────────────────────────
+// iOS WebKit rubber-band past the page bottom drags and blanks the sticky stack.
+// Disable overscroll only within one screen of the bottom, so the top keeps its
+// bounce and pull-to-refresh.
+function updateOverscrollGuard() {
+  const d = document.documentElement;
+  const nearBottom = window.innerHeight + window.scrollY >= d.scrollHeight - window.innerHeight;
+  d.classList.toggle('near-bottom', nearBottom);
+}
+window.addEventListener('scroll', updateOverscrollGuard, { passive: true });
+window.addEventListener('resize', updateOverscrollGuard);
+updateOverscrollGuard();
 
 // ─── AUTO-REFRESH ─────────────────────────────────────────────────────────────
 // 1. Staleness check on tab restore — if you return after 1+ hour, reload immediately
