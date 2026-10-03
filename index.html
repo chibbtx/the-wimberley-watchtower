@@ -194,7 +194,7 @@
       <img src="social_avatar_800.png" alt="Wimberley Watchtower" style="height:44px;width:auto;border-radius:4px;flex-shrink:0;display:block;">
       <div class="logo-text">
         <div class="logo-main">
-          <span style="color:#7A9E6A">The </span><span style="color:#7FA2C9">Wimberley </span><span style="color:#7A9E6A">Watchtower</span>
+          <span style="color:var(--text-muted)">The </span><span style="color:#7FA2C9">Wimberley </span><span style="color:#7A9E6A">Watchtower</span>
         </div>
         <div class="logo-sub">Situational Awareness Dashboard</div>
       </div>
@@ -239,7 +239,7 @@
       <a class="sub-btn" href="https://www.google.com/maps/@29.9870554,-98.0929984,13.25z/data=!5m1!1e1" target="_blank" title="Traffic map for Wimberley">
         ⊸ Traffic
       </a>
-      <a class="sub-btn" href="comms.html" target="_blank" title="HAM Radio &amp; Emergency Comms Reference">
+      <a class="sub-btn" href="comms.html" target="_blank" rel="noopener noreferrer" title="Radio &amp; Comms">
         ◉ Radio
       </a>
       <a class="sub-btn sub-btn-iss" href="https://www.heavens-above.com/PassSummary.aspx?satid=25544&lat=30.00&lng=-98.10&loc=Wimberley&alt=300&tz=CST" target="_blank" title="ISS pass times for Wimberley">
@@ -309,7 +309,7 @@
 </main>
 
 <script>
-// VERSION: 2026-10-01.04 — Scope overscroll-behavior-y: none to within one screen of page bottom (restore top bounce and pull-to-refresh)
+// VERSION: 2026-10-03.00 — Google News concurrency 3 (split queues per phase); drop undated items instead of stamping them now; parse YYYYMMDD guid dates (TPWD); remove Austin American-Statesman and KHOU; add Houston Public Media · Texas; Radio tooltip and rel; muted wordmark 'The'; cleanup: TAB_STORY_CAPS, INTERLEAVE_TABS, NWS_SOURCES, stale comments
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Wimberley Valley Situational Awareness Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -391,8 +391,6 @@ const FEEDS = [
     url: 'https://news.google.com/rss/search?q="Community+Impact"+"Hays+County"&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'Community Impact · Dripping Springs', lang: 'en', tags: ['hill-country'],
     url: 'https://news.google.com/rss/search?q="Community+Impact"+"Dripping+Springs"&hl=en-US&gl=US&ceid=US:en', max: 6 },
-  { name: 'Austin American-Statesman', lang: 'en', tags: ['hill-country'],
-    url: 'https://www.statesman.com/arcio/rss/', max: 8 },
   { name: 'KXAN Austin', lang: 'en', tags: ['hill-country'],
     url: 'https://www.kxan.com/feed/', max: 3 },
   { name: 'KUT Austin', lang: 'en', tags: ['hill-country'],
@@ -437,12 +435,12 @@ const FEEDS = [
     url: 'https://www.tpr.org/index.rss', max: 6 },
   { name: 'Texas Standard', lang: 'en', tags: ['texas'],
     url: 'https://www.texasstandard.org/feed/', max: 6 },
+  { name: 'Houston Public Media · Texas', lang: 'en', tags: ['texas'],
+    url: 'https://www.houstonpublicmedia.org/articles/news/texas/feed/', max: 8 },
   { name: 'Texas Monthly', lang: 'en', tags: ['texas'],
     url: 'https://www.texasmonthly.com/category/politics/feed/', max: 4 },
   { name: 'Houston Chronicle', lang: 'en', tags: ['texas'],
     url: 'https://www.chron.com/rss/feed/News-270.php', max: 4 },
-  { name: 'KHOU Houston', lang: 'en', tags: ['texas'],
-    url: 'https://www.khou.com/feeds/syndication/rss/news', max: 3 },
   { name: 'NBC DFW', lang: 'en', tags: ['texas'],
     url: 'https://www.nbcdfw.com/feed/', max: 3 },
   { name: 'WFAA Dallas', lang: 'en', tags: ['texas'],
@@ -526,17 +524,17 @@ const FEEDS = [
   { name: 'Texas Immigration · News', lang: 'en', tags: ['texas'],
     url: 'https://news.google.com/rss/search?q=texas+immigration+deportation+ICE+rights&hl=en-US&gl=US&ceid=US:en', max: 6 },
 
-  // ── CIVIL LIBERTIES & PRIVACY — Press Freedom ────────────────────────────────
+  // ── TEXAS — Police accountability ─────────────────────────────────────────────
   { name: 'Police Accountability · TX', lang: 'en', tags: ['texas'],
     url: 'https://news.google.com/rss/search?q=Texas%20police%20%28misconduct%20OR%20%22use%20of%20force%22%20OR%20accountability%20OR%20indicted%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
 
-  // ── CIVIL LIBERTIES & PRIVACY — Digital Surveillance ─────────────────────────
+  // ── WEATHER & HAZARDS — Public health ─────────────────────────────────────────
   { name: 'DSHS · Texas Health', lang: 'en', tags: ['weather-hazards'],
     url: 'https://news.google.com/rss/search?q=Texas%20%28%22Department%20of%20State%20Health%20Services%22%20OR%20DSHS%29%20%28outbreak%20OR%20advisory%20OR%20alert%20OR%20recall%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
   { name: 'Health · Texas', lang: 'en', tags: ['weather-hazards'],
     url: 'https://news.google.com/rss/search?q=Texas%20%22public%20health%22%20%28outbreak%20OR%20disease%20OR%20%22health%20emergency%22%20OR%20advisory%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
 
-  // ── GEOPOLITICS — Wires & Broad International ─────────────────────────────────
+  // ── HILL COUNTRY — Comal County and Canyon Lake ───────────────────────────────
   { name: 'My Canyon Lake', lang: 'en', tags: ['hill-country'],
     url: 'https://news.google.com/rss/search?q=%22Canyon+Lake%22+texas+comal+community&hl=en-US&gl=US&ceid=US:en', max: 5 },
   { name: 'Comal County · Alerts', lang: 'en', tags: ['hill-country', 'weather-hazards'],
@@ -550,7 +548,7 @@ const FEEDS = [
 ];
 
 // ─── PHASE ASSIGNMENT ─────────────────────────────────────────────────────────
-// Feeds load in 3 priority phases to protect the Worker from request bursts
+// Feeds load in 2 priority phases to protect the Worker from request bursts
 // and surface the most locally relevant content first.
 // Phase 1: Wimberley + Hill Country — full-page overlay until complete
 // Phase 2: Texas + Weather & Hazards — background, tab overlay if clicked early
@@ -581,7 +579,7 @@ const LOCAL_SOURCES = new Set([
   'Hill Country Alliance', 'Texas Hill Country Hazards', 'Texas Tribune',
   'Texas Tribune · Politics', 'Texas Tribune · Environment', 'Texas Tribune · Border',
   'Texas Observer', 'Texas Public Radio', 'Texas Standard', 'Texas Monthly',
-  'Houston Chronicle', 'KHOU Houston', 'NBC DFW', 'WFAA Dallas', 'KENS5 San Antonio',
+  'Houston Chronicle', 'NBC DFW', 'WFAA Dallas', 'KENS5 San Antonio',
   'TX Legislature · Passed Bills', 'Hays County · Emergency Services', 'Hays County · Sheriff Alerts',
   'Hays County · News & Updates'
 ]);
@@ -756,11 +754,17 @@ function parseRSSXml(xml) {
         if (!link && linkEl.nextSibling) link = linkEl.nextSibling.textContent || '';
       }
       if (!link) link = item.querySelector('guid')?.textContent || '#';
+      // Some feeds (TPWD) omit pubDate but carry the date in the guid as YYYYMMDD plus a letter.
+      let pubDate = item.querySelector('pubDate')?.textContent || '';
+      if (!pubDate) {
+        const m = (item.querySelector('guid')?.textContent || '').trim().match(/^(\d{4})(\d{2})(\d{2})[a-z]?$/i);
+        if (m) pubDate = new Date(+m[1], m[2] - 1, +m[3], 12).toISOString();
+      }
       return {
         title: item.querySelector('title')?.textContent || '',
         description: item.querySelector('description')?.textContent || '',
         link: link.trim(),
-        pubDate: item.querySelector('pubDate')?.textContent || '',
+        pubDate,
       };
     });
   }
@@ -857,11 +861,11 @@ async function fetchFeed(feed) {
         source: feed.name,
         lang: feed.lang,
         tags: feed.tags,
-        date: item.pubDate ? new Date(item.pubDate) : new Date(),
+        date: item.pubDate ? new Date(item.pubDate) : null,
       };
     }));
     sourceStatus[feed.name] = items.length ? 'ok' : 'empty';
-    return articles.filter(a => a.title && isRelevant(a) && !isBlocked(a));
+    return articles.filter(a => a.title && a.date && isRelevant(a) && !isBlocked(a));
   } catch (e) {
     sourceStatus[feed.name] = 'error';
     return [];
@@ -889,7 +893,7 @@ function escapeHTML(str) {
 // For high-velocity tabs, distribute cards by source so no outlet dominates a run.
 // Groups articles by source, sorts each group newest-first, then interleaves:
 // take article[0] from each source, then article[1], etc. Exhausted sources drop out.
-const INTERLEAVE_TABS = new Set(['national', 'geopolitics', 'finance', 'cyber-ai-tech', 'texas']);
+const INTERLEAVE_TABS = new Set(['texas']);
 
 function interleaveBySource(articles) {
   // Build a map: sourceName → [articles sorted newest-first]
@@ -1002,14 +1006,6 @@ function applyDisplayFilters() {
     );
   }
 
-  const TAB_STORY_CAPS = {
-    'civil-liberties-privacy': 60,
-    'cyber-ai-tech': 60,
-  };
-  if (TAB_STORY_CAPS[currentFilter]) {
-    filtered = filtered.slice(0, TAB_STORY_CAPS[currentFilter]);
-  }
-
   // Round-robin interleaving for high-velocity tabs
   if (INTERLEAVE_TABS.has(currentFilter)) {
     filtered = interleaveBySource(filtered);
@@ -1105,6 +1101,11 @@ async function runQueue(tasks, limit = 8) {
 // Track which phases have completed so tab clicks know whether to show overlay
 const phaseComplete = { 1: false, 2: false };
 
+// Google News bot-blocks bursts from the Worker's shared egress IPs, so its
+// feeds get a smaller concurrency cap than direct feeds. See project notes.
+const GOOGLE_CONCURRENCY = 3;
+const isGoogleFeed = f => f.url.includes('news.google.com');
+
 async function loadAllFeeds() {
   const btn = document.getElementById('refreshBtn');
   const icon = document.getElementById('refreshIcon');
@@ -1131,13 +1132,19 @@ async function loadAllFeeds() {
 
   const phase1Feeds = FEEDS.filter(f => f.phase === 1);
   const phase2Feeds = FEEDS.filter(f => f.phase === 2);
+  const phase1Google = phase1Feeds.filter(isGoogleFeed);
+  const phase1Direct = phase1Feeds.filter(f => !isGoogleFeed(f));
+  const phase2Google = phase2Feeds.filter(isGoogleFeed);
+  const phase2Direct = phase2Feeds.filter(f => !isGoogleFeed(f));
 
   // ── PHASE 1: Wimberley + Hill Country + NWS/HaysInformed (highest priority) ──
-  const [phase1Results, nwsAlerts, haysInformedCards] = await Promise.all([
-    runQueue(phase1Feeds.map(f => () => fetchFeed(f)), 8),
+  const [phase1GoogleResults, phase1DirectResults, nwsAlerts, haysInformedCards] = await Promise.all([
+    runQueue(phase1Google.map(f => () => fetchFeed(f)), GOOGLE_CONCURRENCY),
+    runQueue(phase1Direct.map(f => () => fetchFeed(f)), 8),
     fetchNWSAlerts(),
     fetchHaysInformed()
   ]);
+  const phase1Results = [...phase1GoogleResults, ...phase1DirectResults];
 
   const phase1Articles = phase1Results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
   allArticles = deduplicate([...phase1Articles, ...nwsAlerts, ...haysInformedCards].sort((a, b) => b.date - a.date));
@@ -1154,7 +1161,11 @@ async function loadAllFeeds() {
   lastLoadTime = Date.now();
 
   // ── PHASE 2: Texas, National, Finance, Weather (background) ──────────────────
-  const phase2Results = await runQueue(phase2Feeds.map(f => () => fetchFeed(f)), 8);
+  const [phase2GoogleResults, phase2DirectResults] = await Promise.all([
+    runQueue(phase2Google.map(f => () => fetchFeed(f)), GOOGLE_CONCURRENCY),
+    runQueue(phase2Direct.map(f => () => fetchFeed(f)), 8),
+  ]);
+  const phase2Results = [...phase2GoogleResults, ...phase2DirectResults];
   const phase2Articles = phase2Results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
   allArticles = deduplicate([...allArticles, ...phase2Articles].sort((a, b) => b.date - a.date));
   phaseComplete[2] = true;
@@ -1210,7 +1221,6 @@ function renderAlertStrip() {
     'san marcos','comal county','lcra','gbra'
   ];
 
-  const NWS_SOURCES = new Set(['Comal County · Alerts']);
   const NWS_DIRECT = new Set(['NWS · Hays County']);
   // Official county alert feeds: skip the keyword/geo gate but keep the 8h window
   const COUNTY_ALERTS = new Set(['Hays County · Emergency Services', 'Hays County · Sheriff Alerts']);
@@ -1224,9 +1234,6 @@ function renderAlertStrip() {
       if (NWS_DIRECT.has(a.source)) return true;
       if (!a.date || a.date.getTime() < cutoff) return false;
       if (COUNTY_ALERTS.has(a.source)) return true;
-      if (NWS_SOURCES.has(a.source)) {
-        return hay.includes('hays') || hay.includes('wimberley');
-      }
       // All hazard terms require a local geo match
       const hasGeoGated = GEO_GATED_TERMS.some(kw => hay.includes(kw));
       const hasGeo = GEO_TERMS.some(kw => hay.includes(kw));
