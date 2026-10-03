@@ -255,7 +255,7 @@
     <div class="card">
       <h4>Two commands worth knowing</h4>
       <p>Join the <span class="cmd">#bot</span> channel and send <span class="cmd">!flood</span> for river gauge status or <span class="cmd">!nws</span> for active weather warnings. A volunteer gateway answers over the radio. It also pushes flash flood and severe storm warnings to <span class="cmd">#alerts</span> as they are issued.</p>
-      <p><span class="tag warn">Unconfirmed</span> Send a direct message to the node named <span class="cmd">WX-AUS</span> with <span class="cmd">warn 78676</span> for NWS warnings, or <span class="cmd">wx 78676</span> for current conditions. This bot gets its weather from a satellite dish, not the internet, so it keeps working when the internet is out. Message it once beforehand so it has a route to you.</p>
+      <p>Join the <span class="cmd">#meshwx</span> channel and send <span class="cmd">wx 78676</span> for current conditions, <span class="cmd">warn 78676</span> for NWS warnings, or <span class="cmd">forecast 78676</span> for the forecast. Send <span class="cmd">help</span> for the full list. A volunteer bot named <span class="cmd">WX-AUS</span> answers on the channel. It gets its weather from a satellite dish, not the internet, so it keeps working when the internet is out. Replies are limited by distance, so if nothing comes back, you may be too many hops from the bot.</p>
     </div>
     <div class="card">
       <h4>See it live</h4>
@@ -486,7 +486,7 @@
 </main>
 
 <script>
-// VERSION: 2026-10-02.00 — comms.html rebuilt: current design system (header, sticky tab bar, sage accent), content audit, Mesh tab added, SDR tab removed
+// VERSION: 2026-10-02.01 — Mesh tab: WX-AUS card now uses the #meshwx channel (verified on air), adds forecast and help, removes Unconfirmed badge and DM route note
 function showTab(id, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
