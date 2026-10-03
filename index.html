@@ -309,7 +309,7 @@
 </main>
 
 <script>
-// VERSION: 2026-10-03.01 — Remove WFAA Dallas, KENS5 San Antonio (Tegna blocks Worker egress) and The Monitor (RGV) (domain moved); Texas Farm Bureau feed moved to media.texasfarmbureau.org
+// VERSION: 2026-10-03.02 — Add City of Wimberley · Alert Center (CivicPlus, ticker free pass); Texas Tribune · Environment moved to direct topic feed; Texas Tribune · Politics, Texas Tribune · Border and The Texas Newsroom removed
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Wimberley Valley Situational Awareness Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -341,6 +341,9 @@ const FEEDS = [
     url: 'https://news.google.com/rss/search?q=Wimberley%20%22Hays%20County%22%20%28planning%20OR%20zoning%20OR%20%22development%20permit%22%29&hl=en-US&gl=US&ceid=US%3Aen', max: 5 },
   { name: 'Wimberley · Blog', lang: 'en', tags: ['wimberley'],
     url: 'https://news.google.com/rss/search?q=%22City%20of%20Wimberley%22%20%28announcement%20OR%20event%20OR%20update%29&hl=en-US&gl=US&ceid=US%3Aen', max: 4 },
+  // City of Wimberley CivicPlus Alert Center: empty when nothing is active. Ticker free pass, 8h window applies.
+  { name: 'City of Wimberley · Alert Center', lang: 'en', tags: ['wimberley', 'weather-hazards', 'breaking'],
+    url: 'https://www.cityofwimberley.com/RSSFeed.aspx?ModID=63&CID=All-0', max: 8 },
 
   // ── WIMBERLEY — Woodcreek (adjacent city, CivicEngage) ───────────────────────
   { name: 'Woodcreek · Alerts', lang: 'en', tags: ['wimberley', 'weather-hazards'],
@@ -425,10 +428,8 @@ const FEEDS = [
   // ── TEXAS — Statewide Journalism & Public Media ───────────────────────────────
   { name: 'Texas Tribune', lang: 'en', tags: ['texas'],
     url: 'https://feeds.texastribune.org/feeds/main/', max: 12 },
-  { name: 'Texas Tribune · Politics', lang: 'en', tags: ['texas'],
-    url: 'https://news.google.com/rss/search?q=site%3Atexastribune.org%20%28legislature%20OR%20governor%20OR%20election%20OR%20Abbott%20OR%20Paxton%29&hl=en-US&gl=US&ceid=US%3Aen', max: 8 },
   { name: 'Texas Tribune · Environment', lang: 'en', tags: ['weather-hazards'],
-    url: 'https://news.google.com/rss/search?q=site%3Atexastribune.org%20%28environment%20OR%20drought%20OR%20flood%20OR%20wildfire%20OR%20water%29&hl=en-US&gl=US&ceid=US%3Aen', max: 6 },
+    url: 'https://www.texastribune.org/topics/environment/feed', max: 6 },
   { name: 'Texas Observer', lang: 'en', tags: ['texas'],
     url: 'https://www.texasobserver.org/feed/', max: 6 },
   { name: 'Texas Public Radio', lang: 'en', tags: ['texas'],
@@ -455,8 +456,6 @@ const FEEDS = [
     url: 'https://news.google.com/rss/search?q="texas+attorney+general"+paxton&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
   // ── TEXAS — Border, Immigration & Rio Grande Valley ───────────────────────────
-  { name: 'Texas Tribune · Border', lang: 'en', tags: ['texas'],
-    url: 'https://news.google.com/rss/search?q=site%3Atexastribune.org%20%28immigration%20OR%20border%20OR%20deportation%29&hl=en-US&gl=US&ceid=US%3Aen', max: 6 },
   { name: 'Texas Farm Bureau', lang: 'en', tags: ['texas'],
     url: 'https://media.texasfarmbureau.org/category/texas-farm-bureau-news-release/feed/', max: 5 },
   { name: 'AgriLife Today', lang: 'en', tags: ['texas'],
@@ -471,8 +470,6 @@ const FEEDS = [
     url: 'https://texassignal.com/rss', max: 6 },
   { name: 'Houston Landing', lang: 'en', tags: ['texas'],
     url: 'https://houstonlanding.org/feed/', max: 6 },
-  { name: 'The Texas Newsroom', lang: 'en', tags: ['texas'],
-    url: 'https://news.google.com/rss/search?q=site:thetexasnewsroom.org&hl=en-US&gl=US&ceid=US:en', max: 6 },
   { name: 'ProPublica Texas', lang: 'en', tags: ['texas'],
     url: 'https://news.google.com/rss/search?q=texas+site:propublica.org&hl=en-US&gl=US&ceid=US:en', max: 5 },
 
@@ -571,10 +568,10 @@ const LOCAL_SOURCES = new Set([
   'City of Buda · News', 'City of Buda · Agendas', 'City of Kyle · News',
   'City of Blanco · News', 'City of San Marcos', 'Hays County', 'LCRA News',
   'Hill Country Alliance', 'Texas Hill Country Hazards', 'Texas Tribune',
-  'Texas Tribune · Politics', 'Texas Tribune · Environment', 'Texas Tribune · Border',
+  'Texas Tribune · Environment',
   'Texas Observer', 'Texas Public Radio', 'Texas Standard', 'Texas Monthly',
   'Houston Chronicle', 'NBC DFW',
-  'TX Legislature · Passed Bills', 'Hays County · Emergency Services', 'Hays County · Sheriff Alerts',
+  'TX Legislature · Passed Bills', 'Hays County · Emergency Services', 'Hays County · Sheriff Alerts', 'City of Wimberley · Alert Center',
   'Hays County · News & Updates'
 ]);
 
@@ -1217,7 +1214,7 @@ function renderAlertStrip() {
 
   const NWS_DIRECT = new Set(['NWS · Hays County']);
   // Official county alert feeds: skip the keyword/geo gate but keep the 8h window
-  const COUNTY_ALERTS = new Set(['Hays County · Emergency Services', 'Hays County · Sheriff Alerts']);
+  const COUNTY_ALERTS = new Set(['Hays County · Emergency Services', 'Hays County · Sheriff Alerts', 'City of Wimberley · Alert Center']);
 
   const cutoff = Date.now() - 8 * 3600 * 1000;
   const alerts = allArticles
