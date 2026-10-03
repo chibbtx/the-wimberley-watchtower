@@ -107,9 +107,16 @@
   @media (hover: hover) { .link-row a:hover { text-decoration: underline; } }
   .link-desc { font-size: 0.76rem; color: var(--text-muted); margin-top: 3px; line-height: 1.45; }
 
+  .dl-card { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent2); padding: 14px 18px; border-radius: 2px; margin-bottom: 24px; }
+  .dl-card p { font-size: 0.82rem; line-height: 1.55; color: var(--text-muted); max-width: 62ch; }
+  .dl-card strong { color: var(--text); font-weight: 500; }
+  .dl-btn { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--accent2); border: 1px solid var(--accent2); padding: 7px 14px; border-radius: 2px; text-decoration: none; white-space: nowrap; transition: all 0.15s; }
+  @media (hover: hover) { .dl-btn:hover { background: var(--accent2); color: var(--bg); } }
+  .page-footer a { color: var(--text-muted); text-decoration: none; }
+  @media (hover: hover) { .page-footer a:hover { color: var(--accent2); } }
   .page-footer { margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--border); font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-dim); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; line-height: 1.5; }
 
-  @media (prefers-reduced-motion: reduce) { .tab-btn, .back-btn { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .tab-btn, .back-btn, .dl-btn { transition: none; } }
   @media (max-width: 860px) { .two-col { grid-template-columns: 1fr; } }
   @media (max-width: 600px) {
     .header-inner { height: 56px; }
@@ -160,6 +167,11 @@
 <div class="section active" id="tab-wx">
   <div class="page-title">NOAA Weather Radio</div>
   <div class="page-sub">The one broadcast that keeps going when everything else is down. A weather radio with SAME alerting is the only thing on this page that wakes you up at 3 AM, and it needs no license, no app and no internet.</div>
+
+  <div class="dl-card">
+    <p><strong>Printable comms card.</strong> The essentials from every tab on one page, with space for your household plan. Print it and keep it by the weather radio or in the car, where it works when the internet doesn't.</p>
+    <a class="dl-btn" href="wimberley-comms-card.pdf" download>Download PDF</a>
+  </div>
 
   <div class="co"><strong>For the Wimberley Valley: WXK27 on 162.400 MHz.</strong> The Austin transmitter, 1,000 watts, licensed to cover Bastrop, Blanco, Burnet, Caldwell, Hays, Lee, Travis and Williamson counties. Program SAME code <strong>048209</strong> so a desk radio alarms only for Hays County.</div>
 
@@ -247,6 +259,7 @@
       <h4>Getting on</h4>
       <p><strong>Radio:</strong> the Seeed Wio Tracker L1 Pro for MeshCore, about $50, comes pre-flashed in an enclosure with a battery and antenna. Nothing to install on the radio. An aftermarket antenna helps at the edge of coverage; <a href="https://www.rfindex.com/" target="_blank" rel="noopener">RF Index</a> publishes tested comparisons of radios and antennas.</p>
       <p><strong>App:</strong> MeshCore for iPhone or Android. Pair over Bluetooth, pick a handle, send an advert. Austin Mesh's <a href="https://www.austinmesh.org/join/meshcore-setup/" target="_blank" rel="noopener">setup walkthrough</a> covers the rest.</p>
+      <p><strong>Channels:</strong> the Public channel is already on every radio; everyone on the mesh sees it, and it's the place to ask neighbors for information or help. Other channels you add yourself: tap +Add Channel, join a hashtag channel, and type the name in lowercase. Start with <span class="cmd">#testing</span>, where people and bots answer test messages, to confirm your radio reaches the mesh.</p>
       <p><strong>Do it before you need it.</strong> A radio set up during a flood is a radio that doesn't work.</p>
     </div>
   </div>
@@ -480,13 +493,13 @@
 </div>
 
 <div class="page-footer">
-  <span>Wimberley Watchtower · Radio &amp; Comms · Wimberley, TX 78676</span>
+  <span>Wimberley Watchtower · Radio &amp; Comms · Wimberley, TX 78676 · <a href="wimberley-comms-card.pdf" download>Printable card (PDF)</a></span>
   <span>Verified October 2026 against Repeaterbook, RadioReference, NWS, FCC and club sources. Confirm any frequency before relying on it in an emergency.</span>
 </div>
 </main>
 
 <script>
-// VERSION: 2026-10-02.01 — Mesh tab: WX-AUS card now uses the #meshwx channel (verified on air), adds forecast and help, removes Unconfirmed badge and DM route note
+// VERSION: 2026-10-03.00 — Add printable comms card (download card on Weather Radio tab, footer link); Mesh tab and card: Public channel, +Add Channel how-to, #testing
 function showTab(id, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
