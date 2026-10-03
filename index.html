@@ -309,7 +309,7 @@
 </main>
 
 <script>
-// VERSION: 2026-10-03.00 — Google News concurrency 3 (split queues per phase); drop undated items instead of stamping them now; parse YYYYMMDD guid dates (TPWD); remove Austin American-Statesman and KHOU; add Houston Public Media · Texas; Radio tooltip and rel; muted wordmark 'The'; cleanup: TAB_STORY_CAPS, INTERLEAVE_TABS, NWS_SOURCES, stale comments
+// VERSION: 2026-10-03.01 — Remove WFAA Dallas, KENS5 San Antonio (Tegna blocks Worker egress) and The Monitor (RGV) (domain moved); Texas Farm Bureau feed moved to media.texasfarmbureau.org
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE WIMBERLEY WATCHTOWER — Wimberley Valley Situational Awareness Dashboard
 // GitHub repo: the-wimberley-watchtower
@@ -443,10 +443,6 @@ const FEEDS = [
     url: 'https://www.chron.com/rss/feed/News-270.php', max: 4 },
   { name: 'NBC DFW', lang: 'en', tags: ['texas'],
     url: 'https://www.nbcdfw.com/feed/', max: 3 },
-  { name: 'WFAA Dallas', lang: 'en', tags: ['texas'],
-    url: 'https://www.wfaa.com/feeds/syndication/rss/news', max: 3 },
-  { name: 'KENS5 San Antonio', lang: 'en', tags: ['texas'],
-    url: 'https://www.kens5.com/feeds/syndication/rss/news', max: 3 },
 
   // ── TEXAS — Government, Policy & Legislature ──────────────────────────────────
   { name: 'TX Legislature · Passed Bills', lang: 'en', tags: ['texas'],
@@ -461,10 +457,8 @@ const FEEDS = [
   // ── TEXAS — Border, Immigration & Rio Grande Valley ───────────────────────────
   { name: 'Texas Tribune · Border', lang: 'en', tags: ['texas'],
     url: 'https://news.google.com/rss/search?q=site%3Atexastribune.org%20%28immigration%20OR%20border%20OR%20deportation%29&hl=en-US&gl=US&ceid=US%3Aen', max: 6 },
-  { name: 'The Monitor (RGV)', lang: 'en', tags: ['texas'],
-    url: 'https://www.themonitor.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc', max: 6 },
   { name: 'Texas Farm Bureau', lang: 'en', tags: ['texas'],
-    url: 'https://www.txfb.org/news/feed/', max: 5 },
+    url: 'https://media.texasfarmbureau.org/category/texas-farm-bureau-news-release/feed/', max: 5 },
   { name: 'AgriLife Today', lang: 'en', tags: ['texas'],
     url: 'https://agrilifetoday.tamu.edu/feed/', max: 5 },
   { name: 'TX Parks & Wildlife', lang: 'en', tags: ['texas'],
@@ -579,7 +573,7 @@ const LOCAL_SOURCES = new Set([
   'Hill Country Alliance', 'Texas Hill Country Hazards', 'Texas Tribune',
   'Texas Tribune · Politics', 'Texas Tribune · Environment', 'Texas Tribune · Border',
   'Texas Observer', 'Texas Public Radio', 'Texas Standard', 'Texas Monthly',
-  'Houston Chronicle', 'NBC DFW', 'WFAA Dallas', 'KENS5 San Antonio',
+  'Houston Chronicle', 'NBC DFW',
   'TX Legislature · Passed Bills', 'Hays County · Emergency Services', 'Hays County · Sheriff Alerts',
   'Hays County · News & Updates'
 ]);
